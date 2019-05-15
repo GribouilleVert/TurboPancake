@@ -3,7 +3,7 @@
          cacheResult="false"
          colors="true">
     <testsuites>
-        <testsuite name="Haifunime">
+        <testsuite name="Framework">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

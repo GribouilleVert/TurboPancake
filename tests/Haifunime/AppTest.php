@@ -2,7 +2,7 @@
 namespace Tests\Haifunime;
 
 use GuzzleHttp\Psr7\ServerRequest;
-use Haifunime\App;
+use Framework\App;
 use PHPUnit\Framework\TestCase;
 
 class AppTest extends TestCase {

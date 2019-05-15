@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ruleset name="Haifunime Distribution Network">
+<ruleset name="Framework Distribution Network">
     <description>Liste des règles pour le code d'HDN</description>
 
     <arg name="colors"></arg>

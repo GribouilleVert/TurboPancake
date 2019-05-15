@@ -2,7 +2,7 @@
 require '../vendor/autoload.php';
 
 use GuzzleHttp\Psr7\ServerRequest;
-use Haifunime\App;
+use Framework\App;
 use function HTTP\Response\send;
 
 $app = new App([

@@ -1,5 +1,5 @@
 <?php
-namespace Haifunime;
+namespace Framework;
 
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -7,7 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class App
- * @package Haifunime
+ * @package Framework
  */
 class App {
 
