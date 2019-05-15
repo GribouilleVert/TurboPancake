@@ -5,19 +5,33 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class App
+ * @package Haifunime
+ */
 class App {
 
-    public function run(ServerRequestInterface $request): ResponseInterface {
-        $uri = $request->getUri()->getPath();
-        if (!empty($uri) AND $uri[-1] === '/') {
-            return (new Response())
-                ->withStatus(301)
-                ->withHeader('Location', substr($uri, 0, -1));
-        }
+    /**
+     * @var array
+     */
+    private $module = [];
 
-        $response = new Response();
-        $response->getBody()->write('Salut !');
-        return $response;
+    /**
+     * App constructor.
+     * @param array $modules Liste des modules a charger
+     */
+    public function __construct(array $modules = [])
+    {
+        foreach ($modules as $module)
+            $this->module[] = new $module();
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    public function run(ServerRequestInterface $request): ResponseInterface
+    {
     }
 
 }

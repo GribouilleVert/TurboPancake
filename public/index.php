@@ -5,7 +5,9 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Haifunime\App;
 use function HTTP\Response\send;
 
-$app = new App();
+$app = new App([
+
+]);
 
 $response = $app->run(ServerRequest::fromGlobals());
 
