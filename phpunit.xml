@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phpunit bootstrap="vendor/autoload.php"
+         cacheResult="false"
+         colors="true">
+    <testsuites>
+        <testsuite name="Haifunime">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

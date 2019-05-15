@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ruleset name="Haifunime Distribution Network">
+    <description>Liste des règles pour le code d'HDN</description>
+
+    <arg name="colors"></arg>
+    <arg value="p"></arg>
+
+    <file>src</file>
+    <file>public/index.php</file>
+
+    <rule ref="PSR2"></rule>
+
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"></rule>
+
+    <rule ref="~/.config/thewayicode.xml"></rule>
+
+</ruleset>
