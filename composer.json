@@ -13,7 +13,8 @@
     "autoload": {
         "psr-4": {
             "Framework\\": "src/Framework",
-            "Haifunime\\": "src"
+            "Haifunime\\": "src",
+            "Tests\\": "tests"
         }
     },
     "require": {
