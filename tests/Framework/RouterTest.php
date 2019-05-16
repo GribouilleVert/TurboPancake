@@ -1,7 +1,6 @@
 <?php
-namespace Tests\Haifunime;
+namespace Tests\Framework;
 
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\ServerRequest;
 use Framework\Router;
 use PHPUnit\Framework\TestCase;

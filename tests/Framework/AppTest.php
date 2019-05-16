@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Haifunime;
+namespace Tests\Framework;
 
 use GuzzleHttp\Psr7\ServerRequest;
 use Framework\App;
