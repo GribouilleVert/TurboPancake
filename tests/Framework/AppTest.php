@@ -68,4 +68,16 @@ class AppTest extends TestCase {
         $this->assertStringContainsString('Looks like a string !', (string)$response->getBody());
     }
 
+    public function testClassicResponse() {
+        $app = new App([
+            Modules\ClassicModule::class
+        ]);
+
+        $request = new ServerRequest('GET', '/test');
+        $response = $app->run($request);
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertStringContainsString('Yep, ca marche !', (string)$response->getBody());
+    }
+
 }
