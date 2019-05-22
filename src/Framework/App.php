@@ -26,12 +26,17 @@ class App {
     /**
      * App constructor.
      * @param array $modules Liste des modules a charger
+     * @param array $dependencies Liste des dependences //TODO: A degager
      */
-    public function __construct(array $modules = [])
+    public function __construct(array $modules = [], array $dependencies = [])
     {
         $this->router = new Router();
-        foreach ($modules as $module)
-            $this->module[] = new $module($this->router);
+        if (array_key_exists('renderer', $dependencies)) {
+            $dependencies['renderer']->addGlobal('router', $this->router);
+        }
+        foreach ($modules as $module) {
+            $this->module[] = new $module($this->router, $dependencies['renderer']);
+        }
     }
 
     /**

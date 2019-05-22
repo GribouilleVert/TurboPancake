@@ -1,14 +1,16 @@
 <?php
+
 require_once '../vendor/autoload.php';
 
-use GuzzleHttp\Psr7\ServerRequest;
-use Framework\App;
-use function HTTP\Response\send;
+$renderer = new \Framework\Renderer();
+$renderer->addPath(dirname(__DIR__) . '/views');
 
-$app = new App([
+$app = new Framework\App([
     \Haifunime\Blog\BlogModule::class
+], [
+    'renderer'  => $renderer
 ]);
 
-$response = $app->run(ServerRequest::fromGlobals());
+$response = $app->run(GuzzleHttp\Psr7\ServerRequest::fromGlobals());
 
-send($response);
+\Http\Response\send($response);

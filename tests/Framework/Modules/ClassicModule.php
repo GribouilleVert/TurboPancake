@@ -10,7 +10,7 @@ class ClassicModule {
     {
         $router->get('/test', function () {
             return new Response(200, [], 'Yep, ca marche !');
-        }, 'response.trigger');
+        }, 'test_module.response_object');
     }
 
 }

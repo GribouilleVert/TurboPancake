@@ -1,12 +1,23 @@
 <?php
 namespace Tests\Framework;
 
+use Framework\Renderer;
 use GuzzleHttp\Psr7\ServerRequest;
 use Framework\App;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
 class AppTest extends TestCase {
+
+    /**
+     * @var Renderer
+     */
+    private $renderer;
+
+    public function setUp(): void {
+        $this->renderer = new Renderer();
+        $this->renderer->addPath(__DIR__ . '/views');
+    }
 
     public function testRedirectTrailingSlash() {
         $app = new App();
@@ -17,21 +28,17 @@ class AppTest extends TestCase {
         $this->assertEquals(301, $response->getStatusCode());
     }
 
-    public function testBlog() {
+    public function testPageWithParametersInUrl() {
         $app = new App([
-            \Haifunime\Blog\BlogModule::class
+            Modules\ParamsModule::class
+        ], [
+            'renderer' => $this->renderer
         ]);
 
-        $request = new ServerRequest('GET', '/blog');
-        $response = $app->run($request);
-
-        $this->assertStringContainsString('<h1>Bienvenue sur le blog !</h1>', (string)$response->getBody());
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $requestArticle = new ServerRequest('GET', '/blog/gribouille-violet');
+        $requestArticle = new ServerRequest('GET', '/test/Vasco');
         $responseArticle = $app->run($requestArticle);
 
-        $this->assertStringContainsString('<h1>Bienvenue sur l\'article gribouille-violet !</h1>', (string)$responseArticle->getBody());
+        $this->assertStringContainsString('Salut Vasco !', (string)$responseArticle->getBody());
         $this->assertEquals(200, $responseArticle->getStatusCode());
     }
 
@@ -48,6 +55,8 @@ class AppTest extends TestCase {
     public function testThrowExceptionOnWrongCallbackReturnType() {
         $app = new App([
             Modules\WrongModule::class
+        ], [
+            'renderer' => $this->renderer
         ]);
 
         $request = new ServerRequest('GET', '/trigger-error');
@@ -59,6 +68,8 @@ class AppTest extends TestCase {
     public function testStringToResponseConvertion() {
         $app = new App([
             Modules\StringModule::class
+        ], [
+            'renderer' => $this->renderer
         ]);
 
         $request = new ServerRequest('GET', '/test');
@@ -71,6 +82,8 @@ class AppTest extends TestCase {
     public function testClassicResponse() {
         $app = new App([
             Modules\ClassicModule::class
+        ], [
+            'renderer' => $this->renderer
         ]);
 
         $request = new ServerRequest('GET', '/test');
