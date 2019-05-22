@@ -10,7 +10,7 @@
 
     <filter>
         <whitelist>
-            <directory>src</directory>
+            <directory>src/Framework</directory>
         </whitelist>
     </filter>
 </phpunit>
