@@ -8,17 +8,17 @@ namespace Framework\Router;
  */
 class Route {
     /**
-     * @var string
+     * @var string Nom de la route
      */
     private $name;
 
     /**
-     * @var callable
+     * @var callable Callback a appeler lors d'un match
      */
     private $callback;
 
     /**
-     * @var array
+     * @var array Paramètres
      */
     private $parameters;
 

@@ -1,32 +1,47 @@
 <?php
-namespace Framework;
+namespace Framework\Renderer;
 
-class Renderer {
+class PHPRenderer implements RendererInterface {
 
     const DEFAULT_NAMESPACE = '__MAIN';
 
     /**
-     * @var array
+     * @var array Liste des chemins du renderer
      */
     private $paths = [];
 
     /**
-     * @var array
+     * @var array Variables globales
      */
     private $globals = [];
 
     /**
-     * @param string $namespace
-     * @param string|null $path
+     * Renderer constructor.
+     * @param string|null $defaultPath Chemin par défaut, reviens a faire un addPath('path'). Si null, alors ignoré
      */
-    public function addPath(string $path, ?string $namespace = null): void
+    public function __construct(?string $defaultPath = null)
     {
-        if (is_null($namespace))
-            $this->paths[self::DEFAULT_NAMESPACE] = $path;
-        else $this->paths[$namespace] = $path;
+        if (!is_null($defaultPath)) {
+            $this->addPath($defaultPath);
+        }
     }
 
     /**
+     * Permet d'ajouter un chemin d'ou se trouvent les sources
+     * @param string $path Le chemin des vues, si $namespace est null, alors ce sera le chemin par défaut
+     * @param string|null $namespace Le namespace a associer au chemin
+     */
+    public function addPath(string $path, ?string $namespace = null): void
+    {
+        if (is_null($namespace)) {
+            $this->paths[self::DEFAULT_NAMESPACE] = $path;
+        } else {
+            $this->paths[$namespace] = $path;
+        }
+    }
+
+    /**
+     * Permet d'ajouter une variable disponible pour toutes les vues
      * @param string $key
      * @param $value
      */
@@ -35,9 +50,10 @@ class Renderer {
         $this->globals[$key] = $value;
     }
 
-    /**
-     * @param string $view
-     * @param array $parameters
+    /**$string
+     * Permet de rendre une vue avec les variables
+     * @param string $view Nom de la vue sour la forme [@namespace/]vue
+     * @param array $parameters Variables a passer à la vue, écrase les variables globales
      * @return string
      */
     public function render(string $view, array $parameters = []): string
@@ -58,6 +74,7 @@ class Renderer {
     }
 
     /**
+     * Permet de détecter la présence d'un namespace dans une chaine de caractère
      * @param string $view
      * @return bool
      */
@@ -67,6 +84,7 @@ class Renderer {
     }
 
     /**
+     * Permet d'extraire le namespace d'une chain de caractère
      * @param string $view
      * @return string
      */
@@ -76,6 +94,7 @@ class Renderer {
     }
 
     /**
+     * Permet de remplacer le namespace par le chemin
      * @param string $view
      * @return string
      */

@@ -2,6 +2,7 @@
 namespace Tests\Framework;
 
 use Framework\Renderer;
+use Framework\Renderer\PHPRenderer;
 use GuzzleHttp\Psr7\ServerRequest;
 use Framework\App;
 use PHPUnit\Framework\TestCase;
@@ -10,12 +11,12 @@ use Psr\Http\Message\ResponseInterface;
 class AppTest extends TestCase {
 
     /**
-     * @var Renderer
+     * @var PHPRenderer
      */
     private $renderer;
 
     public function setUp(): void {
-        $this->renderer = new Renderer();
+        $this->renderer = new PHPRenderer();
         $this->renderer->addPath(__DIR__ . '/views');
     }
 

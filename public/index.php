@@ -2,8 +2,8 @@
 
 require_once '../vendor/autoload.php';
 
-$renderer = new \Framework\Renderer();
-$renderer->addPath(dirname(__DIR__) . '/views');
+$renderer = new \Framework\Renderer\TwigRenderer(dirname(__DIR__) . '/views');
+
 
 $app = new Framework\App([
     \Haifunime\Blog\BlogModule::class

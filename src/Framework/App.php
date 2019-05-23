@@ -57,9 +57,13 @@ class App {
         }
 
         $parameters = $route->getParams();
-        $request = array_reduce(array_keys($parameters), function (ServerRequestInterface $request, $key) use ($parameters) {
-            return $request->withAttribute($key, $parameters[$key]);
-        }, $request);
+        $request = array_reduce(
+            array_keys($parameters),
+            function (ServerRequestInterface $request, $key) use ($parameters) {
+                return $request->withAttribute($key, $parameters[$key]);
+            },
+            $request
+        );
 
         $response = call_user_func_array($route->getCallback(), [$request]);
         if (is_string($response)) {

@@ -1,42 +1,44 @@
 <?php
 namespace Tests\Framework;
 
-use Framework\Renderer;
+use Framework\Renderer\TwigRenderer;
 use PHPUnit\Framework\TestCase;
 
-class RendererTest extends TestCase {
+class TwigRendererTest extends TestCase {
 
     /**
-     * @var Renderer
+     * @var TwigRenderer
      */
     private $renderer;
 
-    public function setUp(): void
-    {
-        $this->renderer = new Renderer();
-        $this->renderer->addPath( __DIR__ . '/views');
-    }
-
     public function testCorrectPathRender() {
+        $this->renderer = new TwigRenderer(__DIR__ . '/views');
+
         $this->renderer->addPath(__DIR__ . '/views', 'blog');
         $content = $this->renderer->render('@blog/demo');
 
-        $this->assertEquals(file_get_contents(__DIR__ . '/views/demo.php'), $content);
+        $this->assertEquals(file_get_contents(__DIR__ . '/views/demo.twig'), $content);
     }
 
-    public function testDefaultPathRender() {
+    public function testConstructorPathRender() {
+        $this->renderer = new TwigRenderer(__DIR__ . '/views');
+
         $content = $this->renderer->render('demo');
 
         $this->assertEquals(file_get_contents(__DIR__ . '/views/demo.php'), $content);
     }
 
     public function testRenderWithParams() {
+        $this->renderer = new TwigRenderer(__DIR__ . '/views');
+
         $content = $this->renderer->render('hello', ['name' => 'Vasco']);
 
         $this->assertEquals('Salut Vasco !', $content);
     }
 
     public function testRenderWithGlobalParams() {
+        $this->renderer = new TwigRenderer(__DIR__ . '/views');
+
         $this->renderer->addGlobal('name', 'Vasco');
         $content = $this->renderer->render('hello');
 

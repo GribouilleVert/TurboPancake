@@ -1,0 +1,2 @@
+<h1>Salut</h1>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem hic nulla omnis voluptatum. A aperiam, asperiores aut corporis deserunt dolor est facilis, illum laboriosam nostrum, officiis perferendis quod temporibus tenetur.</p>
