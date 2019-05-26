@@ -1,9 +1,10 @@
 <?php
 namespace Tests\Framework\Modules;
 
+use Framework\Module;
 use Framework\Router;
 
-class StringModule {
+class StringModule extends Module {
 
     public function __construct(Router $router)
     {

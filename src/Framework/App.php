@@ -1,7 +1,9 @@
 <?php
 namespace Framework;
 
+use DI\Container;
 use GuzzleHttp\Psr7\Response;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -19,23 +21,20 @@ class App {
 
     /**
      * Router de l'application
-     * @var Router
+     * @var ContainerInterface
      */
-    private $router;
+    private $container;
 
     /**
      * App constructor.
+     * @param ContainerInterface $container Conteneur de dépendances
      * @param array $modules Liste des modules a charger
-     * @param array $dependencies Liste des dependences //TODO: A degager
      */
-    public function __construct(array $modules = [], array $dependencies = [])
+    public function __construct(ContainerInterface $container, array $modules = [])
     {
-        $this->router = new Router();
-        if (array_key_exists('renderer', $dependencies)) {
-            $dependencies['renderer']->addGlobal('router', $this->router);
-        }
+        $this->container = $container;
         foreach ($modules as $module) {
-            $this->module[] = new $module($this->router, $dependencies['renderer']);
+            $this->module[] = $container->get($module);
         }
     }
 
@@ -51,7 +50,7 @@ class App {
             return new Response(301, ['Location' => substr($uri, 0, -1)]);
         }
 
-        $route = $this->router->match($request);
+        $route = $this->container->get(Router::class)->match($request);
         if (is_null($route)) {
             return new Response(404, [], '<h1>Erreur 404</h1>');
         }
@@ -65,7 +64,12 @@ class App {
             $request
         );
 
-        $response = call_user_func_array($route->getCallback(), [$request]);
+        $callback = $route->getCallback();
+        if (is_string($callback)) {
+            $callback = $this->container->get($callback);
+        }
+
+        $response = call_user_func_array($callback, [$request]);
         if (is_string($response)) {
             return new Response(200, [], $response);
         } elseif ($response instanceof ResponseInterface) {

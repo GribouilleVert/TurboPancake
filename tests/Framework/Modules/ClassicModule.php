@@ -1,10 +1,11 @@
 <?php
 namespace Tests\Framework\Modules;
 
+use Framework\Module;
 use Framework\Router;
 use GuzzleHttp\Psr7\Response;
 
-class ClassicModule {
+class ClassicModule extends Module {
 
     public function __construct(Router $router)
     {

@@ -1,8 +1,10 @@
 <?php
 namespace Tests\Framework;
 
-use Framework\Renderer;
+use DI\Container;
 use Framework\Renderer\PHPRenderer;
+use Framework\Renderer\PHPRendererFactory;
+use Framework\Renderer\TwigRendererFactory;
 use PHPUnit\Framework\TestCase;
 
 class PHPRendererTest extends TestCase {
@@ -14,8 +16,9 @@ class PHPRendererTest extends TestCase {
 
     public function setUp(): void
     {
-        $this->renderer = new PHPRenderer();
-        $this->renderer->addPath(__DIR__ . '/views');
+        $container = new Container();
+        $container->set('views.path', __DIR__ . '/views');
+        $this->renderer = (new PHPRendererFactory())->__invoke($container);
     }
 
     public function testCorrectPathRender() {

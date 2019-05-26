@@ -1,8 +1,7 @@
 <?php
 namespace Tests\Framework;
 
-use Framework\Renderer;
-use Framework\Renderer\PHPRenderer;
+use DI\Container;
 use GuzzleHttp\Psr7\ServerRequest;
 use Framework\App;
 use PHPUnit\Framework\TestCase;
@@ -11,17 +10,17 @@ use Psr\Http\Message\ResponseInterface;
 class AppTest extends TestCase {
 
     /**
-     * @var PHPRenderer
+     * @var Container
      */
-    private $renderer;
+    private $container;
 
     public function setUp(): void {
-        $this->renderer = new PHPRenderer();
-        $this->renderer->addPath(__DIR__ . '/views');
+        $builder = new \DI\ContainerBuilder();
+        $this->container = $builder->build();
     }
 
     public function testRedirectTrailingSlash() {
-        $app = new App();
+        $app = new App($this->container);
         $request = new ServerRequest('GET', '/test/');
         $response = $app->run($request);
 
@@ -30,10 +29,8 @@ class AppTest extends TestCase {
     }
 
     public function testPageWithParametersInUrl() {
-        $app = new App([
+        $app = new App($this->container, [
             Modules\ParamsModule::class
-        ], [
-            'renderer' => $this->renderer
         ]);
 
         $requestArticle = new ServerRequest('GET', '/test/Vasco');
@@ -44,7 +41,7 @@ class AppTest extends TestCase {
     }
 
     public function testError404() {
-        $app = new App();
+        $app = new App($this->container);
 
         $request = new ServerRequest('GET', '/this-page-should-not-exist/if-it-does/it-s-weird');
         $response = $app->run($request);
@@ -54,10 +51,8 @@ class AppTest extends TestCase {
     }
 
     public function testThrowExceptionOnWrongCallbackReturnType() {
-        $app = new App([
+        $app = new App($this->container, [
             Modules\WrongModule::class
-        ], [
-            'renderer' => $this->renderer
         ]);
 
         $request = new ServerRequest('GET', '/trigger-error');
@@ -66,11 +61,9 @@ class AppTest extends TestCase {
         $response = $app->run($request);
     }
 
-    public function testStringToResponseConvertion() {
-        $app = new App([
+    public function testStringToResponseConversion() {
+        $app = new App($this->container, [
             Modules\StringModule::class
-        ], [
-            'renderer' => $this->renderer
         ]);
 
         $request = new ServerRequest('GET', '/test');
@@ -80,11 +73,21 @@ class AppTest extends TestCase {
         $this->assertStringContainsString('Looks like a string !', (string)$response->getBody());
     }
 
+    public function testStringCallback() {
+        $app = new App($this->container, [
+            Modules\CallStringModule::class
+        ]);
+
+        $request = new ServerRequest('GET', '/test');
+        $response = $app->run($request);
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertStringContainsString('Yep, ca marche !', (string)$response->getBody());
+    }
+
     public function testClassicResponse() {
-        $app = new App([
+        $app = new App($this->container, [
             Modules\ClassicModule::class
-        ], [
-            'renderer' => $this->renderer
         ]);
 
         $request = new ServerRequest('GET', '/test');

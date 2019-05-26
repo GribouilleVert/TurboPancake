@@ -1,19 +1,27 @@
 <?php
 namespace Tests\Framework;
 
-use Framework\Renderer\TwigRenderer;
+use DI\Container;
+use Framework\Renderer\TwigRendererFactory;
+use Framework\Router;
 use PHPUnit\Framework\TestCase;
+use Tests\Framework\Renderer\TwigExtension;
+use Twig\Error\RuntimeError;
 
 class TwigRendererTest extends TestCase {
 
     /**
-     * @var TwigRenderer
+     * @var TwigRendererFactory
      */
     private $renderer;
 
-    public function testCorrectPathRender() {
-        $this->renderer = new TwigRenderer(__DIR__ . '/views');
+    public function setUp(): void {
+        $container = new Container();
+        $container->set('views.path', __DIR__ . '/views');
+        $this->renderer = (new TwigRendererFactory)->__invoke($container);
+    }
 
+    public function testCorrectPathRender() {
         $this->renderer->addPath(__DIR__ . '/views', 'blog');
         $content = $this->renderer->render('@blog/demo');
 
@@ -21,29 +29,46 @@ class TwigRendererTest extends TestCase {
     }
 
     public function testConstructorPathRender() {
-        $this->renderer = new TwigRenderer(__DIR__ . '/views');
-
         $content = $this->renderer->render('demo');
 
-        $this->assertEquals(file_get_contents(__DIR__ . '/views/demo.php'), $content);
+        $this->assertEquals(file_get_contents(__DIR__ . '/views/demo.twig'), $content);
     }
 
     public function testRenderWithParams() {
-        $this->renderer = new TwigRenderer(__DIR__ . '/views');
-
         $content = $this->renderer->render('hello', ['name' => 'Vasco']);
 
         $this->assertEquals('Salut Vasco !', $content);
     }
 
     public function testRenderWithGlobalParams() {
-        $this->renderer = new TwigRenderer(__DIR__ . '/views');
-
         $this->renderer->addGlobal('name', 'Vasco');
         $content = $this->renderer->render('hello');
 
         $this->assertEquals('Salut Vasco !', $content);
     }
 
+    public function testRendererWithCustomConfiguration() {
+        $container = new Container();
+        $container->set('views.path', __DIR__ . '/views');
+        $container->set('twig.configuration', [
+            'strict_variables' => true
+        ]);
+        $this->renderer = (new TwigRendererFactory)->__invoke($container);
 
+        $this->expectException(RuntimeError::class);
+        $this->renderer->render('invalid_variable');
+    }
+
+    public function testRendererWithCustomExtension() {
+        $container = new Container();
+        $container->set('views.path', __DIR__ . '/views');
+        $container->set('twig.extensions', [
+            new TwigExtension()
+        ]);
+        $this->renderer = (new TwigRendererFactory)->__invoke($container);
+        $content = $this->renderer->render('test_extension');
+
+        $this->assertEquals('ABCDEF', $content);
+    }
+    
 }

@@ -2,14 +2,21 @@
 
 require_once '../vendor/autoload.php';
 
-$renderer = new \Framework\Renderer\TwigRenderer(dirname(__DIR__) . '/views');
+$modules = [
+    \Haifunime\Blog\BlogModule::class,
+];
 
+$builder = new \DI\ContainerBuilder();
+$builder->addDefinitions(dirname(__DIR__) . '/config/config.php');
+foreach ($modules as $module) {
+    if (!is_null($module::DEFINITIONS)) {
+        $builder->addDefinitions($module::DEFINITIONS);
+    }
+}
+$builder->addDefinitions(dirname(__DIR__) . '/config.php');
+$container = $builder->build();
 
-$app = new Framework\App([
-    \Haifunime\Blog\BlogModule::class
-], [
-    'renderer'  => $renderer
-]);
+$app = new Framework\App($container, $modules);
 
 $response = $app->run(GuzzleHttp\Psr7\ServerRequest::fromGlobals());
 
