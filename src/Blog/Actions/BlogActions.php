@@ -4,6 +4,7 @@ namespace Haifunime\Blog\Actions;
 use Framework\Actions\RouterAware;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
+use Haifunime\Blog\Fetchers\PostTable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use \PDO;
@@ -16,9 +17,9 @@ class BlogActions {
     private $renderer;
 
     /**
-     * @var PDO
+     * @var PostTable
      */
-    private $pdo;
+    private $postTable;
 
     /**
      * @var Router
@@ -27,10 +28,10 @@ class BlogActions {
     
     use RouterAware;
 
-    public function __construct(RendererInterface $renderer, PDO $pdo, Router $router)
+    public function __construct(RendererInterface $renderer, Router $router, PostTable $postTable)
     {
         $this->renderer = $renderer;
-        $this->pdo = $pdo;
+        $this->postTable = $postTable;
         $this->router = $router;
     }
 
@@ -45,9 +46,7 @@ class BlogActions {
 
     public function index(): string
     {
-        $posts = $this->pdo
-            ->query('SELECT * FROM posts ORDER BY created_at DESC LIMIT 10')
-            ->fetchAll();
+        $posts = $this->postTable->findPaginated();
         return $this->renderer->render('@blog/index', compact('posts'));
     }
 
@@ -57,10 +56,10 @@ class BlogActions {
      */
     public function show(Request $request)
     {
-        $query = $this->pdo
-            ->prepare('SELECT * FROM posts WHERE id = ?');
-        $query->execute([$request->getAttribute('id')]);
-        $post = $query->fetch();
+        $post = $this->postTable->find($request->getAttribute('id'));
+        if (is_null($post)) {
+            return $this->temporaryRedirect('blog.index');
+        }
 
         $slug = $request->getAttribute('slug');
         if ($post->slug !== $slug) {
