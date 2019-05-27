@@ -14,6 +14,16 @@ class BlogModule extends Module {
     const DEFINITIONS = __DIR__ . '/config.php';
 
     /**
+     * Configuration de la base de données
+     */
+    const MIGRATIONS = __DIR__ . '/database/migrations';
+
+    /**
+     * Configuration des seeds
+     */
+    const SEEDS = __DIR__ . '/database/seeds';
+
+    /**
      * BlogModule constructor.
      * @param string $prefix
      * @param Router $router
@@ -23,7 +33,7 @@ class BlogModule extends Module {
     {
         $renderer->addPath(__DIR__ . '/views', 'blog');
         $router->get($prefix, BlogActions::class, 'blog.index');
-        $router->get($prefix . '/{slug:[a-z0-9\-]+}', BlogActions::class, 'blog.show');
+        $router->get($prefix . '/{slug:[a-z0-9\-]+}-{id:\d+}', BlogActions::class, 'blog.show');
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-require_once '../vendor/autoload.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $modules = [
     \Haifunime\Blog\BlogModule::class,
@@ -18,6 +18,7 @@ $container = $builder->build();
 
 $app = new Framework\App($container, $modules);
 
-$response = $app->run(GuzzleHttp\Psr7\ServerRequest::fromGlobals());
-
-\Http\Response\send($response);
+if (php_sapi_name() !== 'cli') {
+    $response = $app->run(GuzzleHttp\Psr7\ServerRequest::fromGlobals());
+    \Http\Response\send($response);
+}

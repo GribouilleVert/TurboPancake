@@ -34,34 +34,11 @@
             </div>
             <div class="content">
                 <ul class="nav">
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a href="/" class="text-light">Accueil</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="text-light">Les dernières sorties</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="text-light">Catégories</a>
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a href="#" class="text-light">Science fiction</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="text-light">Romantique</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="text-light">Slice of life</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="text-light">Magie / Mystique</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="text-light">Etc...</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="text-light">A propos</a>
+                    <li class="nav-item active">
+                        <a href="{{ path('blog.index') }}" class="text-light">Blog</a>
                     </li>
                 </ul>
             </div>
@@ -79,7 +56,7 @@
             <main>
                 <div class="container block">
                     <h1>{{ block('title') }}</h1>
-                    <div class="card mt-1">
+                    <div class="card m-1">
                         <div class="card-body py-0">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item">
@@ -92,6 +69,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="px-3"></div>
                 {% block content '' %}
             </main>
 
