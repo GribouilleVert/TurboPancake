@@ -65,4 +65,14 @@ class RouterTest extends TestCase {
         $this->assertEquals('/blog/gribouille-vert-7', $uri);
     }
 
+    public function testGenerateUriWithQueryParameters()
+    {
+        $this->router->get('/blog', function () { return 'Le blog !'; }, 'posts');
+        $this->router->get('/blog/{slug:[a-z0-9\-]+}-{id:\d+}', function () { return 'Un article !'; }, 'post.show');
+
+        $uri = $this->router->generateUri('post.show', ['slug' => 'gribouille-violet', 'id' => '148'], ['a' => '123']);
+
+        $this->assertEquals('/blog/gribouille-violet-148?a=123', $uri);
+    }
+
 }

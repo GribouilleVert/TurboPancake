@@ -83,15 +83,15 @@
   }
 
   &.btn-free {
-    @include button-variant(map-get($plan-icons, 'free'));
+    @include button-variant($free-color);
   }
 
   &.btn-classic {
-    @include button-variant(map-get($plan-icons, 'classic'));
+    @include button-variant($classic-color);
   }
 
   &.btn-vip {
-    @include button-variant(map-get($plan-icons, 'vip'));
+    @include button-variant($vip-color);
   }
 
   // Button Link

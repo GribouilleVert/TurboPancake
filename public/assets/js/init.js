@@ -7,6 +7,8 @@ function init () {
         this.onclick = closeAlert;
     });
 
+    timeago().render($('time.timeago'), 'fr')
+
 }
 
 function closeAlert(e) {

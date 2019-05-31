@@ -2,8 +2,24 @@
 
 {% block title post.name %}
 
+{% block head %}
+    <h1 class="mb-1">{{ block('title') }}</h1>
+    <div class="text-gray mb-4">{{ post.created_at | ago }}</div>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('blog.index') }}" class="tooltip" data-tooltip="Le Blog">Le Blog</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
+    </li>
+{% endblock %}
+
 {% block content %}
 
-{{ post.content | nl2br }}
+    <div class="container">
+        {{ post.content | nl2br }}
+    </div>
 
 {% endblock %}

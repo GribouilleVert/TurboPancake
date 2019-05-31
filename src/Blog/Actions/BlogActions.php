@@ -41,12 +41,13 @@ class BlogActions {
         if (!is_null($slug)) {
             return  $this->show($request);
         }
-        return $this->index();
+        return $this->index($request);
     }
 
-    public function index(): string
+    public function index(Request $request): string
     {
-        $posts = $this->postTable->findPaginated();
+        $queryParams = $request->getQueryParams();
+        $posts = $this->postTable->findPaginated(9, $queryParams['page'] ?? 1);
         return $this->renderer->render('@blog/index', compact('posts'));
     }
 

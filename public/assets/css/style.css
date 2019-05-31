@@ -789,6 +789,72 @@ html:lang(ko),
   border-bottom-color: #fff;
   border-left-color: #fff;
 }
+.btn.btn-free {
+  background: #979c9f;
+  border-color: #8f9498;
+  color: #fff;
+}
+.btn.btn-free:focus {
+  box-shadow: 0 0 0 0.1rem rgba(151, 156, 159, 0.2);
+}
+.btn.btn-free:focus, .btn.btn-free:hover {
+  background: #92979a;
+  border-color: #8a8f93;
+  color: #fff;
+}
+.btn.btn-free:active, .btn.btn-free.active {
+  background: #848a8e;
+  border-color: #7c8387;
+  color: #fff;
+}
+.btn.btn-free.loading::after {
+  border-bottom-color: #fff;
+  border-left-color: #fff;
+}
+.btn.btn-classic {
+  background: #da004e;
+  border-color: #cb0049;
+  color: #fff;
+}
+.btn.btn-classic:focus {
+  box-shadow: 0 0 0 0.1rem rgba(218, 0, 78, 0.2);
+}
+.btn.btn-classic:focus, .btn.btn-classic:hover {
+  background: #d0004a;
+  border-color: #c10045;
+  color: #fff;
+}
+.btn.btn-classic:active, .btn.btn-classic.active {
+  background: #b60041;
+  border-color: #a7003c;
+  color: #fff;
+}
+.btn.btn-classic.loading::after {
+  border-bottom-color: #fff;
+  border-left-color: #fff;
+}
+.btn.btn-vip {
+  background: #e4b400;
+  border-color: #d5a800;
+  color: #fff;
+}
+.btn.btn-vip:focus {
+  box-shadow: 0 0 0 0.1rem rgba(228, 180, 0, 0.2);
+}
+.btn.btn-vip:focus, .btn.btn-vip:hover {
+  background: #daac00;
+  border-color: #cba000;
+  color: #fff;
+}
+.btn.btn-vip:active, .btn.btn-vip.active {
+  background: #c09800;
+  border-color: #b18c00;
+  color: #fff;
+}
+.btn.btn-vip.loading::after {
+  border-bottom-color: #fff;
+  border-left-color: #fff;
+}
 .btn.btn-link {
   background: transparent;
   border-color: transparent;
@@ -1533,8 +1599,7 @@ video.video-responsive::before {
 .column {
   flex: 1;
   max-width: 100%;
-  padding-left: 0.4rem;
-  padding-right: 0.4rem;
+  padding: 0.4rem;
 }
 .column.col-12, .column.col-11, .column.col-10, .column.col-9, .column.col-8, .column.col-7, .column.col-6, .column.col-5, .column.col-4, .column.col-3, .column.col-2, .column.col-1, .column.col-auto {
   flex: none;
@@ -5128,7 +5193,8 @@ a.text-error:visited {
   position: absolute;
   right: 1.5rem;
   top: 1rem;
-  width: 14rem;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 2px;
 }
 
 .off-canvas-content {

@@ -62,8 +62,7 @@
 .column {
   flex: 1;
   max-width: 100%;
-  padding-left: $layout-spacing;
-  padding-right: $layout-spacing;
+  padding: $layout-spacing;
 
   &.col-12,
   &.col-11,

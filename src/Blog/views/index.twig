@@ -2,18 +2,40 @@
 
 {% block title "Le blog" %}
 
+{% block breadcrumb %}
+    <li class="breadcrumb-item">
+        <a href="#" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
+    </li>
+{% endblock %}
+
 {% block content %}
 
-<h1>Bienvenue sur le blog !</h1>
+    <div class="container">
 
-<ul>
-    {% for post in posts %}
-        <li>
-            <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}">
-                {{ post.name }}
-            </a>
-        </li>
-    {% endfor %}
-</ul>
+        <div class="columns">
+            {% for post in posts %}
+                <div class="column col-4 col-xm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <a href="{{ path('blog.show', {id: post.id, slug: post.slug}) }}">
+                                <span class="card-title h5">{{ post.name }}</span>
+                            </a>
+                            <div class="card-subtitle text-gray">{{ post.created_at | ago }}</div>
+                        </div>
+                        <div class="card-body">
+                            {{ post.content | nl2br | excerpt(120) }}
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}" class="btn btn-outline-secondary float-right">Voir</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="flex-centered">
+            {{ paginate(posts, 'blog.index', []) }}
+        </div>
+    </div>
 
 {% endblock %}

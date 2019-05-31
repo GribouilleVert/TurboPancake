@@ -18,10 +18,8 @@
                 <i class="icon icon-menu"></i>
             </a>
             <section class="navbar-section links">
-                <div class="dropdown dropdown-right">
-                    <a href="#" class="btn btn-link">Connexion</a>
-                    <a href="#" class="btn btn-link">Inscription</a>
-                </div>
+                <a href="#" class="btn btn-link">Connexion</a>
+                <a href="#" class="btn btn-link">Inscription</a>
             </section>
         </header>
 
@@ -54,22 +52,26 @@
         <div class="off-canvas-content">
 
             <main>
-                <div class="container block">
-                    <h1>{{ block('title') }}</h1>
+                <div class="container">
+                    {% block head %}
+                        <h1>{{ block('title') }}</h1>
+                    {% endblock %}
                     <div class="card m-1">
                         <div class="card-body py-0">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a href="/" class="tooltip" data-tooltip="Haifunime Distribution Network">HDN <small class="label label-secondary">DEV</small></a>
                                 </li>
-                                <li class="breadcrumb-item">
-                                    <a href="#" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
-                                </li>
+                                {% block breadcrumb %}
+                                    <li class="breadcrumb-item">
+                                        <a href="#" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
+                                    </li>
+                                {% endblock %}
                             </ul>
                         </div>
                     </div>
                 </div>
-                <div class="px-3"></div>
+                <div class="py-3"></div>
                 {% block content '' %}
             </main>
 
@@ -100,7 +102,10 @@
             </div>
         </div>
 
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="/assets/js/jquery/jquery-3.3.1.min.js"></script>
+        <script src="/assets/js/plugins/timeago/timeago.min.js"></script>
+        <script src="/assets/js/plugins/timeago/timeago.locales.min.js"></script>
+
         <script src="/assets/js/init.js"></script>
     </body>
 </html>
