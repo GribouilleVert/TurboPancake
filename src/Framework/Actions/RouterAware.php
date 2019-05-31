@@ -18,7 +18,8 @@ trait RouterAware {
      * @param array $parameters
      * @return ResponseInterface
      */
-    public function temporaryRedirect(string $route, array $parameters = []): ResponseInterface {
+    public function temporaryRedirect(string $route, array $parameters = []): ResponseInterface
+    {
         return $this->redirect($route, $parameters, 302);
     }
 
@@ -28,7 +29,8 @@ trait RouterAware {
      * @param array $parameters
      * @return ResponseInterface
      */
-    public function permanentRedirect(string $route, array $parameters = []): ResponseInterface {
+    public function permanentRedirect(string $route, array $parameters = []): ResponseInterface
+    {
         return $this->redirect($route, $parameters, 301);
     }
 
@@ -39,7 +41,8 @@ trait RouterAware {
      * @param int $code Code HTTP de la réponse
      * @return ResponseInterface
      */
-    private function redirect(string $route, array $parameters, int $code): ResponseInterface {
+    private function redirect(string $route, array $parameters, int $code): ResponseInterface
+    {
         $postUri = $this->router->generateUri($route, $parameters);
         return (new Response())
             ->withStatus($code)

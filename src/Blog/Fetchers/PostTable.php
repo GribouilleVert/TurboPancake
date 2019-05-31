@@ -52,11 +52,8 @@ class PostTable {
             ->prepare('SELECT * FROM posts WHERE id = ?');
         $query->execute([$id]);
 
-        if ($query->rowCount() ===0) {
-            return null;
-        }
         $query->setFetchMode(\PDO::FETCH_CLASS, Post::class);
-        return $query->fetch();
+        return $query->fetch() ?: null;
     }
 
 }

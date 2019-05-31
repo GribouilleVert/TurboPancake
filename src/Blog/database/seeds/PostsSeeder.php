@@ -5,6 +5,7 @@ use Phinx\Seed\AbstractSeed;
 
 class PostsSeeder extends AbstractSeed
 {
+
     /**
      * Run Method.
      *
@@ -32,4 +33,5 @@ class PostsSeeder extends AbstractSeed
             ->insert($data)
             ->save();
     }
+
 }

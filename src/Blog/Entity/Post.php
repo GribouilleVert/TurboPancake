@@ -42,4 +42,5 @@ class Post {
             $this->updated_at = new \DateTime($this->updated_at);
         }
     }
+
 }

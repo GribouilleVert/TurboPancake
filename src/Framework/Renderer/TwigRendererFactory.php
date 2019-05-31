@@ -9,7 +9,8 @@ class TwigRendererFactory {
 
     public function __invoke(ContainerInterface $container): TwigRenderer
     {
-        $loader = new FilesystemLoader($container->get('views.path'));
+        $viewsPaths = $container->get('views.path');
+        $loader = new FilesystemLoader($viewsPaths);
 
         if ($container->has('twig.configuration')) {
             $configuration = $container->get('twig.configuration');
@@ -24,7 +25,7 @@ class TwigRendererFactory {
             }
         }
 
-        return new TwigRenderer($loader, $twig);
+        return new TwigRenderer($twig);
     }
 
 }

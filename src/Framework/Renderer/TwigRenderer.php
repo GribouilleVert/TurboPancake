@@ -23,9 +23,8 @@ class TwigRenderer implements RendererInterface {
      * @param TwigFilesystemLoader $loader
      * @param TwigEnvironment $twig
      */
-    public function __construct(TwigFilesystemLoader $loader, TwigEnvironment $twig)
+    public function __construct(TwigEnvironment $twig)
     {
-        $this->loader = $loader;
         $this->twig = $twig;
     }
 
@@ -37,7 +36,7 @@ class TwigRenderer implements RendererInterface {
      */
     public function addPath(string $path, ?string $namespace = null): void
     {
-        $this->loader->addPath($path, $namespace);
+        $this->twig->getLoader()->addPath($path, $namespace);
     }
 
     /**

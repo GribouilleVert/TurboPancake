@@ -3,7 +3,7 @@
          cacheResult="false"
          colors="true">
     <testsuites>
-        <testsuite name="Framework">
+        <testsuite name="Application">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

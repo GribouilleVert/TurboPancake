@@ -59,10 +59,14 @@ class PagerFantaExtension extends AbstractExtension
 
         if ($currentPage - 5 <= 1) {
             $offset = 2 - ($currentPage - 1);
-            if ($offset < 0) $offset = 0;
+            if ($offset < 0) {
+                $offset = 0;
+            }
         } elseif ($currentPage + 5 >= $pageNb) {
             $offset = -2 + ($pageNb - $currentPage);
-            if ($offset > 0) $offset = 0;
+            if ($offset > 0) {
+                $offset = 0;
+            }
         }
 
         if ($offset <= 0 AND $currentPage - 2 > 1) {
@@ -107,15 +111,24 @@ class PagerFantaExtension extends AbstractExtension
             );
         }
         $result =  '<ul class="pagination">';
-        $result .= $this->paginationLIWithLink('<i class="icon icon-arrow-left"></i>', $prevClass??[], $prevLink??null);
+        $result .= $this->paginationLIWithLink(
+            '<i class="icon icon-arrow-left"></i>',
+            $prevClass??[],
+            $prevLink??null
+        );
         $result .= $pagesLi;
-        $result .= $this->paginationLIWithLink('<i class="icon icon-arrow-right"></i>', $nextClass??[], $nextLink??null);
+        $result .= $this->paginationLIWithLink(
+            '<i class="icon icon-arrow-right"></i>',
+            $nextClass??[],
+            $nextLink??null
+        );
         $result .= '</ul>';
 
         return $result;
     }
 
-    private function makeUri(int $page): string {
+    private function makeUri(int $page): string
+    {
         $queryArgs = $this->queryArgs;
         if ($page > 1) {
             $queryArgs['page'] = $page;
@@ -124,7 +137,8 @@ class PagerFantaExtension extends AbstractExtension
         return $this->router->generateUri($this->route, [], $queryArgs);
     }
 
-    private function paginationLIWithLink(string $content, array $classes = [], ?string $href = null): string {
+    private function paginationLIWithLink(string $content, array $classes = [], ?string $href = null): string
+    {
         if (is_null($href)) {
             $href = '#';
         }
@@ -135,10 +149,11 @@ class PagerFantaExtension extends AbstractExtension
         return $this->paginationLI($liContent, $classes);
     }
 
-    private function paginationLI(string $content, array $classes = []): string {
+    private function paginationLI(string $content, array $classes = []): string
+    {
         $classesString = '';
         foreach ($classes as $class) {
-            $classesString .= ' '.$class;
+            $classesString .= ' ' . $class;
         }
 
         $li =  '<li class="page-item' . $classesString . '">';

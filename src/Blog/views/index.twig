@@ -23,7 +23,7 @@
                             <div class="card-subtitle text-gray">{{ post.created_at | ago }}</div>
                         </div>
                         <div class="card-body">
-                            {{ post.content | nl2br | excerpt(120) }}
+                            {{ post.content | excerpt(120) | nl2br }}
                         </div>
                         <div class="card-footer">
                             <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}" class="btn btn-outline-secondary float-right">Voir</a>
