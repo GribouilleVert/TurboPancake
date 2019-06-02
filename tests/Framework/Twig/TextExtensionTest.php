@@ -3,6 +3,11 @@ namespace Tests\Framework\Twig;
 
 use Framework\Twig\TextExtension;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\VarDumper\Cloner\VarCloner;
+use Symfony\Component\VarDumper\Dumper\CliDumper;
+use Twig\Extension\ExtensionInterface;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 class TextExtensionTest extends TestCase {
 
@@ -14,6 +19,18 @@ class TextExtensionTest extends TestCase {
     public function setUp(): void
     {
         $this->textExtension = new TextExtension();
+    }
+
+    public function testValidExtension() {
+        $this->assertInstanceOf(ExtensionInterface::class, $this->textExtension);
+
+        $filters = $this->textExtension->getFilters();
+        $this->assertIsArray($filters);
+        $this->assertContainsOnlyInstancesOf(TwigFilter::class, $filters);
+
+        $functions = $this->textExtension->getFunctions();
+        $this->assertIsArray($functions);
+        $this->assertContainsOnlyInstancesOf(TwigFunction::class, $functions);
     }
 
     public function testTooShortTest() {
@@ -28,6 +45,18 @@ class TextExtensionTest extends TestCase {
         $excerpt = $this->textExtension->excerpt($text, 7);
 
         $this->assertEquals('J\'aime...', $excerpt);
+    }
+
+    public function testDump() {
+        $text = 'dump';
+
+        $dump = $this->textExtension->dump($text);
+
+        $cloner = new VarCloner();
+        $dumper = new CliDumper();
+        $expected = $dumper->dump($cloner->cloneVar($text), true);
+
+        $this->assertEquals($expected, $dump);
     }
 
 }

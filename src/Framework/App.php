@@ -2,6 +2,7 @@
 namespace Framework;
 
 use DI\Container;
+use Framework\Renderer\RendererInterface;
 use GuzzleHttp\Psr7\Response;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -11,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Class App
  * @package Framework
  */
-class App {
+final class App {
 
     /**
      * Modules instanciés
@@ -45,6 +46,14 @@ class App {
      */
     public function run(ServerRequestInterface $request): ResponseInterface
     {
+        $parsedBody = $request->getParsedBody();
+        if (!is_null($parsedBody)
+            AND array_key_exists('_method', $parsedBody)
+            AND in_array($parsedBody['_method'], ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'])
+        ) {
+            $request = $request->withMethod($parsedBody['_method']);
+        }
+
         $uri = $request->getUri()->getPath();
         if (!empty($uri) AND $uri[-1] === '/') {
             return new Response(301, ['Location' => substr($uri, 0, -1)]);
@@ -53,6 +62,12 @@ class App {
         $route = $this->container->get(Router::class)->match($request);
         if (is_null($route)) {
             return new Response(404, [], '<h1>Erreur 404</h1>');
+        }
+
+        if ($this->container->has(RendererInterface::class)) {
+            $renderer = $this->container->get(RendererInterface::class);
+            $renderer->addGlobal('route', $route->getName());
+            $renderer->addGlobal('queryParams', $request->getQueryParams());
         }
 
         $parameters = $route->getParams();

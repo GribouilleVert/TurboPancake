@@ -4,12 +4,11 @@ namespace Haifunime\Blog\Actions;
 use Framework\Actions\RouterAware;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
-use Haifunime\Blog\Fetchers\PostTable;
+use Haifunime\Blog\Managers\PostTable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use \PDO;
 
-class BlogActions {
+final class BlogActions {
 
     /**
      * @var RendererInterface
@@ -37,8 +36,8 @@ class BlogActions {
 
     public function __invoke(Request $request)
     {
-        $slug = $request->getAttribute('slug');
-        if (!is_null($slug)) {
+        $id = $request->getAttribute('id');
+        if (!is_null($id)) {
             return  $this->show($request);
         }
         return $this->index($request);

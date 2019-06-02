@@ -3,7 +3,7 @@ namespace Framework\Twig;
 
 use Twig\Extension\AbstractExtension;
 
-class TimeExtension extends AbstractExtension {
+final class TimeExtension extends AbstractExtension {
 
     public function getFilters(): array
     {

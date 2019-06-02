@@ -28,11 +28,42 @@ class RouterTest extends TestCase {
         $this->assertEquals('Le blog !', call_user_func_array($route->getCallback(), [$request]));
     }
 
-    public function testGetMethodIf404()
+    public function testPostMethod()
     {
-        $request = new ServerRequest('GET', '/this-is-surely-a-404');
+        $request = new ServerRequest('POST', '/login');
+
+        $this->router->post('/login', function () { return 'Connexion'; }, 'login');
+        $route = $this->router->match($request);
+
+        $this->assertEquals('login', $route->getName());
+        $this->assertEquals('Connexion', call_user_func_array($route->getCallback(), [$request]));
+    }
+
+    public function testAnonymousPostMethod()
+    {
+        $request = new ServerRequest('POST', '/login');
+
+        $this->router->post('/login', function () { return 'Connexion'; });
+        $route = $this->router->match($request);
+
+        $this->assertEquals('Connexion', call_user_func_array($route->getCallback(), [$request]));
+    }
+
+    public function testGetMethodIfNotFound()
+    {
+        $request = new ServerRequest('GET', '/this-is-surely-a-not-found');
 
         $this->router->get('/blog', function () { return 'Le blog !'; }, 'blog');
+        $route = $this->router->match($request);
+
+        $this->assertNull($route);
+    }
+
+    public function testPostMethodIfNotFound()
+    {
+        $request = new ServerRequest('POST', '/this-is-surely-a-not-found');
+
+        $this->router->post('/random', function () { return 'I like potatoes'; });
         $route = $this->router->match($request);
 
         $this->assertNull($route);
@@ -52,6 +83,23 @@ class RouterTest extends TestCase {
 
         //Invalid url
         $route = $this->router->match(new ServerRequest('GET', '/blog/gribouille-violet_18'));
+        $this->assertNull($route);
+    }
+
+    public function testPostMethodWithParameters()
+    {
+        $request = new ServerRequest('POST', '/edit/gribouille-violet-18');
+
+        $this->router->post('/login', function () { return 'Connexion'; }, 'login');
+        $this->router->post('/edit/{slug:[a-z0-9\-]+}-{id:\d+}', function () { return 'Un article !'; }, 'post.edit');
+
+        $route = $this->router->match($request);
+        $this->assertEquals('post.edit', $route->getName());
+        $this->assertEquals('Un article !', call_user_func_array($route->getCallback(), [$request]));
+        $this->assertEquals(['slug' => 'gribouille-violet', 'id' => '18'], $route->getParams());
+
+        //Invalid url
+        $route = $this->router->match(new ServerRequest('POST', '/blog/gribouille-violet_18'));
         $this->assertNull($route);
     }
 

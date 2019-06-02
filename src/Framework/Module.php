@@ -1,6 +1,10 @@
 <?php
 namespace Framework;
 
+/**
+ * Class Module
+ * @package Framework
+ */
 class Module {
 
     const DEFINITIONS = null;

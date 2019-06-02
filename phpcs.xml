@@ -8,6 +8,9 @@
     <file>src</file>
     <file>public/index.php</file>
 
+    <exclude-pattern>*/Database/seeds</exclude-pattern>
+    <exclude-pattern>*/Database/migrations</exclude-pattern>
+
     <rule ref="PSR2"></rule>
 
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"></rule>

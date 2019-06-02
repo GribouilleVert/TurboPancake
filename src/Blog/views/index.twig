@@ -2,12 +2,6 @@
 
 {% block title "Le blog" %}
 
-{% block breadcrumb %}
-    <li class="breadcrumb-item">
-        <a href="#" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
-    </li>
-{% endblock %}
-
 {% block content %}
 
     <div class="container">
@@ -34,7 +28,7 @@
         </div>
 
         <div class="flex-centered">
-            {{ paginate(posts, 'blog.index', []) }}
+            {{ paginate(posts, 'blog.index') }}
         </div>
     </div>
 

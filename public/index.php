@@ -3,6 +3,7 @@
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $modules = [
+    \Haifunime\Administration\AdministrationModule::class,
     \Haifunime\Blog\BlogModule::class,
 ];
 

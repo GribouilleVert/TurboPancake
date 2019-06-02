@@ -24,9 +24,9 @@ class RouterTwigExtension extends AbstractExtension
         ];
     }
 
-    public function generatePath(string $route, array $parameters = []): string
+    public function generatePath(string $route, array $parameters = [], array $queryParameters = []): string
     {
-        return $this->router->generateUri($route, $parameters);
+        return $this->router->generateUri($route, $parameters, $queryParameters);
     }
 
 }

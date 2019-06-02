@@ -2,6 +2,8 @@
 namespace Tests\Framework;
 
 use DI\Container;
+use Framework\Renderer\PHPRendererFactory;
+use Framework\Renderer\RendererInterface;
 use GuzzleHttp\Psr7\ServerRequest;
 use Framework\App;
 use PHPUnit\Framework\TestCase;
@@ -95,6 +97,22 @@ class AppTest extends TestCase {
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertStringContainsString('Yep, ca marche !', (string)$response->getBody());
+    }
+
+    public function testRendererGlobalsAdded() {
+        $this->container->set('views.path', null);
+        $this->container->set(RendererInterface::class, \DI\Factory(PHPRendererFactory::class));
+
+        $app = new App($this->container, [
+            Modules\RendererModule::class
+        ]);
+
+        $request = (new ServerRequest('GET', '/test'))
+            ->withQueryParams(['a' => 123]);
+        $response = $app->run($request);
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertStringContainsString('test_module.rendered_view - 123', (string)$response->getBody());
     }
 
 }

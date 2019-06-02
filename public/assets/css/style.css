@@ -707,8 +707,9 @@ html:lang(ko),
   box-shadow: 0 0 0 0.1rem rgba(73, 31, 122, 0.2);
 }
 .btn:focus, .btn:hover {
-  background: #a87bdd;
+  background: #a06fda;
   border-color: #421c6e;
+  color: #fff;
   text-decoration: none;
 }
 .btn:active, .btn.active {
@@ -1011,6 +1012,10 @@ legend {
   height: auto;
 }
 
+textarea.form-input {
+  resize: vertical;
+  min-height: min-content;
+}
 textarea.form-input, textarea.form-input.input-lg, textarea.form-input.input-sm {
   height: auto;
 }
@@ -5168,6 +5173,10 @@ a.text-error:visited {
   height: 0.5em;
   transform: translate(-50%, -40%) rotate(-135deg);
   width: 0.5em;
+}
+
+body {
+  background: #fdfdfd;
 }
 
 .off-canvas header {

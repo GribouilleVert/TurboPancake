@@ -5,7 +5,7 @@ use Framework\Router;
 use Pagerfanta\Pagerfanta;
 use Twig\Extension\AbstractExtension;
 
-class PagerFantaExtension extends AbstractExtension
+final class PagerFantaExtension extends AbstractExtension
 {
 
     /**
@@ -35,7 +35,7 @@ class PagerFantaExtension extends AbstractExtension
         ];
     }
 
-    public function paginate(Pagerfanta $pagerFanta, string $route, array $queryArgs): string
+    public function paginate(Pagerfanta $pagerFanta, string $route, array $queryArgs = []): string
     {
         $this->queryArgs = $queryArgs;
         $this->route = $route;
@@ -83,7 +83,7 @@ class PagerFantaExtension extends AbstractExtension
             }
         }
 
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= min($pageNb, 5); $i++) {
             $liClass = [];
             if ($currentPage === $i + $offset - 3 + $currentPage) {
                 $liClass[] = 'active';

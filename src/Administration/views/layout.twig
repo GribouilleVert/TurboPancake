@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <title>{% block title "Sans nom" %} | Administration Haifunime</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="/assets/css/style.css">
+        <link rel="icon" href="/assets/images/logo.png">
+    </head>
+
+    <body>
+        <div class="off-canvas off-canvas-sidebar-show">
+            <header class="navbar">
+                <!-- off-screen toggle button -->
+                <a class="off-canvas-toggle btn btn-link btn-action" href="#sidebar">
+                    <i class="icon icon-menu"></i>
+                </a>
+                <section class="navbar-section links">
+                    <div class="dropdown dropdown-right">
+                        <a href="#" class="btn btn-profile btn-link dropdown-toggle" tabindex="0">
+                            Mon compte
+                            <i class="icon icon-caret"></i>
+                        </a>
+                        <ul class="menu">
+                            <li class="tile">
+                                <div class="tile-icon">
+                                    <figure class="avatar avatar" data-initial="VC">
+                                        <img src="img/avatar-1.png" alt="..." class="d-none">
+                                    </figure>
+                                </div>
+                                <div class="tile-content">
+                                    <div class="tile-title">Vasco Compain</div>
+                                    <small class="tile-subtitle"><span class="label label-vip"><i class="plan vip-plan"></i>VIP</span></small>
+                                </div>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="menu-item">
+                                <a href="#">
+                                    <i class="icon icon-people"></i>&emsp;Mon profil
+                                </a>
+                            </li>
+                            <li class="divider" data-content="Actions"></li>
+                            <li class="menu-item">
+                                <a href="#" class="text-success">
+                                    Mode modérateur
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="text-error">
+                                    <i class="icon icon-shutdown"></i>&emsp;Déconnexion
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    &nbsp;<a href="#" class="btn btn-link hide-xs">Accueil</a>
+                </section>
+            </header>
+
+            <div id="sidebar" class="off-canvas-sidebar">
+                <div class="brand">
+                    <a href="/" class="logo">
+                        <img src="/assets/images/logo.png" alt="">
+                        <h2>Administration</h2>
+                    </a>
+                </div>
+                <div class="content">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a href="/" class="text-light">Accueil</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a href="{{ path('blog.index') }}" class="text-light">Blog</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="input-group search">
+                    <input class="form-input" type="text" placeholder="Rechercher">
+                    <button class="btn btn-primary input-group-btn"><i class="icon icon-search"></i></button>
+                </div>
+            </div>
+
+            <a class="off-canvas-overlay" href="#close"></a>
+
+            <div class="off-canvas-content">
+
+                <main>
+                    <div class="container">
+                        {% block head %}
+                            <h1>{{ block('title') }}</h1>
+                        {% endblock %}
+                        <div class="card m-1">
+                            <div class="card-body py-0">
+                                <ul class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="/" class="tooltip" data-tooltip="HDN - Administration">Administration <small class="label label-secondary">DEV</small></a>
+                                    </li>
+                                    {% block breadcrumb %}
+                                        <li class="breadcrumb-item">
+                                            <a href="{{ path(route) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
+                                        </li>
+                                    {% endblock %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="py-3"></div>
+                    {% block content '' %}
+                </main>
+
+                <footer class="py-4 mt-4">
+                    Cette section est réservée aux administrateurs
+                    <div class="float-right">&copy; 2018-2019 Haifunime Distribution Network</div>
+                </footer>
+
+            </div>
+        </div>
+
+        <div class="modal modal-sm" id="logout">
+            <a href="#close" class="modal-overlay" aria-label="Close"></a>
+            <div class="modal-container">
+                <div class="modal-header">
+                    <a href="#close" class="btn btn-clear float-right" aria-label="Close"></a>
+                    <div class="modal-title h5">Sur ?</div>
+                </div>
+                <div class="modal-body">
+                    <div class="content">
+                        <p class="text-error">Êtes-vous sûr de vouloir nous quitter ?</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-error">Confirmer</a>
+                    <a href="#" class="btn btn-link">Annuler</a>
+                </div>
+            </div>
+        </div>
+
+        <script src="/assets/js/jquery/jquery-3.3.1.min.js"></script>
+
+        <script src="/assets/js/admin.js"></script>
+    </body>
+</html>

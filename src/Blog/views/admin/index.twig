@@ -1,0 +1,62 @@
+{% extends '@admin/layout.twig' %}
+
+{% block title "Articles" %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item">
+        <a href="{{ path(route) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>: Page {{ queryParams.page??1 }}
+    </li>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+
+        {% if items | length > 0 %}
+
+            <div class="text-right mb-2">
+                <a href="{{ path('blog.admin.create') }}" class="btn btn-primary"><i class="icon icon-plus"></i>&ensp;Nouvel Article</a>
+            </div>
+
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <td>Titre</td>
+                    <td>Action</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>
+                            <a href="{{ path('blog.admin.edit', {id: item.id}) }}" class="btn"><i class="icon icon-edit"></i>&ensp;Editer</a>
+                            <form action="{{ path('blog.admin.delete', {id: item.id}) }}" class="d-inline-block" method="post">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-error"><i class="icon icon-delete"></i> Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty">
+                <div class="empty-icon">
+                    <i class="icon icon-edit icon-2x"></i>
+                </div>
+                <p class="empty-title h5">Il n'y a pas encore d'article</p>
+                <p class="empty-subtitle">Cliquez sur ce joli bouton pour en écrire un</p>
+                <div class="empty-action">
+                    <a href="{{ path('blog.admin.create') }}" class="btn btn-primary"><i class="icon icon-plus"></i>&ensp;Nouvel Article</a>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="flex-centered">
+            {{ paginate(items, 'blog.admin.index') }}
+        </div>
+
+    </div>
+
+{% endblock %}

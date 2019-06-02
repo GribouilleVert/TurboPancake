@@ -5,7 +5,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Ajoute les méthodes liées à l'utilisqtion du Router
+ * Ajoute les méthodes liées à l'utilisation du Router
  *
  * Trait HTTPUtilitiesAction
  * @package Framework\Actions

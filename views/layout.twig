@@ -64,7 +64,7 @@
                                 </li>
                                 {% block breadcrumb %}
                                     <li class="breadcrumb-item">
-                                        <a href="#" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
+                                        <a href="{{ path(route) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
                                     </li>
                                 {% endblock %}
                             </ul>

@@ -1,0 +1,36 @@
+{% extends '@admin/layout.twig' %}
+
+{% block title "Ecrire un article" %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('blog.admin.index') }}" class="tooltip" data-tooltip="Blog">Blog</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ path(route) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+
+        <form action="{{ path('blog.admin.create') }}" method="post">
+            <div class="form-group">
+                <label class="form-label" for="name">Titre de l'article</label>
+                <input class="form-input" type="text" id="name" name="name" placeholder="Comment faire des pommes de terre">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="slug">URI l'article</label>
+                <input class="form-input" type="text" id="slug" name="slug" placeholder="comment-faire-des-pommes-de-terre">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="content">Contenu</label>
+                <textarea class="form-input" id="content" name="content" placeholder="Le contenu de votre article" rows="15"></textarea>
+            </div>
+            <button class="btn btn-primary mt-2 float-right" type="submit">Créer</button>
+        </form>
+
+    </div>
+
+{% endblock %}

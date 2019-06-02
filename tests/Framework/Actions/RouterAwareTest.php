@@ -2,6 +2,9 @@
 namespace Tests\Framework\Actions;
 
 use DI\Container;
+use Framework\Renderer\PHPRendererFactory;
+use Framework\Renderer\RendererInterface;
+use Framework\Router;
 use GuzzleHttp\Psr7\ServerRequest;
 use Framework\App;
 use PHPUnit\Framework\TestCase;
