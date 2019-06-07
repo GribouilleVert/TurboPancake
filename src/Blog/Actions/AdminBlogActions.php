@@ -4,6 +4,7 @@ namespace Haifunime\Blog\Actions;
 use Framework\Actions\RouterAware;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
+use Framework\Services\FlashService;
 use Haifunime\Blog\Managers\PostTable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -24,14 +25,24 @@ final class AdminBlogActions {
      * @var Router
      */
     private $router;
-    
+
+    /**
+     * @var FlashService
+     */
+    private $flash;
+
     use RouterAware;
 
-    public function __construct(RendererInterface $renderer, Router $router, PostTable $postTable)
-    {
+    public function __construct(
+        RendererInterface $renderer,
+        Router $router,
+        PostTable $postTable,
+        FlashService $flash
+    ) {
         $this->renderer = $renderer;
         $this->postTable = $postTable;
         $this->router = $router;
+        $this->flash = $flash;
     }
 
     public function __invoke(Request $request)
@@ -61,6 +72,7 @@ final class AdminBlogActions {
     {
         $queryParams = $request->getQueryParams();
         $items = $this->postTable->findPaginated(8, $queryParams['page'] ?? 1);
+
         return $this->renderer->render('@blog/admin/index', compact('items'));
     }
 
@@ -77,6 +89,7 @@ final class AdminBlogActions {
             $fields = $this->getFields($request);
             $fields['updated_at'] = date('Y-m-d H:i:s');
             $this->postTable->update($item->id, $fields);
+            $this->flash->success('L\'article a bien été modifié');
             return $this->temporaryRedirect('blog.admin.index');
         }
 
