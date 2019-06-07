@@ -42,6 +42,18 @@ class AppTest extends TestCase {
         $this->assertEquals(200, $responseArticle->getStatusCode());
     }
 
+    public function testMethodInForm() {
+        $app = new App($this->container, [
+            Modules\DeleteMethodTesterModule::class
+        ]);
+
+        $request = new ServerRequest('POST', '/test');
+        $request = $request->withParsedBody(['_method' => 'DELETE']);
+        $response = $app->run($request);
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
     public function testError404() {
         $app = new App($this->container);
 
