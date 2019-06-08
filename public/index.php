@@ -17,7 +17,7 @@ foreach ($modules as $module) {
 $builder->addDefinitions(dirname(__DIR__) . '/config.php');
 $container = $builder->build();
 
-$app = new Framework\App($container, $modules);
+$app = new TurboPancake\App($container, $modules);
 
 if (php_sapi_name() !== 'cli') {
     $response = $app->run(GuzzleHttp\Psr7\ServerRequest::fromGlobals());

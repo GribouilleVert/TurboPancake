@@ -1,8 +1,8 @@
 <?php
 namespace Haifunime\Administration;
 
-use Framework\Module;
-use Framework\Renderer\RendererInterface;
+use TurboPancake\Module;
+use TurboPancake\Renderer\RendererInterface;
 
 class AdministrationModule extends Module {
 

@@ -1,15 +1,15 @@
 <?php
 
-use Framework\Renderer\RendererInterface;
-use Framework\Renderer\TwigRendererFactory;
-use Framework\Router;
-use Framework\Router\RouterTwigExtension;
-use Framework\Services\Session\PHPSession;
-use Framework\Services\Session\SessionInterface;
-use Framework\Twig\FlashExtension;
-use Framework\Twig\PagerFantaExtension;
-use Framework\Twig\TextExtension;
-use Framework\Twig\TimeExtension;
+use TurboPancake\Renderer\RendererInterface;
+use TurboPancake\Renderer\TwigRendererFactory;
+use TurboPancake\Router;
+use TurboPancake\Router\RouterTwigExtension;
+use TurboPancake\Services\Session\PHPSession;
+use TurboPancake\Services\Session\SessionInterface;
+use TurboPancake\Twig\FlashExtension;
+use TurboPancake\Twig\PagerFantaExtension;
+use TurboPancake\Twig\TextExtension;
+use TurboPancake\Twig\TimeExtension;
 
 return [
     'database.host' => 'localhost',

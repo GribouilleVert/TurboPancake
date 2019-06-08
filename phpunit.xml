@@ -10,7 +10,7 @@
 
     <filter>
         <whitelist>
-            <directory>src/Framework</directory>
+            <directory>src/TurboPancake</directory>
         </whitelist>
     </filter>
 </phpunit>

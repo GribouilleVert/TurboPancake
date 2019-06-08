@@ -2,9 +2,9 @@
 namespace Haifunime\Blog;
 
 use DI\Container;
-use Framework\Module;
-use Framework\Renderer\RendererInterface;
-use Framework\Router;
+use TurboPancake\Module;
+use TurboPancake\Renderer\RendererInterface;
+use TurboPancake\Router;
 use Haifunime\Blog\Actions\AdminBlogActions;
 use Haifunime\Blog\Actions\BlogActions;
 use Psr\Container\ContainerInterface;

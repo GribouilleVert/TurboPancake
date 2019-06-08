@@ -1,9 +1,9 @@
 <?php
 namespace Haifunime\Blog\Actions;
 
-use Framework\Actions\RouterAware;
-use Framework\Renderer\RendererInterface;
-use Framework\Router;
+use TurboPancake\Actions\RouterAware;
+use TurboPancake\Renderer\RendererInterface;
+use TurboPancake\Router;
 use Haifunime\Blog\Managers\PostTable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;

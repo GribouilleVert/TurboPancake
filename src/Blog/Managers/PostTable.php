@@ -1,7 +1,7 @@
 <?php
 namespace Haifunime\Blog\Managers;
 
-use Framework\Database\PaginatedQuery;
+use TurboPancake\Database\PaginatedQuery;
 use Haifunime\Blog\Entity\Post;
 use Pagerfanta\Pagerfanta;
 
