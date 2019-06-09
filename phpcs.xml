@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ruleset name="Haifunime Distribution Network">
-    <description>Liste des règles pour le code d'HDN</description>
+<ruleset name="TurboPancake">
+    <description>Liste des règles pour le code de TurboPancake</description>
 
     <arg name="colors"></arg>
     <arg value="p"></arg>

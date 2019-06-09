@@ -1,10 +1,9 @@
 <?php
-namespace Tests\Haifunime\Blog\Manager;
+namespace Tests\TurboModule\Blog\Manager;
 
-
-use Haifunime\Blog\Entity\Post;
-use Haifunime\Blog\Managers\PostTable;
 use Tests\DatabaseTestCase;
+use TurboModule\Blog\Entity\Post;
+use TurboModule\Blog\Managers\PostTable;
 
 class PostTableTest extends DatabaseTestCase {
 

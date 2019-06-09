@@ -1,8 +1,8 @@
 <?php
-namespace Haifunime\Blog\Managers;
+namespace TurboModule\Blog\Managers;
 
 use TurboPancake\Database\PaginatedQuery;
-use Haifunime\Blog\Entity\Post;
+use TurboModule\Blog\Entity\Post;
 use Pagerfanta\Pagerfanta;
 
 final class PostTable {

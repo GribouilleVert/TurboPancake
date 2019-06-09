@@ -1,5 +1,5 @@
 <?php
-namespace Haifunime\Blog\Entity;
+namespace TurboModule\Blog\Entity;
 
 class Post {
 
