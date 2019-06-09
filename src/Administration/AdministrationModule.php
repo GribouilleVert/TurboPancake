@@ -1,5 +1,5 @@
 <?php
-namespace Haifunime\Administration;
+namespace TurboModule\Administration;
 
 use TurboPancake\Module;
 use TurboPancake\Renderer\RendererInterface;
