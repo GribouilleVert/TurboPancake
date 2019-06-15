@@ -104,12 +104,14 @@
                                 </ul>
                             </div>
                         </div>
-                        {%  if flash('success') %}
-                            <div class="toast toast-success mt-2">
+                    </div>
+                    <div class="container">
+                        {% for flash in flashs() %}
+                            <div class="toast {{ flash.class }}">
                                 <button class="btn btn-clear float-right"></button>
-                                {{ flash('success') }}
+                                {{ flash.message }}
                             </div>
-                        {% endif %}
+                        {% endfor %}
                     </div>
                     <div class="py-3"></div>
                     {% block content '' %}
