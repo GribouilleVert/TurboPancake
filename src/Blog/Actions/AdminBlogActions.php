@@ -85,6 +85,11 @@ final class AdminBlogActions {
     {
         $item = $this->postTable->find($request->getAttribute('id'));
 
+        if (is_null($item)) {
+            $this->flash->warning('Cet article n\'existe pas');
+            return $this->temporaryRedirect('blog.admin.index');
+        }
+
         if ($request->getMethod() === 'PUT') {
             $fields = $this->getFields($request);
             $fields['updated_at'] = date('Y-m-d H:i:s');
