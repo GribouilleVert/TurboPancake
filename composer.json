@@ -1,6 +1,5 @@
 {
-    "name": "vasco/haifunime",
-    "description": "Haifunime Distribution Network ou HDN est un site de streaming d'animés",
+    "name": "vasco/turbopancake",
     "type": "Project",
     "license": "Private",
     "authors": [
@@ -12,8 +11,8 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "Framework\\": "src/Framework",
-            "Haifunime\\": "src",
+            "TurboPancake\\": "src/TurboPancake",
+            "TurboModule\\": "src",
             "Tests\\": "tests"
         }
     },

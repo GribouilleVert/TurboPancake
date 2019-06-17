@@ -1,13 +1,14 @@
 <?php
-namespace Haifunime\Blog\Actions;
+namespace TurboModule\Blog\Actions;
 
 use TurboPancake\Actions\RouterAware;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
 use TurboPancake\Services\FlashService;
-use Haifunime\Blog\Managers\PostTable;
+use TurboModule\Blog\Managers\PostTable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use TurboPancake\Validator;
 
 final class AdminBlogActions {
 
@@ -84,16 +85,31 @@ final class AdminBlogActions {
     public function edit(Request $request)
     {
         $item = $this->postTable->find($request->getAttribute('id'));
+        $errors = null;
+
+        if (is_null($item)) {
+            $this->flash->warning('Cet article n\'existe pas');
+            return $this->temporaryRedirect('blog.admin.index');
+        }
 
         if ($request->getMethod() === 'PUT') {
             $fields = $this->getFields($request);
             $fields['updated_at'] = date('Y-m-d H:i:s');
-            $this->postTable->update($item->id, $fields);
-            $this->flash->success('L\'article a bien été modifié');
-            return $this->temporaryRedirect('blog.admin.index');
+            $validator = $this->getValidator($request);
+            if ($validator->check()) {
+                $this->postTable->update($item->id, $fields);
+                $this->flash->success('L\'article a bien été modifié');
+                return $this->temporaryRedirect('blog.admin.index');
+            }
+            $errors = $validator->getErrors();
+
+
+            $fields['id'] = $item->id;
+            $item = $fields;
         }
 
-        return $this->renderer->render('@blog/admin/edit', compact('item'));
+
+        return $this->renderer->render('@blog/admin/edit', compact('item', 'errors'));
     }
 
     /**
@@ -103,17 +119,24 @@ final class AdminBlogActions {
      */
     public function create(Request $request)
     {
+        $errors = null;
         if ($request->getMethod() === 'POST') {
             $fields = $this->getFields($request);
             $fields = array_merge($fields, [
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ]);
-            $this->postTable->insert($fields);
-            return $this->temporaryRedirect('blog.admin.index');
+            $validator = $this->getValidator($request);
+            if ($validator->check()) {
+                $this->postTable->insert($fields);
+                $this->flash->success('L\'article à bien été créé');
+                return $this->temporaryRedirect('blog.admin.index');
+            }
+            $errors = $validator->getErrors();
+            $item = $fields;
         }
 
-        return $this->renderer->render('@blog/admin/create');
+        return $this->renderer->render('@blog/admin/create', compact('item', 'errors'));
     }
 
     /**
@@ -138,6 +161,16 @@ final class AdminBlogActions {
         return array_filter($request->getParsedBody(), function ($key) {
             return in_array($key, ['name', 'content', 'slug']);
         }, ARRAY_FILTER_USE_KEY);
+    }
+
+    private function getValidator(Request $request): Validator
+    {
+        return (new Validator($request->getParsedBody()))
+            ->filled('name', 'content', 'slug')
+            ->length('content', 100)
+            ->length('name', 4, 250)
+            ->length('slug', 3, 60)
+            ->slug('slug');
     }
 
 }

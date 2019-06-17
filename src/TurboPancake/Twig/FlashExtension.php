@@ -20,13 +20,33 @@ final class FlashExtension extends AbstractExtension {
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('flash', [$this, 'getFlash'])
+            new TwigFunction('flashs', [$this, 'getFlash'])
         ];
     }
 
-    public function getFlash(string $type): ?string
+    public function getFlash(?string $type = null): ?array
     {
-        return $this->flash->get($type);
+        $flashes = $this->flash->get($type);
+
+        foreach ($flashes as &$flash) {
+            $flash['class'] = '';
+            switch($flash['type']) {
+                case 'important':
+                    $flash['class'] = 'toast-primary';
+                    break;
+                case 'success':
+                    $flash['class'] = 'toast-success';
+                    break;
+                case 'warning':
+                    $flash['class'] = 'toast-warning';
+                    break;
+                case 'error':
+                    $flash['class'] = 'toast-error';
+                    break;
+            }
+        }
+
+        return $flashes;
     }
 
 }

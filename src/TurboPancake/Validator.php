@@ -36,9 +36,9 @@ class Validator {
         }
         return $this;
     }
-    
+
     /**
-     * Versifie que les champs sont presents et non-vides
+     * Verifie que les champs sont presents et non-vides
      * @param string ...$fields
      * @return self
      */
@@ -64,7 +64,7 @@ class Validator {
     {
         if (is_null($min) AND is_null($max)) {
             throw new \Exception(
-                'Validation error: you need to define a least one length parameters in addition to the field name.',
+                'Validation error: you need to define a least one length parameter in addition to the field name.',
                 E_ERROR
             );
         }
@@ -174,10 +174,11 @@ class Validator {
      * Permet d'instancier et d'ajouter une erreur
      * @param string $field
      * @param string $rule
+     * @param array $attributes
      */
-    private function addError(string $field, string $rule): void
+    private function addError(string $field, string $rule, array $attributes = []): void
     {
-        $this->errors[$field] = new ValidationError($field, $rule);
+        $this->errors[$field] = new ValidationError($field, $rule, $attributes);
     }
 
 }

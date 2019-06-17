@@ -1,7 +1,8 @@
 <?php
-namespace TurboPancake\Services\Session;
+namespace Tests\TurboPancake\Services\Session;
 
 use PHPUnit\Framework\TestCase;
+use TurboPancake\Services\Session\PHPSession;
 
 class PHPSessionTest extends TestCase {
 

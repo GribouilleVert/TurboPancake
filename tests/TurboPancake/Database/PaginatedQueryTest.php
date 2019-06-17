@@ -2,7 +2,7 @@
 namespace Tests\TurboPancake\Database;
 
 use TurboPancake\Database\PaginatedQuery;
-use Haifunime\Blog\Entity\Post;
+use TurboModule\Blog\Entity\Post;
 use Tests\DatabaseTestCase;
 
 class PaginatedQueryTest extends DatabaseTestCase {

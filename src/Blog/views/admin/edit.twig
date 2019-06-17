@@ -16,18 +16,7 @@
     <div class="container">
 
         <form action="{{ path('blog.admin.edit', {id: item.id}) }}" method="post">
-            <div class="form-group">
-                <label class="form-label" for="name">Titre de l'article</label>
-                <input class="form-input" type="text" id="name" name="name" placeholder="Comment faire des pommes de terre" value="{{ item.name }}">
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="slug">URI l'article</label>
-                <input class="form-input" type="text" id="slug" name="slug" placeholder="comment-faire-des-pommes-de-terre" value="{{ item.slug }}">
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="content">Contenu</label>
-                <textarea class="form-input" id="content" name="content" placeholder="Le contenu de votre article" rows="15">{{ item.content }}</textarea>
-            </div>
+            {{ include('@blog/admin/blocks/form.twig') }}
             <input type="hidden" name="_method" value="PUT">
             <button class="btn btn-primary mt-2 float-right" type="submit">Enregistrer</button>
         </form>

@@ -15,7 +15,7 @@ return [
     'database.host' => 'localhost',
     'database.username' => 'root',
     'database.password' => 'root',
-    'database.name' => 'haifunime',
+    'database.name' => 'TurboPancake',
 
     'views.path' => dirname(__DIR__) . '/views',
     'twig.configuration' => [

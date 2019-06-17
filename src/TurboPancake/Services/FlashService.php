@@ -1,6 +1,7 @@
 <?php
 namespace TurboPancake\Services;
 
+use TurboPancake\Services\Flash\FlashRendererInterface;
 use TurboPancake\Services\Session\SessionInterface;
 
 class FlashService {
@@ -57,19 +58,41 @@ class FlashService {
 
     private function set(string $type, string $message) {
         $flash = $this->session->get($this->sessionKey, []);
-        $flash[$type] = $message;
+        if (!isset($flash[$type])) {
+            $flash[$type] = [];
+        }
+        $flash[$type][] = $message;
         $this->session->set($this->sessionKey, $flash);
     }
 
-    public function get(string $type): ?string
+    public function get(?string $type = null, bool $keep = false): ?array
     {
         if (is_null($this->messagesBackup)) {
             $this->messagesBackup = $this->session->get($this->sessionKey, []);
-            $this->session->delete($this->sessionKey);
+            if (!$keep) {
+                $this->session->delete($this->sessionKey);
+            }
         }
 
-        if (array_key_exists($type, $this->messagesBackup)) {
-            return $this->messagesBackup[$type];
+        $result = [];
+        if (is_null($type)) {
+            foreach ($this->messagesBackup as $type => $messageArray) {
+                foreach ($messageArray as $message) {
+                    $result[] = [
+                        'type' => $type,
+                        'message' => $message
+                    ];
+                }
+            }
+            return $result;
+        } elseif (array_key_exists($type, $this->messagesBackup)) {
+            foreach ($this->messagesBackup[$type] as $message) {
+                $result[] = [
+                    'type' => $type,
+                    'message' => $message
+                ];
+            }
+            return $result;
         }
 
         return null;

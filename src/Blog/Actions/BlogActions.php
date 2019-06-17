@@ -1,10 +1,10 @@
 <?php
-namespace Haifunime\Blog\Actions;
+namespace TurboModule\Blog\Actions;
 
 use TurboPancake\Actions\RouterAware;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
-use Haifunime\Blog\Managers\PostTable;
+use TurboModule\Blog\Managers\PostTable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 

@@ -1,12 +1,11 @@
 <?php
-namespace Haifunime\Blog;
+namespace TurboModule\Blog;
 
-use DI\Container;
 use TurboPancake\Module;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
-use Haifunime\Blog\Actions\AdminBlogActions;
-use Haifunime\Blog\Actions\BlogActions;
+use TurboModule\Blog\Actions\AdminBlogActions;
+use TurboModule\Blog\Actions\BlogActions;
 use Psr\Container\ContainerInterface;
 
 final class BlogModule extends Module {

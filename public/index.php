@@ -3,8 +3,8 @@
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $modules = [
-    \Haifunime\Administration\AdministrationModule::class,
-    \Haifunime\Blog\BlogModule::class,
+    \TurboModule\Administration\AdministrationModule::class,
+    \TurboModule\Blog\BlogModule::class,
 ];
 
 $builder = new \DI\ContainerBuilder();
