@@ -115,7 +115,7 @@ class Validator {
      */
     public function slug(string $field): self
     {
-        $pattern = '/^([a-z0-9]+-?)+$/';
+        $pattern = '/^[a-z0-9]+(-[a-z0-9]+)*$/';
         $value = $this->getValue($field);
 
         if (!is_null($value) AND !preg_match($pattern, $value)) {

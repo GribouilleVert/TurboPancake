@@ -54,6 +54,7 @@ class ValidatorTest extends TestCase {
             'slug1' => 'This is definitely not a valid slug !',
             'slug2' => 'this-one-is-valid-though',
             'slug3' => 'this-one-too-or--not',
+            'slug4' => 'nope-no-way-',
         ])
             ->slug('slug1')
             ->slug('slug2')
