@@ -120,12 +120,9 @@ final class AdminBlogActions {
     public function create(Request $request)
     {
         $errors = null;
+        $item = null;
         if ($request->getMethod() === 'POST') {
             $fields = $this->getFields($request);
-            $fields = array_merge($fields, [
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
-            ]);
             $validator = $this->getValidator($request);
             if ($validator->check()) {
                 $this->postTable->insert($fields);
@@ -158,15 +155,22 @@ final class AdminBlogActions {
      */
     private function getFields(Request $request): array
     {
-        return array_filter($request->getParsedBody(), function ($key) {
-            return in_array($key, ['name', 'content', 'slug']);
+        $fields =  array_filter($request->getParsedBody(), function ($key) {
+            return in_array($key, ['name', 'content', 'slug', 'created_at']);
         }, ARRAY_FILTER_USE_KEY);
+        return array_merge($fields, [
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
     }
 
     private function getValidator(Request $request): Validator
     {
         return (new Validator($request->getParsedBody()))
-            ->filled('name', 'content', 'slug')
+            ->setCustomName('name', 'titre')
+            ->setCustomName('slug', 'uri')
+            ->setCustomName('content', 'contenu')
+            ->filled('name', 'slug', 'content')
             ->length('content', 100)
             ->length('name', 4, 250)
             ->length('slug', 3, 60)

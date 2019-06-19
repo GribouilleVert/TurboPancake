@@ -10,9 +10,9 @@ class ValidationError {
     private $messages = [
         'required'  => 'Le champ %s est requis.',
         'empty'     => 'Le champ %s ne doit pas être vide.',
-        'between'   => 'Le champs %s doit faire entre %d et %d caractères.',
-        'short'     => 'Le champs %s doit faire au moins %d caractères.',
-        'long'      => 'Le champs %s doit faire moins de %d caractères.',
+        'between'   => 'Le champ %s doit faire entre %d et %d caractères.',
+        'short'     => 'Le champ %s doit faire au moins %d caractères.',
+        'long'      => 'Le champ %s doit faire moins de %d caractères.',
         'slug'      => 'Le champ %s n\'est pas une URL valide.',
         'regex'     => 'Le champ %s ne valide pas l\'expression régulière "%s"',
         'datetime'  => 'Le champ %s doit correspondre au format %s'

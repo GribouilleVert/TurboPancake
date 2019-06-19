@@ -7,6 +7,7 @@ use TurboPancake\Router\RouterTwigExtension;
 use TurboPancake\Services\Session\PHPSession;
 use TurboPancake\Services\Session\SessionInterface;
 use TurboPancake\Twig\FlashExtension;
+use TurboPancake\Twig\FormExtension;
 use TurboPancake\Twig\PagerFantaExtension;
 use TurboPancake\Twig\TextExtension;
 use TurboPancake\Twig\TimeExtension;
@@ -29,6 +30,7 @@ return [
         \DI\get(TextExtension::class),
         \DI\get(TimeExtension::class),
         \DI\get(FlashExtension::class),
+        \DI\get(FormExtension::class),
     ],
     SessionInterface::class => \DI\autowire(PHPSession::class),
     Router::class => \DI\autowire(Router::class),

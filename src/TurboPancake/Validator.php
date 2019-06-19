@@ -17,6 +17,11 @@ class Validator {
      */
     private $errors = [];
 
+    /**
+     * @var string[]
+     */
+    private $customNames = [];
+
     public function __construct(array $fields)
     {
         $this->fields = $fields;
@@ -47,7 +52,7 @@ class Validator {
         foreach ($fields as $field) {
             $value = $this->getValue($field);
             if (is_null($value) OR empty(trim($value))) {
-                $this->addError($field, 'slug');
+                $this->addError($field, 'empty');
             }
         }
         return $this;
@@ -140,6 +145,17 @@ class Validator {
         return $this;
     }
 
+    public function setCustomName(string $field, ?string $customName): self
+    {
+        if (is_null($customName)) {
+            unset($this->customNames[$field]);
+        } else {
+            $this->customNames[$field] = $customName;
+        }
+
+        return $this;
+    }
+
     /**
      * Permet de récupérer les erreurs.
      * @return array
@@ -178,7 +194,14 @@ class Validator {
      */
     private function addError(string $field, string $rule, array $attributes = []): void
     {
-        $this->errors[$field] = new ValidationError($field, $rule, $attributes);
+        if (!isset($this->errors[$field])) {
+            if (array_key_exists($field, $this->customNames)) {
+                $fieldName = $this->customNames[$field];
+            } else {
+                $fieldName = $field;
+            }
+            $this->errors[$field] = new ValidationError($fieldName, $rule, $attributes);
+        }
     }
 
 }
