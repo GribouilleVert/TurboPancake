@@ -18,7 +18,7 @@ return [
         'seeds' => $seeds,
     ],
     'environments' => [
-        'default_migration_table' => 'phinxlog',
+        'default_migration_table' => '_phinxlog',
         'default_database' => 'development',
         'development' => [
             'adapter' => 'mysql',
