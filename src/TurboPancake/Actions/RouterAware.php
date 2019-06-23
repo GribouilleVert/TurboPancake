@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
  *
  * Trait HTTPUtilitiesAction
  * @package TurboPancake\Actions
+ * @property $router TurboPancake\Router
  */
 trait RouterAware {
 

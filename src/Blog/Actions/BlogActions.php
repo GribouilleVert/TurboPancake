@@ -4,7 +4,7 @@ namespace TurboModule\Blog\Actions;
 use TurboPancake\Actions\RouterAware;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
-use TurboModule\Blog\Managers\PostTable;
+use TurboModule\Blog\Database\Tables\PostsTable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -16,7 +16,7 @@ final class BlogActions {
     private $renderer;
 
     /**
-     * @var PostTable
+     * @var PostsTable
      */
     private $postTable;
 
@@ -27,7 +27,7 @@ final class BlogActions {
     
     use RouterAware;
 
-    public function __construct(RendererInterface $renderer, Router $router, PostTable $postTable)
+    public function __construct(RendererInterface $renderer, Router $router, PostsTable $postTable)
     {
         $this->renderer = $renderer;
         $this->postTable = $postTable;

@@ -1,10 +1,11 @@
 <?php
 namespace TurboModule\Blog;
 
+use TurboModule\Blog\Actions\CategoriesCrudAction;
 use TurboPancake\Module;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
-use TurboModule\Blog\Actions\AdminBlogActions;
+use TurboModule\Blog\Actions\PostsCrudAction;
 use TurboModule\Blog\Actions\BlogActions;
 use Psr\Container\ContainerInterface;
 
@@ -18,12 +19,12 @@ final class BlogModule extends Module {
     /**
      * Configuration de la base de données
      */
-    const MIGRATIONS = __DIR__ . '/Database/migrations';
+    const MIGRATIONS = __DIR__ . '/Database/mgmt/migrations';
 
     /**
      * Configuration des seeds
      */
-    const SEEDS = __DIR__ . '/Database/seeds';
+    const SEEDS = __DIR__ . '/Database/mgmt/seeds';
 
     /**
      * BlogModule constructor.
@@ -40,7 +41,8 @@ final class BlogModule extends Module {
 
         if ($container->has('admin.prefix')) {
             $prefix = $container->get('admin.prefix');
-            $router->crud("$prefix/posts", AdminBlogActions::class, 'blog.admin');
+            $router->crud("$prefix/posts", PostsCrudAction::class, 'blog.admin.posts');
+            $router->crud("$prefix/categories", CategoriesCrudAction::class, 'blog.admin.categories');
         }
     }
 

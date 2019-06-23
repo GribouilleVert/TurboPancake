@@ -1,5 +1,5 @@
 <?php
-namespace TurboModule\Blog\Entity;
+namespace TurboModule\Blog\Database\Entities;
 
 class Post {
 

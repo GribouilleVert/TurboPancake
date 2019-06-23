@@ -11,7 +11,7 @@ use Zend\Expressive\Router\Route as ZendRoute;
  * @package TurboPancake
  * Enregistre et vérifie les routes.
  */
-class Router {
+final class Router {
 
     private $router;
 

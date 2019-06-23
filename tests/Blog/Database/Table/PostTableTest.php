@@ -2,20 +2,20 @@
 namespace Tests\TurboModule\Blog\Manager;
 
 use Tests\DatabaseTestCase;
-use TurboModule\Blog\Entity\Post;
-use TurboModule\Blog\Managers\PostTable;
+use TurboModule\Blog\Database\Entities\Post;
+use TurboModule\Blog\Database\Tables\PostsTable;
 
 class PostTableTest extends DatabaseTestCase {
 
     /**
-     * @var PostTable
+     * @var PostsTable
      */
     private $postTable;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->postTable = new PostTable($this->pdo);
+        $this->postTable = new PostsTable($this->pdo);
     }
 
     public function testSimpleFind() {

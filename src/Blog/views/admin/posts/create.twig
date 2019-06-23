@@ -4,7 +4,7 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item">
-        <a href="{{ path('blog.admin.index') }}" class="tooltip" data-tooltip="Blog">Blog</a>
+        <a href="{{ path(routePrefix ~ '.index') }}" class="tooltip" data-tooltip="Blog">Blog</a>
     </li>
     <li class="breadcrumb-item">
         <a href="{{ path(route) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
@@ -15,8 +15,8 @@
 
     <div class="container">
 
-        <form action="{{ path('blog.admin.create') }}" method="post">
-            {{ include('@blog/admin/blocks/form.twig') }}
+        <form action="{{ path(routePrefix ~ '.create') }}" method="post">
+            {{ include(viewPath ~ '/blocks/form.twig') }}
             <button class="btn btn-primary mt-2 float-right" type="submit">Créer</button>
         </form>
 

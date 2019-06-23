@@ -1,0 +1,25 @@
+{% extends '@admin/layout.twig' %}
+
+{% block title "Créer une catégorie" %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item">
+        <a href="{{ path(routePrefix ~ '.index') }}" class="tooltip" data-tooltip="Catégories">Catégories</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ path(route) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+
+        <form action="{{ path(routePrefix ~ '.create') }}" method="post">
+            {{ include(viewPath ~ '/blocks/form.twig') }}
+            <button class="btn btn-primary mt-2 float-right" type="submit">Créer</button>
+        </form>
+
+    </div>
+
+{% endblock %}

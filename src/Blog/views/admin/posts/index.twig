@@ -15,7 +15,7 @@
         {% if items | length > 0 %}
 
             <div class="text-right mb-2">
-                <a href="{{ path('blog.admin.create') }}" class="btn btn-primary"><i class="icon icon-plus"></i>&ensp;Nouvel Article</a>
+                <a href="{{ path(routePrefix ~ '.create') }}" class="btn btn-primary"><i class="icon icon-plus"></i>&ensp;Nouvel Article</a>
             </div>
 
             <table class="table table-striped table-hover">
@@ -30,8 +30,8 @@
                     <tr>
                         <td>{{ item.name }}</td>
                         <td>
-                            <a href="{{ path('blog.admin.edit', {id: item.id}) }}" class="btn"><i class="icon icon-edit"></i>&ensp;Editer</a>
-                            <form action="{{ path('blog.admin.delete', {id: item.id}) }}" class="d-inline-block" method="post">
+                            <a href="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" class="btn"><i class="icon icon-edit"></i>&ensp;Editer</a>
+                            <form action="{{ path(routePrefix ~ '.delete', {id: item.id}) }}" class="d-inline-block" method="post">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="btn btn-error"><i class="icon icon-delete"></i> Supprimer</button>
                             </form>
@@ -48,13 +48,13 @@
                 <p class="empty-title h5">Il n'y a pas encore d'article</p>
                 <p class="empty-subtitle">Cliquez sur ce joli bouton pour en écrire un</p>
                 <div class="empty-action">
-                    <a href="{{ path('blog.admin.create') }}" class="btn btn-primary"><i class="icon icon-plus"></i>&ensp;Nouvel Article</a>
+                    <a href="{{ path(routePrefix ~ '.create') }}" class="btn btn-primary"><i class="icon icon-plus"></i>&ensp;Nouvel Article</a>
                 </div>
             </div>
         {% endif %}
 
         <div class="flex-centered">
-            {{ paginate(items, 'blog.admin.index') }}
+            {{ paginate(items, routePrefix ~ '.index') }}
         </div>
 
     </div>

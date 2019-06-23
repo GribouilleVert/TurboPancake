@@ -4,7 +4,7 @@ namespace TurboPancake\Router;
 use TurboPancake\Router;
 use Twig\Extension\AbstractExtension;
 
-class RouterTwigExtension extends AbstractExtension
+final class RouterTwigExtension extends AbstractExtension
 {
 
     /**

@@ -21,11 +21,11 @@ class PaginatedQuery implements AdapterInterface {
     private $countQuery;
 
     /**
-     * @var string
+     * @var null|string
      */
     private $entity;
 
-    public function __construct(\PDO $pdo, string $query, string $countQuery, string $entity = null)
+    public function __construct(\PDO $pdo, string $query, string $countQuery, ?string $entity = null)
     {
         $this->pdo = $pdo;
         $this->query = $query;

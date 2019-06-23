@@ -6,7 +6,7 @@ use TurboPancake\Validator\ValidationError;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class FormExtension extends AbstractExtension {
+final class FormExtension extends AbstractExtension {
 
     private $registeredId = [];
 

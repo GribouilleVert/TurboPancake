@@ -14,9 +14,9 @@ use TurboPancake\Twig\TimeExtension;
 
 return [
     'database.host' => 'localhost',
-    'database.username' => 'root',
-    'database.password' => 'root',
     'database.name' => 'TurboPancake',
+    'database.username' => 'TurboPancake',
+    'database.password' => 'La8zS1tLYuN9PPRz',
 
     'views.path' => dirname(__DIR__) . '/views',
     'twig.configuration' => [

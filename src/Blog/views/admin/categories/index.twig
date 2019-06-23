@@ -1,0 +1,62 @@
+{% extends '@admin/layout.twig' %}
+
+{% block title "Catégories" %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item">
+        <a href="{{ path(route) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>: Page {{ queryParams.page??1 }}
+    </li>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+
+        {% if items | length > 0 %}
+
+            <div class="text-right mb-2">
+                <a href="{{ path(routePrefix ~ '.create') }}" class="btn btn-primary"><i class="icon icon-plus"></i>&ensp;Nouvelle Catégorie</a>
+            </div>
+
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <td>Titre</td>
+                    <td>Action</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>
+                            <a href="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" class="btn"><i class="icon icon-edit"></i>&ensp;Editer</a>
+                            <form action="{{ path(routePrefix ~ '.delete', {id: item.id}) }}" class="d-inline-block" method="post">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-error"><i class="icon icon-delete"></i> Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="flex-centered">
+                {{ paginate(items, routePrefix ~ '.index') }}
+            </div>
+        {% else %}
+            <div class="empty">
+                <div class="empty-icon">
+                    <i class="icon icon-apps icon-2x"></i>
+                </div>
+                <p class="empty-title h5">Il n'y a pas encore de categories</p>
+                <p class="empty-subtitle">Cliquez sur ce joli bouton pour en créer une</p>
+                <div class="empty-action">
+                    <a href="{{ path(routePrefix ~ '.create') }}" class="btn btn-primary"><i class="icon icon-plus"></i>&ensp;Nouvelle Catégorie</a>
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
