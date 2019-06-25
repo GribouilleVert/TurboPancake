@@ -2,12 +2,12 @@
 namespace TurboPancake\Database;
 
 use Pagerfanta\Pagerfanta;
-use PDOStatement;
+use PDO;
 
 class Table {
 
     /**
-     * @var \PDO
+     * @var PDO
      */
     private $pdo;
 
@@ -25,36 +25,24 @@ class Table {
 
     /**
      * Table constructor.
-     * @param \PDO $pdo
+     * @param PDO $pdo
      */
-    public function __construct(\PDO $pdo)
+    public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
     /**
-     * Permet d'obtenir une pagination des éléments
-     * @param int $maxPerPage
-     * @param int $currentPage
-     * @return Pagerfanta
+     * Verifie l'existence d'un élément
+     *
+     * @param mixed $id
+     * @return bool
      */
-    public function findPaginated(int $maxPerPage, int $currentPage): ?Pagerfanta
+    public function exists($id): bool
     {
-        $query = new PaginatedQuery(
-            $this->pdo,
-            $this->getAllQuery(),
-            $this->countQuery(),
-            $this->entity
-        );
-        $pagerFanta =  (new Pagerfanta($query))
-            ->setMaxPerPage($maxPerPage);
-
-        if ($pagerFanta->getNbPages() < $currentPage) {
-            return null;
-        }
-
-        $pagerFanta->setCurrentPage($currentPage);
-        return $pagerFanta;
+        $statemenet = $this->pdo->prepare("SELECT id FROM {$this->table} WHERE id = ?");
+        $statemenet->execute([$id]);
+        return $statemenet->fetchColumn() !== false;
     }
 
     /**
@@ -70,9 +58,54 @@ class Table {
         $statement->execute([$id]);
 
         if ($this->entity) {
-            $statement->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
+            $statement->setFetchMode(PDO::FETCH_CLASS, $this->entity);
         }
         return $statement->fetch() ?: null;
+    }
+
+    /**
+     * Renvoie un tableau des elements sous la forme `id => name`
+     * Info: sert surtout pour faire des select
+     *
+     * @return array
+     */
+    public function findList() :array
+    {
+        $results = $this->pdo
+            ->query("SELECT id, name FROM {$this->table} ORDER BY name ASC")
+            ->fetchAll(PDO::FETCH_NUM);
+
+        $list = [];
+        foreach ($results as $result) {
+            $list[$result[0]] = $result[1];
+        }
+
+        return $list;
+    }
+
+    /**
+     * Permet d'obtenir une pagination des éléments
+     * @param int $maxPerPage
+     * @param int $currentPage
+     * @return Pagerfanta
+     */
+    public function findPaginated(int $maxPerPage, int $currentPage): ?Pagerfanta
+    {
+        $query = new PaginatedQuery(
+            $this->pdo,
+            $this->getPaginationQuery(),
+            $this->countQuery(),
+            $this->entity
+        );
+        $pagerFanta =  (new Pagerfanta($query))
+            ->setMaxPerPage($maxPerPage);
+
+        if ($pagerFanta->getNbPages() < $currentPage) {
+            return null;
+        }
+
+        $pagerFanta->setCurrentPage($currentPage);
+        return $pagerFanta;
     }
 
     /**
@@ -144,7 +177,7 @@ class Table {
      *
      * @return string
      */
-    protected function getAllQuery()
+    protected function getPaginationQuery()
     {
         return "SELECT * FROM {$this->table}";
     }

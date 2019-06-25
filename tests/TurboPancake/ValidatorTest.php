@@ -1,11 +1,14 @@
 <?php
 namespace Tests\TurboPancake;
 
+use mysql_xdevapi\Exception;
+use ReflectionClass;
+use Tests\DatabaseTestCase;
+use TurboPancake\Database\Table;
 use TurboPancake\Validator;
 use TurboPancake\Validator\ValidationError;
-use PHPUnit\Framework\TestCase;
 
-class ValidatorTest extends TestCase {
+class ValidatorTest extends DatabaseTestCase {
 
     public function buildValidator(array $fields)
     {
@@ -113,6 +116,35 @@ class ValidatorTest extends TestCase {
         $this->assertCount(1, $this->buildValidator(['date'  => '10:30:15'])->dateTime('date')->getErrors());
         $this->assertCount(1, $this->buildValidator(['date'  => '2008-15-18'])->dateTime('date')->getErrors());
         $this->assertCount(1, $this->buildValidator(['date'  => '2003-02-29'])->dateTime('date')->getErrors());
+    }
+
+    public function testExists()
+    {
+        $pdo = $this->getPdo();
+        $pdo->exec("
+            CREATE TABLE test (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name VARCHAR(255)
+            );
+        ");
+        $pdo->exec("INSERT INTO test (name) VALUES ('elem 1')");
+        $pdo->exec("INSERT INTO test (name) VALUES ('elem 2')");
+
+        $table = new Table($pdo);
+        $reflection = new ReflectionClass($table);
+        $property = $reflection->getProperty('table');
+        $property->setAccessible(true);
+        $property->setValue($table, 'test');
+
+        $this->assertTrue($this->buildValidator(['test' => 1])->exists('test', $table)->check());
+        $this->assertFalse($this->buildValidator(['test' => 48])->exists('test', $table)->check());
+
+        $this->assertTrue($this->buildValidator(['test' => 42])->exists('test', [42, 'a', true])->check());
+        $this->assertTrue($this->buildValidator(['test' => 'a'])->exists('test', [42, 'a', true])->check());
+        $this->assertFalse($this->buildValidator(['test' => false])->exists('test', [42, 'a', true])->check());
+
+        $this->expectException(\Exception::class);
+        $this->assertFalse($this->buildValidator(['test' => false])->exists('test', 'This will trigger an exception')->check());
     }
 
 }

@@ -14,12 +14,14 @@ class PostTableTest extends DatabaseTestCase {
 
     protected function setUp(): void
     {
-        parent::setUp();
+        $this->pdo = $this->getPdo();
+        $this->manager = $this->getManager($this->pdo);
+        $this->migrateDatabase($this->pdo, $this->manager);
         $this->postTable = new PostsTable($this->pdo);
     }
 
     public function testSimpleFind() {
-        $this->seedDatabase();
+        $this->seedDatabase($this->pdo, $this->manager);
         $result = $this->postTable->find(1);
         $this->assertInstanceOf(Post::class, $result);
     }
@@ -30,7 +32,7 @@ class PostTableTest extends DatabaseTestCase {
     }
 
     public function testUpdate() {
-        $this->seedDatabase();
+        $this->seedDatabase($this->pdo, $this->manager);
         $this->postTable->update(1, [
             'name' => 'Comment faire cuir des haricots verts ?',
             'slug' => 'cuisson-haricots-verts'
@@ -53,7 +55,7 @@ class PostTableTest extends DatabaseTestCase {
     }
 
     public function testDelete() {
-        $this->seedDatabase();
+        $this->seedDatabase($this->pdo, $this->manager);
 
         $count = $this->pdo->query("SELECT count(id) FROM posts")->fetchColumn();
         $this->assertEquals(100, (int) $count);

@@ -67,4 +67,5 @@ final class CategoriesCrudAction extends CrudAction {
             ->length('slug', 3, 60)
             ->slug('slug');
     }
+
 }

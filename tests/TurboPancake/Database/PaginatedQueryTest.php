@@ -1,8 +1,8 @@
 <?php
 namespace Tests\TurboPancake\Database;
 
+use TurboModule\Blog\Database\Entities\Post;
 use TurboPancake\Database\PaginatedQuery;
-use TurboModule\Blog\Entity\Post;
 use Tests\DatabaseTestCase;
 
 class PaginatedQueryTest extends DatabaseTestCase {
@@ -14,8 +14,9 @@ class PaginatedQueryTest extends DatabaseTestCase {
 
     public function setUp(): void
     {
-        parent::setUp();
-        $this->seedDatabase();
+        $this->pdo = $this->getPdo();
+        $this->manager = $this->getManager($this->pdo);
+        $this->seedDatabase($this->pdo, $this->manager);
         $this->paginatedQuery = new PaginatedQuery(
             $this->pdo,
             "SELECT * FROM posts",

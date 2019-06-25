@@ -4,6 +4,7 @@ namespace TurboModule\Blog\Actions;
 use DateTime;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use TurboModule\Blog\Database\Entities\Post;
+use TurboModule\Blog\Database\Tables\CategoriesTable;
 use TurboModule\Blog\Database\Tables\PostsTable;
 use TurboPancake\Actions\CrudAction;
 use TurboPancake\Renderer\RendererInterface;
@@ -12,6 +13,11 @@ use TurboPancake\Services\FlashService;
 use TurboPancake\Validator;
 
 final class PostsCrudAction extends CrudAction {
+
+    /**
+     * @var CategoriesTable
+     */
+    private $categoriesTable;
 
     /**
      * @var string
@@ -33,9 +39,16 @@ final class PostsCrudAction extends CrudAction {
         "delete" => "L'article a bien été supprimé.",
     ];
 
-    public function __construct(RendererInterface $renderer, Router $router, PostsTable $table, FlashService $flash)
+    public function __construct(
+        RendererInterface $renderer,
+        Router $router,
+        PostsTable $table,
+        CategoriesTable $categoriesTable,
+        FlashService $flash
+    )
     {
         parent::__construct($renderer, $router, $table, $flash);
+        $this->categoriesTable = $categoriesTable;
     }
 
     /**
@@ -47,10 +60,9 @@ final class PostsCrudAction extends CrudAction {
     protected function getFields(Request $request): array
     {
         $fields =  array_filter($request->getParsedBody(), function ($key) {
-            return in_array($key, ['name', 'content', 'slug', 'created_at']);
+            return in_array($key, ['name', 'content', 'slug', 'created_at', 'category_id']);
         }, ARRAY_FILTER_USE_KEY);
         return array_merge($fields, [
-            'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s')
         ]);
     }
@@ -69,10 +81,14 @@ final class PostsCrudAction extends CrudAction {
             ->setCustomName('slug', 'uri')
             ->setCustomName('content', 'contenu')
             ->setCustomName('created_at', 'date de création')
+            ->setCustomName('category_id', 'catégorie')
+
             ->filled('name', 'slug', 'content', 'created_at')
             ->length('content', 100)
             ->length('name', 4, 250)
+            ->exists('category_id', $this->categoriesTable)
             ->length('slug', 3, 60)
+            ->dateTime('created_at')
             ->slug('slug');
     }
 
@@ -88,5 +104,17 @@ final class PostsCrudAction extends CrudAction {
         $post = new Post();
         $post->created_at = new DateTime();
         return $post;
+    }
+
+    /**
+     * Renvoie les données pour les vues
+     *
+     * @param array $datas
+     * @return array
+     */
+    protected function viewDatas(array $datas): array
+    {
+        $datas['categories'] = $this->categoriesTable->findList();
+        return $datas;
     }
 }

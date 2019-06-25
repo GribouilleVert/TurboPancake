@@ -39,6 +39,7 @@ final class FormExtension extends AbstractExtension {
             'lock_id' => false,
             'placeholder' => null,
             'extra_html' => null,
+            'select_options' => [],
             'error' => $context['errors'][$name] ?? false
         ], $options);
 
@@ -53,7 +54,7 @@ final class FormExtension extends AbstractExtension {
 
         $classes = $this->buildClasses($options['input_classes']);
         $attributes = [
-            'class' => 'form-input'.$classes,
+            'class' => $classes,
             'id'    => $id,
             'name'  => $name,
         ];
@@ -78,6 +79,13 @@ final class FormExtension extends AbstractExtension {
                 $input = $this->textarea($label, $attributes, $value);
                 break;
 
+            case 'select':
+                if (empty($options['select_options'])) {
+                    return null;
+                }
+                $input = $this->select($label, $attributes, $value, $options['select_options']);
+                break;
+
             default:
                 return null;
         }
@@ -95,9 +103,9 @@ final class FormExtension extends AbstractExtension {
         return $wrapper;
     }
 
-    private function generateId(string $name, bool $lock_id): string
+    private function generateId(string $name, bool $ignor_generation = false): string
     {
-        if ($lock_id) {
+        if ($ignor_generation) {
             $id = $name;
         } else {
             $id = $name;
@@ -106,8 +114,8 @@ final class FormExtension extends AbstractExtension {
                 $id = $name . '-' . $x;
                 $x++;
             }
+            array_push($this->registeredId, $id);
         }
-        array_push($this->registeredId, $id);
         return $id;
     }
 
@@ -148,6 +156,7 @@ final class FormExtension extends AbstractExtension {
 
     /**
      * Génère une entrée classique
+     *
      * @param null|string $label
      * @param array $attributes
      * @return string
@@ -161,6 +170,7 @@ final class FormExtension extends AbstractExtension {
             $label = '';
         }
 
+        $attributes['class'] = 'form-input'.$attributes['class'];
         $attributesString = $this->buildAttributes($attributes);
 
         $input = "<input $attributesString>";
@@ -170,6 +180,7 @@ final class FormExtension extends AbstractExtension {
 
     /**
      * Génère une textarea
+     *
      * @param null|string $label
      * @param array $attributes
      * @param $value
@@ -184,9 +195,40 @@ final class FormExtension extends AbstractExtension {
             $label = '';
         }
 
+        $attributes['class'] = 'form-input'.$attributes['class'];
         $attributesString = $this->buildAttributes($attributes);
 
         $input = "<textarea $attributesString>$value</textarea>";
+
+        return $label.$input;
+    }
+    /**
+     * Génère un select
+     *
+     * @param null|string $label
+     * @param array $attributes
+     * @param $value
+     * @return string
+     */
+    private function select(?string $label, array $attributes, $value, $options)
+    {
+        if (!is_null($label)) {
+            $id = $attributes['id'] ?? '#';
+            $label = "<label class=\"form-label\" for=\"$id\">$label</label>";
+        } else {
+            $label = '';
+        }
+
+        $attributes['class'] = 'form-select' . $attributes['class'];
+        $attributesString = $this->buildAttributes($attributes);
+
+        $optionsString = '';
+        foreach ($options as $optionValue => $text) {
+            $selected = ($optionValue == $value ? 'selected' : '');
+            $optionsString .= "<option value='{$optionValue}' $selected>{$text}</option>";
+        }
+
+        $input = "<select $attributesString>$optionsString</select>";
 
         return $label.$input;
     }

@@ -7,9 +7,9 @@ final class CategoriesTable extends Table {
 
     protected $table = 'categories';
 
-    protected function getAllQuery()
+    protected function getPaginationQuery()
     {
-        return parent::getAllQuery() . " ORDER BY name ASC";
+        return parent::getPaginationQuery() . " ORDER BY name ASC";
     }
 
 }

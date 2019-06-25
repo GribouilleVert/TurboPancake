@@ -13,19 +13,23 @@ class DatabaseTestCase extends TestCase {
     /**
      * @var PDO
      */
-    protected $pdo;
+    public $pdo;
 
     /**
      * @var Manager
      */
-    private $manager;
+    public $manager;
 
-    protected function setUp(): void
+    public function getPdo()
     {
-        $pdo = new PDO('sqlite::memory:', null, null, [
+        return new PDO('sqlite::memory:', null, null, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
         ]);
+    }
 
+    public function getManager(PDO $pdo)
+    {
         $configArray = require('phinx.php');
         $configArray['environments']['test'] = [
             'adapter' => 'sqlite',
@@ -33,20 +37,22 @@ class DatabaseTestCase extends TestCase {
         ];
         $config = new Config($configArray);
 
-        $manager = new Manager($config, new StringInput(''), new NullOutput());
-        $manager->migrate('test');
-        $this->manager = $manager;
-
-        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-
-        $this->pdo = $pdo;
+        return new Manager($config, new StringInput(''), new NullOutput());
     }
 
-    public function seedDatabase()
+    public function migrateDatabase(PDO $pdo, Manager $manager)
     {
-        $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_BOTH);
-        $this->manager->seed('test');
-        $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_BOTH);
+        $manager->migrate('test');
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+    }
+
+    public function seedDatabase(PDO $pdo, Manager $manager)
+    {
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_BOTH);
+        $manager->migrate('test');
+        $manager->seed('test');
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
     }
 
 }

@@ -19,6 +19,16 @@ class Post {
     public $slug;
 
     /**
+     * @var int
+     */
+    public $category_id;
+
+    /**
+     * @var string
+     */
+    public $category_name;
+
+    /**
      * @var string
      */
     public $content;

@@ -2,6 +2,8 @@
 namespace TurboPancake;
 
 use DateTime;
+use PDO;
+use TurboPancake\Database\Table;
 use TurboPancake\Validator\ValidationError;
 use mysql_xdevapi\Exception;
 
@@ -29,7 +31,8 @@ class Validator {
 
     /**
      * Permet de rendre requis des champs
-     * @param string ...$fields
+     *
+     * @param string[] $fields
      * @return self
      */
     public function required(string ...$fields): self
@@ -44,6 +47,7 @@ class Validator {
 
     /**
      * Verifie que les champs sont presents et non-vides
+     *
      * @param string ...$fields
      * @return self
      */
@@ -59,6 +63,8 @@ class Validator {
     }
 
     /**
+     * Verifie la longeur d'un champ
+     *
      * @param string $field
      * @param int|null $min
      * @param int|null $max
@@ -70,13 +76,13 @@ class Validator {
         if (is_null($min) AND is_null($max)) {
             throw new \Exception(
                 'Validation error: you need to define a least one length parameter in addition to the field name.',
-                E_ERROR
+                E_WARNING
             );
         }
         if (!is_null($min) AND !is_null($max) AND $min > $max) {
             throw new \Exception(
                 'Validation error: the max length must be least the value of the min length.',
-                E_ERROR
+                E_WARNING
             );
         }
 
@@ -110,6 +116,7 @@ class Validator {
 
     /**
      * Permet de s'assurer qu'un champ est un slug
+     *
      * @param string $field
      * @return self
      */
@@ -125,14 +132,13 @@ class Validator {
         return $this;
     }
 
-    public function regex(string $field, string $pattern)
-    {
-        $value = $this->getValue($field);
-        if (!is_null($value) AND !preg_match($pattern, $value)) {
-            $this->addError($field, 'regex'. [$pattern]);
-        }
-    }
-
+    /**
+     * Permet de s'assurer qu'un champ est un timestamp
+     *
+     * @param string $field
+     * @param string $format
+     * @return Validator
+     */
     public function dateTime(string $field, string $format = 'Y-m-d H:i:s'): self
     {
         $value = $this->getValue($field);
@@ -145,6 +151,55 @@ class Validator {
         return $this;
     }
 
+    /**
+     * Verifie si un champ correspond a une regex
+     *
+     * @param string $field
+     * @param string $pattern
+     */
+    public function regex(string $field, string $pattern)
+    {
+        $value = $this->getValue($field);
+        if (!is_null($value) AND !preg_match($pattern, $value)) {
+            $this->addError($field, 'regex'. [$pattern]);
+        }
+    }
+
+    /**
+     * Vérifie qu'un id existe dans un instance donnée de Table ou dans un tableau
+     *
+     * @param string $field
+     * @param Table|array $dataSource
+     * @return Validator
+     * @throws \Exception
+     */
+    public function exists(string $field, $dataSource): self
+    {
+        $value = $this->getValue($field);
+        if ($dataSource instanceof Table) {
+            if (!$dataSource->exists($value)) {
+                $this->addError($field, 'exists');
+            }
+        } elseif (is_array($dataSource)) {
+            if (!in_array($value, $dataSource)) {
+                $this->addError($field, 'exists');
+            }
+        } else {
+            throw new \Exception(
+                'Validation error: the $datas paraneters must be an array or a Table instance.',
+                E_WARNING
+            );
+        }
+        return $this;
+    }
+
+    /**
+     * Définit un nom d'affichage pour un champ
+     *
+     * @param string $field
+     * @param string|null $customName
+     * @return Validator
+     */
     public function setCustomName(string $field, ?string $customName): self
     {
         if (is_null($customName)) {
@@ -158,6 +213,7 @@ class Validator {
 
     /**
      * Permet de récupérer les erreurs.
+     *
      * @return array
      */
     public function getErrors(): array
@@ -166,7 +222,9 @@ class Validator {
     }
 
     /**
-     * @return bool Vérifie les données
+     * Renvoie le status de vérification
+     *
+     * @return bool
      */
     public function check(): bool
     {
@@ -175,6 +233,7 @@ class Validator {
 
     /**
      * Obtient une valeur en fonction du nom du champ, si le champ n'existe pas, retourne null
+     *
      * @param string $field
      * @return null|mixed
      */
@@ -188,6 +247,7 @@ class Validator {
 
     /**
      * Permet d'instancier et d'ajouter une erreur
+     *
      * @param string $field
      * @param string $rule
      * @param array $attributes

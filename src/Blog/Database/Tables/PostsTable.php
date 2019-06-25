@@ -10,9 +10,16 @@ final class PostsTable extends Table {
 
     protected $entity = Post::class;
 
-    protected function getAllQuery()
+    protected function getPaginationQuery()
     {
-        return parent::getAllQuery() . " ORDER BY created_at DESC";
+        return "
+            SELECT p.id, 
+                   p.name, 
+                   c.name as category_name
+            FROM {$this->table} as p
+            LEFT JOIN categories as c ON p.category_id = c.id
+            ORDER BY p.created_at DESC
+        ";
     }
 
 }

@@ -14,8 +14,9 @@ class ValidationError {
         'short'     => 'Le champ %s doit faire au moins %d caractères.',
         'long'      => 'Le champ %s doit faire moins de %d caractères.',
         'slug'      => 'Le champ %s n\'est pas une URL valide.',
-        'regex'     => 'Le champ %s ne valide pas l\'expression régulière "%s"',
-        'datetime'  => 'Le champ %s doit correspondre au format %s'
+        'regex'     => 'Le champ %s ne valide pas l\'expression régulière "%s".',
+        'datetime'  => 'Le champ %s doit correspondre au format %s.',
+        'exists'    => 'La valeur de %s que vous avez selectionée n\'existe pas.'
     ];
 
     public function __construct(string $field, string $rule, array $attributes = [])

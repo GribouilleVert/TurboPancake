@@ -22,7 +22,7 @@ class CrudAction {
     private $router;
 
     /**
-     * @var mixed
+     * @var Table
      */
     private $table;
 
@@ -104,7 +104,10 @@ class CrudAction {
             return $this->temporaryRedirect($this->routePrefix . '.index');
         }
 
-        return $this->renderer->render($this->viewPath . '/index', compact('items'));
+        return $this->renderer->render(
+            $this->viewPath . '/index',
+            $this->viewDatas(compact('items'))
+        );
     }
 
     /**
@@ -125,7 +128,6 @@ class CrudAction {
 
         if ($request->getMethod() === 'PUT') {
             $fields = $this->getFields($request);
-            $fields['updated_at'] = date('Y-m-d H:i:s');
             $validator = $this->getValidator($request);
             if ($validator->check()) {
                 $this->table->update($item->id, $fields);
@@ -137,8 +139,10 @@ class CrudAction {
             $item = $fields;
         }
 
-
-        return $this->renderer->render($this->viewPath . '/edit', compact('item', 'errors'));
+        return $this->renderer->render(
+            $this->viewPath . '/edit',
+            $this->viewDatas(compact('item', 'errors'))
+        );
     }
 
     /**
@@ -163,7 +167,10 @@ class CrudAction {
             $errors = $validator->getErrors();
         }
 
-        return $this->renderer->render($this->viewPath . '/create', compact('item', 'errors'));
+        return $this->renderer->render(
+            $this->viewPath . '/create',
+            $this->viewDatas(compact('item', 'errors'))
+        );
     }
 
     /**
@@ -212,6 +219,17 @@ class CrudAction {
     protected function getDefaultEntity()
     {
         return new \stdClass();
+    }
+
+    /**
+     * Renvoie les données pour les vues
+     *
+     * @param array $datas
+     * @return array
+     */
+    protected function viewDatas(array $datas): array
+    {
+        return $datas;
     }
 
 
