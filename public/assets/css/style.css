@@ -1033,6 +1033,8 @@ textarea.form-input, textarea.form-input.input-lg, textarea.form-input.input-sm 
 }
 
 .form-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
   appearance: none;
   border: 0.05rem solid #bcc3ce;
   border-radius: 0.1rem;
