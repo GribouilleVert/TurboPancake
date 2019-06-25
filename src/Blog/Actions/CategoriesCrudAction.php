@@ -32,8 +32,12 @@ final class CategoriesCrudAction extends CrudAction {
         "delete" => "La catégorie a bien été supprimée.",
     ];
 
-    public function __construct(RendererInterface $renderer, Router $router, CategoriesTable $table, FlashService $flash)
-    {
+    public function __construct(
+        RendererInterface $renderer,
+        Router $router,
+        CategoriesTable $table,
+        FlashService $flash
+    ) {
         parent::__construct($renderer, $router, $table, $flash);
     }
 

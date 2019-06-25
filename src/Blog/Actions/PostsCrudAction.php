@@ -45,8 +45,7 @@ final class PostsCrudAction extends CrudAction {
         PostsTable $table,
         CategoriesTable $categoriesTable,
         FlashService $flash
-    )
-    {
+    ) {
         parent::__construct($renderer, $router, $table, $flash);
         $this->categoriesTable = $categoriesTable;
     }
@@ -92,7 +91,6 @@ final class PostsCrudAction extends CrudAction {
             ->slug('slug');
     }
 
-
     /**
      * Permet d'instancier une entitée vide pour la création
      *
@@ -117,4 +115,5 @@ final class PostsCrudAction extends CrudAction {
         $datas['categories'] = $this->categoriesTable->findList();
         return $datas;
     }
+
 }

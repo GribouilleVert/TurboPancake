@@ -206,4 +206,5 @@ class Table {
             return "$field = :$field";
         }, array_keys($fields)));
     }
+
 }

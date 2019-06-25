@@ -30,7 +30,7 @@ final class FlashExtension extends AbstractExtension {
 
         foreach ($flashes as &$flash) {
             $flash['class'] = '';
-            switch($flash['type']) {
+            switch ($flash['type']) {
                 case 'important':
                     $flash['class'] = 'toast-primary';
                     break;

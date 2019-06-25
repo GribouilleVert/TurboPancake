@@ -8,8 +8,7 @@
     <file>src</file>
     <file>public/index.php</file>
 
-    <exclude-pattern>*/Database/seeds</exclude-pattern>
-    <exclude-pattern>*/Database/migrations</exclude-pattern>
+    <exclude-pattern>*/Database/mgmt</exclude-pattern>
 
     <rule ref="PSR2"></rule>
 

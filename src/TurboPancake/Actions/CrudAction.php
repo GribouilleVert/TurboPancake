@@ -61,7 +61,8 @@ class CrudAction {
      * @param Table $table
      * @param FlashService $flash
      */
-    public function __construct(RendererInterface $renderer, Router $router, Table $table, FlashService $flash) {
+    public function __construct(RendererInterface $renderer, Router $router, Table $table, FlashService $flash)
+    {
         $this->renderer = $renderer;
         $this->table = $table;
         $this->router = $router;
@@ -231,6 +232,5 @@ class CrudAction {
     {
         return $datas;
     }
-
 
 }

@@ -170,12 +170,12 @@ final class FormExtension extends AbstractExtension {
             $label = '';
         }
 
-        $attributes['class'] = 'form-input'.$attributes['class'];
+        $attributes['class'] = 'form-input' . $attributes['class'];
         $attributesString = $this->buildAttributes($attributes);
 
         $input = "<input $attributesString>";
 
-        return $label.$input;
+        return $label . $input;
     }
 
     /**
@@ -195,13 +195,14 @@ final class FormExtension extends AbstractExtension {
             $label = '';
         }
 
-        $attributes['class'] = 'form-input'.$attributes['class'];
+        $attributes['class'] = 'form-input' . $attributes['class'];
         $attributesString = $this->buildAttributes($attributes);
 
         $input = "<textarea $attributesString>$value</textarea>";
 
-        return $label.$input;
+        return $label . $input;
     }
+
     /**
      * Génère un select
      *
@@ -230,7 +231,7 @@ final class FormExtension extends AbstractExtension {
 
         $input = "<select $attributesString>$optionsString</select>";
 
-        return $label.$input;
+        return $label . $input;
     }
 
 }

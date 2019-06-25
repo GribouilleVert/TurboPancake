@@ -88,23 +88,20 @@ class Validator {
 
         $value = $this->getValue($field);
         $length = mb_strlen($value);
-        if (
-            !is_null($min) AND
+        if (!is_null($min) AND
             !is_null($max) AND
             ($length < $min OR $length > $max)
         ) {
             $this->addError($field, 'between', [$min, $max]);
             return $this;
         }
-        if (
-            !is_null($min) AND
+        if (!is_null($min) AND
             $length < $min
         ) {
             $this->addError($field, 'short', [$min]);
             return $this;
         }
-        if (
-            !is_null($max) AND
+        if (!is_null($max) AND
             $length > $max
         ) {
             $this->addError($field, 'long', [$max]);
@@ -161,7 +158,7 @@ class Validator {
     {
         $value = $this->getValue($field);
         if (!is_null($value) AND !preg_match($pattern, $value)) {
-            $this->addError($field, 'regex'. [$pattern]);
+            $this->addError($field, 'regex' . [$pattern]);
         }
     }
 
