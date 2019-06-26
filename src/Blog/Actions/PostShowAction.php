@@ -14,24 +14,24 @@ final class BlogActions {
      * @var RendererInterface
      */
     private $renderer;
+    /**
+     * @var Router
+     */
+    private $router;
 
     /**
      * @var PostsTable
      */
     private $postTable;
 
-    /**
-     * @var Router
-     */
-    private $router;
-    
+
     use RouterAware;
 
     public function __construct(RendererInterface $renderer, Router $router, PostsTable $postTable)
     {
         $this->renderer = $renderer;
-        $this->postTable = $postTable;
         $this->router = $router;
+        $this->postTable = $postTable;
     }
 
     public function __invoke(Request $request)
