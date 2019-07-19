@@ -17,4 +17,6 @@ class LinkCategoriesWithPosts extends AbstractMigration {
             ->update();
     }
 
+
+
 }

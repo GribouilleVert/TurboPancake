@@ -3,7 +3,7 @@ namespace Tests\TurboPancake\Renderer;
 
 use Twig\Extension\AbstractExtension;
 
-class TwigExtension extends AbstractExtension
+final class TwigExtension extends AbstractExtension
 {
     public function getFunctions(): array
     {

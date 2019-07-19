@@ -1,7 +1,6 @@
 <?php
 namespace TurboModule\Blog\Actions;
 
-use DateTime;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use TurboModule\Blog\Database\Tables\CategoriesTable;
 use TurboPancake\Actions\CrudAction;
@@ -32,6 +31,13 @@ final class CategoriesCrudAction extends CrudAction {
         "delete" => "La catégorie a bien été supprimée.",
     ];
 
+    /**
+     * CategoriesCrudAction constructor.
+     * @param RendererInterface $renderer
+     * @param Router $router
+     * @param CategoriesTable $table
+     * @param FlashService $flash
+     */
     public function __construct(
         RendererInterface $renderer,
         Router $router,
@@ -58,18 +64,20 @@ final class CategoriesCrudAction extends CrudAction {
      * Crée le validateur et l'initialise
      *
      * @param Request $request
+     * @param null $itemDatas
      * @return Validator
      * @throws \Exception
      */
-    protected function getValidator(Request $request): Validator
+    protected function getValidator(Request $request, $itemDatas = null): Validator
     {
         return (new Validator($request->getParsedBody()))
             ->setCustomName('name', 'titre')
-            ->setCustomName('slug', 'uri')
+            ->setCustomName('slug', 'URL')
             ->filled('name', 'slug')
             ->length('name', 4, 250)
-            ->length('slug', 3, 60)
-            ->slug('slug');
+            ->length('slug', 3, 120)
+            ->slug('slug')
+            ->unique('slug', $this->table, 'slug', [$itemDatas->slug]);
     }
 
 }

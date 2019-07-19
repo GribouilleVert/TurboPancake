@@ -2,10 +2,8 @@
 namespace TurboPancake;
 
 use DateTime;
-use PDO;
 use TurboPancake\Database\Table;
 use TurboPancake\Validator\ValidationError;
-use mysql_xdevapi\Exception;
 
 class Validator {
 
@@ -68,10 +66,11 @@ class Validator {
      * @param string $field
      * @param int|null $min
      * @param int|null $max
+     * @param string|null $customError
      * @return Validator
      * @throws \Exception
      */
-    public function length(string $field, ?int $min, ?int $max = null): self
+    public function length(string $field, ?int $min, ?int $max = null, ?string $customError = null): self
     {
         if (is_null($min) AND is_null($max)) {
             throw new \Exception(
@@ -92,19 +91,19 @@ class Validator {
             !is_null($max) AND
             ($length < $min OR $length > $max)
         ) {
-            $this->addError($field, 'between', [$min, $max]);
+            $this->addError($field, 'between', [$min, $max], $customError);
             return $this;
         }
         if (!is_null($min) AND
             $length < $min
         ) {
-            $this->addError($field, 'short', [$min]);
+            $this->addError($field, 'short', [$min], $customError);
             return $this;
         }
         if (!is_null($max) AND
             $length > $max
         ) {
-            $this->addError($field, 'long', [$max]);
+            $this->addError($field, 'long', [$max], $customError);
             return $this;
         }
 
@@ -115,15 +114,16 @@ class Validator {
      * Permet de s'assurer qu'un champ est un slug
      *
      * @param string $field
+     * @param string|null $customError
      * @return self
      */
-    public function slug(string $field): self
+    public function slug(string $field, ?string $customError = null): self
     {
         $pattern = '/^[a-z0-9]+(-[a-z0-9]+)*$/';
         $value = $this->getValue($field);
 
         if (!is_null($value) AND !preg_match($pattern, $value)) {
-            $this->addError($field, 'slug');
+            $this->addError($field, 'slug', [], $customError);
         }
 
         return $this;
@@ -134,15 +134,16 @@ class Validator {
      *
      * @param string $field
      * @param string $format
+     * @param string|null $customError
      * @return Validator
      */
-    public function dateTime(string $field, string $format = 'Y-m-d H:i:s'): self
+    public function dateTime(string $field, string $format = 'Y-m-d H:i:s', ?string $customError = null): self
     {
         $value = $this->getValue($field);
         $date = DateTime::createFromFormat($format, $value);
         $errors = DateTime::getLastErrors();
         if ($errors['error_count'] > 0 OR $errors['warning_count'] > 0 OR $date === false) {
-            $this->addError($field, 'datetime', [$format]);
+            $this->addError($field, 'datetime', [$format], $customError);
         }
 
         return $this;
@@ -153,13 +154,16 @@ class Validator {
      *
      * @param string $field
      * @param string $pattern
+     * @param string|null $customError
+     * @return self
      */
-    public function regex(string $field, string $pattern)
+    public function regex(string $field, string $pattern, ?string $customError = null): self
     {
         $value = $this->getValue($field);
         if (!is_null($value) AND !preg_match($pattern, $value)) {
-            $this->addError($field, 'regex' . [$pattern]);
+            $this->addError($field, 'regex', [$pattern], $customError);
         }
+        return $this;
     }
 
     /**
@@ -167,23 +171,65 @@ class Validator {
      *
      * @param string $field
      * @param Table|array $dataSource
+     * @param string|null $customError
      * @return Validator
      * @throws \Exception
      */
-    public function exists(string $field, $dataSource): self
+    public function exists(string $field, $dataSource, ?string $customError = null): self
     {
         $value = $this->getValue($field);
         if ($dataSource instanceof Table) {
             if (!$dataSource->exists($value)) {
-                $this->addError($field, 'exists');
+                $this->addError($field, 'exists', [], $customError);
             }
         } elseif (is_array($dataSource)) {
             if (!in_array($value, $dataSource)) {
-                $this->addError($field, 'exists');
+                $this->addError($field, 'exists', [], $customError);
             }
         } else {
             throw new \Exception(
-                'Validation error: the $datas paraneters must be an array or a Table instance.',
+                'Validation error: the $dataSource parameters must be an array or a Table instance.',
+                E_WARNING
+            );
+        }
+        return $this;
+    }
+
+    /**
+     *
+     * Vérifie qu'un élément est unique dans un instance donnée de Table ou dans un tableau
+     *
+     * @param string $field
+     * @param Table|array $dataSource
+     * @param string $column
+     * @param array|null $exclude
+     * @param string|null $customError
+     * @return Validator
+     * @throws \Exception
+     */
+    public function unique(
+        string $field,
+        $dataSource,
+        string $column = null,
+        ?array $exclude = null,
+        ?string $customError = null
+    ): self {
+        $value = $this->getValue($field);
+        if (!is_null($exclude) AND in_array($value, $exclude)) {
+            return $this;
+        }
+
+        if ($dataSource instanceof Table and !is_null($column)) {
+            if (count($dataSource->findBy($column, $value)) > 0) {
+                $this->addError($field, 'unique', [$value], $customError);
+            }
+        } elseif (is_array($dataSource)) {
+            if (in_array($value, $dataSource)) {
+                $this->addError($field, 'unique', [$value], $customError);
+            }
+        } else {
+            throw new \Exception(
+                'Validation error: the $dataSource parameters must be an array or a Table instance.',
                 E_WARNING
             );
         }
@@ -248,8 +294,9 @@ class Validator {
      * @param string $field
      * @param string $rule
      * @param array $attributes
+     * @param string|null $customError
      */
-    private function addError(string $field, string $rule, array $attributes = []): void
+    private function addError(string $field, string $rule, array $attributes = [], ?string $customError = null): void
     {
         if (!isset($this->errors[$field])) {
             if (array_key_exists($field, $this->customNames)) {
@@ -257,7 +304,7 @@ class Validator {
             } else {
                 $fieldName = $field;
             }
-            $this->errors[$field] = new ValidationError($fieldName, $rule, $attributes);
+            $this->errors[$field] = new ValidationError($fieldName, $rule, $attributes, $customError);
         }
     }
 

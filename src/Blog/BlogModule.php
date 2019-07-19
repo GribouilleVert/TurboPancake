@@ -2,11 +2,13 @@
 namespace TurboModule\Blog;
 
 use TurboModule\Blog\Actions\CategoriesCrudAction;
+use TurboModule\Blog\Actions\CategoryShowAction;
+use TurboModule\Blog\Actions\PostsIndexAction;
 use TurboPancake\Module;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
 use TurboModule\Blog\Actions\PostsCrudAction;
-use TurboModule\Blog\Actions\BlogActions;
+use TurboModule\Blog\Actions\PostShowAction;
 use Psr\Container\ContainerInterface;
 
 final class BlogModule extends Module {
@@ -36,8 +38,17 @@ final class BlogModule extends Module {
 
         $router = $container->get(Router::class);
 
-        $router->get($container->get('blog.prefix'), BlogActions::class, 'blog.index');
-        $router->get($container->get('blog.prefix') . '/{slug:[a-z0-9\-]+}-{id:\d+}', BlogActions::class, 'blog.show');
+        $router->get($container->get('blog.prefix'), PostsIndexAction::class, 'blog.index');
+        $router->get(
+            $container->get('blog.prefix') . '/{slug:[a-z0-9\-]+}-{id:\d+}',
+            PostShowAction::class,
+            'blog.show'
+        );
+        $router->get(
+            $container->get('blog.prefix') . '/category/{slug:[a-z0-9\-]+}',
+            CategoryShowAction::class,
+            'blog.category'
+        );
 
         if ($container->has('admin.prefix')) {
             $prefix = $container->get('admin.prefix');

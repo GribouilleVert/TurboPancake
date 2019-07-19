@@ -1,1 +1,1 @@
-<?= $route ?> - <?= $queryParams['a'] ?>
+<?= $route ?>

@@ -107,6 +107,9 @@ class ValidatorTest extends DatabaseTestCase {
 
         $this->expectException(\Exception::class);
         $this->assertCount(0, $errors = $this->buildValidator($fields)->length('location', 2, 1)->getErrors());
+
+        $this->expectException(\Exception::class);
+        $this->assertCount(0, $errors = $this->buildValidator($fields)->length('location', null, null)->getErrors());
     }
 
     public function testDateTime()
@@ -116,6 +119,11 @@ class ValidatorTest extends DatabaseTestCase {
         $this->assertCount(1, $this->buildValidator(['date'  => '10:30:15'])->dateTime('date')->getErrors());
         $this->assertCount(1, $this->buildValidator(['date'  => '2008-15-18'])->dateTime('date')->getErrors());
         $this->assertCount(1, $this->buildValidator(['date'  => '2003-02-29'])->dateTime('date')->getErrors());
+    }
+
+    public function testRegex()
+    {
+        $this->assertTrue($this->buildValidator(['test' => 'a-e-w-k'])->regex('test', '/^([a-z]-){3}[a-z]$/')->check());
     }
 
     public function testExists()

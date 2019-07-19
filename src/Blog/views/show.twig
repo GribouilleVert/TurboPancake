@@ -4,7 +4,9 @@
 
 {% block head %}
     <h1 class="mb-1">{{ block('title') }}</h1>
-    <div class="text-gray mb-4">{{ post.created_at | ago }}</div>
+    <div class="text-gray mb-4">
+        <a href="{{ path('blog.category', {slug: post.category_slug}) }}">{{ post.category_name }}</a> - {{ post.created_at | ago }}
+    </div>
 {% endblock %}
 
 {% block breadcrumb %}

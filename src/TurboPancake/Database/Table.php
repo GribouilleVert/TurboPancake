@@ -1,6 +1,7 @@
 <?php
 namespace TurboPancake\Database;
 
+use mysql_xdevapi\Exception;
 use Pagerfanta\Pagerfanta;
 use PDO;
 
@@ -9,7 +10,7 @@ class Table {
     /**
      * @var PDO
      */
-    private $pdo;
+    protected $pdo;
 
     /**
      * Nom de la table en bdd
@@ -53,26 +54,20 @@ class Table {
      */
     public function find(int $id)
     {
-        $statement = $this->pdo
-            ->prepare("SELECT * FROM {$this->table} WHERE id = ?");
-        $statement->execute([$id]);
-
-        if ($this->entity) {
-            $statement->setFetchMode(PDO::FETCH_CLASS, $this->entity);
-        }
-        return $statement->fetch() ?: null;
+        return $this->fetch("SELECT * FROM {$this->table} WHERE id = ?", [$id]);
     }
 
     /**
      * Renvoie un tableau des elements sous la forme `id => name`
      * Info: sert surtout pour faire des select
      *
+     * @param string $column Nom de la colonne a utiliser en tant que valeur
      * @return array
      */
-    public function findList() :array
+    public function findList(string $column = 'name') :array
     {
         $results = $this->pdo
-            ->query("SELECT id, name FROM {$this->table} ORDER BY name ASC")
+            ->query("SELECT id, {$column} FROM {$this->table} ORDER BY {$column} ASC")
             ->fetchAll(PDO::FETCH_NUM);
 
         $list = [];
@@ -81,6 +76,35 @@ class Table {
         }
 
         return $list;
+    }
+
+    /**
+     * Renvoie un tableau d'objet contenant toutes les entrée de la table
+     *
+     * @return array
+     */
+    public function findAll() :array
+    {
+        return $this->fetch("SELECT * FROM {$this->table}", [], true);
+    }
+
+    /**
+     * Renvoie un tableau d'objet contenant toutes les entrée de la table
+     *
+     * @param string $column Colonne a comparer. WARNING: This argument is not securised,
+     * remeber: NEVER trust user input.
+     * @param mixed $toCompareValue Valeur a compoarer. INFO: This argument is passed to MySQL trough
+     * prepared request argument, in consequence, it can be considered as secured.
+     * @param string $operator Operateur de comparaison, peut être: =, !=, >, >=, < ou <=
+     * @return array|null
+     * @throws \Exception
+     */
+    public function findBy(string $column, $toCompareValue, string $operator = '='): ?array
+    {
+        if (!in_array($operator, ['=', '!=', '<', '<=', '>', '>='])) {
+            throw new \Exception("The comparison opartor $operator is not accepted by the function " . Table::class . "::findBy, please check the function's PHPDoc for a list of accepted comparaison oparators.");
+        }
+        return $this->fetch("SELECT * FROM {$this->table} WHERE $column $operator ?", [$toCompareValue], true);
     }
 
     /**
@@ -124,8 +148,7 @@ class Table {
         $columnsQuery = join(', ', $columns);
         $valuesQuery = join(', ', $values);
 
-        $statement = $this->pdo->prepare("INSERT INTO {$this->table} ($columnsQuery) VALUES ($valuesQuery)");
-        return $statement->execute($fields);
+        return $this->execute("INSERT INTO {$this->table} ($columnsQuery) VALUES ($valuesQuery)", $fields);
     }
 
     /**
@@ -140,8 +163,7 @@ class Table {
         $fieldQuery = $this->createFieldQuery($fields);
         $fields['id'] = $id;
 
-        $statement = $this->pdo->prepare("UPDATE {$this->table} SET $fieldQuery WHERE id = :id");
-        return $statement->execute($fields);
+        return $this->execute("UPDATE {$this->table} SET $fieldQuery WHERE id = :id", $fields);
     }
 
     /**
@@ -152,8 +174,18 @@ class Table {
      */
     public function delete(int $id): bool
     {
-        $statement = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = ?");
-        return $statement->execute([$id]);
+        return $this->execute("DELETE FROM {$this->table} WHERE id = ?", [$id]);
+    }
+
+    /**
+     * Obtient le nombre d'élément dans la table
+     *
+     * @return int
+     */
+    public function count(): int
+    {
+        $statement = $this->pdo->query("SELECT count(id) FROM {$this->table}");
+        return $statement->fetchColumn();
     }
 
     /**
@@ -190,6 +222,43 @@ class Table {
     protected function countQuery()
     {
         return "SELECT count(id) FROM {$this->table}";
+    }
+
+    /**
+     * Permet de faire une requette d'execution
+     * @param string $query
+     * @param array $parameters
+     * @return bool
+     */
+    protected function execute(string $query, array $parameters = [])
+    {
+        $statement = $this->pdo->prepare($query);
+        return $statement->execute($parameters);
+    }
+
+    /**
+     * Permet de faire une requette de donnée
+     * @param string $query
+     * @param array $parameters
+     * @param bool $fetchAll
+     * @return null|array|mixed
+     */
+    protected function fetch(string $query, array $parameters = [], bool $fetchAll = false)
+    {
+        $statement = $this->pdo->prepare($query);
+        $statement->execute($parameters);
+
+        if ($this->entity) {
+            $statement->setFetchMode(PDO::FETCH_CLASS, $this->entity);
+        } else {
+            $statement->setFetchMode(PDO::FETCH_OBJ);
+        }
+
+        if ($fetchAll) {
+            return $statement->fetchAll() ?: null;
+        } else {
+            return $statement->fetch() ?: null;
+        }
     }
 
     /**

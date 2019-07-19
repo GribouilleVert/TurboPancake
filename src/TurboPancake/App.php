@@ -22,7 +22,7 @@ final class App {
 
     /**
      * Router de l'application
-     * @var ContainerInterface
+     * @var Container
      */
     private $container;
 
@@ -67,7 +67,6 @@ final class App {
         if ($this->container->has(RendererInterface::class)) {
             $renderer = $this->container->get(RendererInterface::class);
             $renderer->addGlobal('route', $route->getName());
-            $renderer->addGlobal('queryParams', $request->getQueryParams());
         }
 
         $parameters = $route->getParams();

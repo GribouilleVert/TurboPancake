@@ -10,6 +10,7 @@ class CreateCategoryTable extends AbstractMigration
         $this->table('categories')
             ->addColumn('name', 'string')
             ->addColumn('slug', 'string')
+            ->addIndex('slug', [])
             ->save();
     }
 

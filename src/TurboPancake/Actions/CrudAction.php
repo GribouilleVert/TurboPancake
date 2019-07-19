@@ -2,6 +2,7 @@
 namespace TurboPancake\Actions;
 
 use Psr\Http\Message\ResponseInterface;
+use stdClass;
 use TurboPancake\Database\Table;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
@@ -22,14 +23,14 @@ class CrudAction {
     private $router;
 
     /**
-     * @var Table
-     */
-    private $table;
-
-    /**
      * @var FlashService
      */
     private $flash;
+
+    /**
+     * @var Table
+     */
+    protected $table;
 
     /**
      * @var string
@@ -51,7 +52,7 @@ class CrudAction {
         "delete" => "L'élément a bien été supprimé.",
     ];
 
-    use RouterAware;
+    use RouterAwareAction;
 
     /**
      * CrudAction constructor.
@@ -99,7 +100,8 @@ class CrudAction {
     public function index(Request $request)
     {
         $queryParams = $request->getQueryParams();
-        $items = $this->table->findPaginated(8, $queryParams['page'] ?? 1);
+        $page = $queryParams['page'] ?? 1;
+        $items = $this->table->findPaginated(8, $page);
 
         if (is_null($items)) {
             return $this->temporaryRedirect($this->routePrefix . '.index');
@@ -107,7 +109,7 @@ class CrudAction {
 
         return $this->renderer->render(
             $this->viewPath . '/index',
-            $this->viewDatas(compact('items'))
+            $this->viewDatas(compact('items', 'page'))
         );
     }
 
@@ -129,7 +131,7 @@ class CrudAction {
 
         if ($request->getMethod() === 'PUT') {
             $fields = $this->getFields($request);
-            $validator = $this->getValidator($request);
+            $validator = $this->getValidator($request, $item);
             if ($validator->check()) {
                 $this->table->update($item->id, $fields);
                 $this->flash->success($this->messages['edit']);
@@ -205,9 +207,10 @@ class CrudAction {
      * Crée le validateur et l'initialise
      *
      * @param Request $request
+     * @param null $itemDatas
      * @return Validator
      */
-    protected function getValidator(Request $request): Validator
+    protected function getValidator(Request $request, $itemDatas = null): Validator
     {
         return new Validator($request->getParsedBody());
     }

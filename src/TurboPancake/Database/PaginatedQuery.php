@@ -25,12 +25,23 @@ class PaginatedQuery implements AdapterInterface {
      */
     private $entity;
 
-    public function __construct(\PDO $pdo, string $query, string $countQuery, ?string $entity = null)
-    {
+    /**
+     * @var array
+     */
+    private $parameters;
+
+    public function __construct(
+        \PDO $pdo,
+        string $query,
+        string $countQuery,
+        ?string $entity = null,
+        array $parameters = []
+    ) {
         $this->pdo = $pdo;
         $this->query = $query;
         $this->countQuery = $countQuery;
         $this->entity = $entity;
+        $this->parameters = $parameters;
     }
 
     /**
@@ -40,6 +51,11 @@ class PaginatedQuery implements AdapterInterface {
      */
     public function getNbResults(): int
     {
+        if (!empty($this->parameters)) {
+            $statement = $this->pdo->prepare($this->countQuery);
+            $statement->execute($this->parameters);
+            return $statement->fetchColumn();
+        }
         return $this->pdo->query($this->countQuery)->fetchColumn();
     }
 
@@ -54,6 +70,9 @@ class PaginatedQuery implements AdapterInterface {
     public function getSlice($offset, $length)
     {
         $statement = $this->pdo->prepare($this->query . ' LIMIT :offset, :length');
+        foreach ($this->parameters as $alias => $value) {
+            $statement->bindParam($alias, $value);
+        }
         $statement->bindParam('offset', $offset, \PDO::PARAM_INT);
         $statement->bindParam('length', $length, \PDO::PARAM_INT);
         $statement->execute();

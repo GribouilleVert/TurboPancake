@@ -61,18 +61,16 @@
 
             <div id="sidebar" class="off-canvas-sidebar">
                 <div class="brand">
-                    <a href="/" class="logo">
+                    <a href="{{ path('admin.dashboard') }}" class="logo">
                         <h2>Administration <small class="label label-secondary">DEV</small></h2>
                     </a>
                 </div>
                 <div class="content">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a href="/" class="text-light">Accueil</a>
+                            <a href="{{ path('admin.dashboard') }}" class="{{ is_path('admin.dashboard', [], queryParameters)?'text-light' }}">Accueil</a>
                         </li>
-                        <li class="nav-item active">
-                            <a href="{{ path('blog.index') }}" class="text-light">Blog</a>
-                        </li>
+                        {{ render_menu() }}
                     </ul>
                 </div>
 

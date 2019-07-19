@@ -46,6 +46,7 @@ final class PostsCrudAction extends CrudAction {
         CategoriesTable $categoriesTable,
         FlashService $flash
     ) {
+        $table->privateMode = true;
         parent::__construct($renderer, $router, $table, $flash);
         $this->categoriesTable = $categoriesTable;
     }
@@ -70,10 +71,11 @@ final class PostsCrudAction extends CrudAction {
      * Crée le validateur et l'initialise
      *
      * @param Request $request
+     * @param null $itemDatas
      * @return Validator
      * @throws \Exception
      */
-    protected function getValidator(Request $request): Validator
+    protected function getValidator(Request $request, $itemDatas = null): Validator
     {
         return (new Validator($request->getParsedBody()))
             ->setCustomName('name', 'titre')
@@ -88,7 +90,9 @@ final class PostsCrudAction extends CrudAction {
             ->exists('category_id', $this->categoriesTable)
             ->length('slug', 3, 60)
             ->dateTime('created_at')
-            ->slug('slug');
+            ->slug('slug')
+            ->unique('slug', $this->table, 'slug', [$itemDatas->slug])
+            ->unique('name', $this->table, 'name', [$itemDatas->name]);
     }
 
     /**

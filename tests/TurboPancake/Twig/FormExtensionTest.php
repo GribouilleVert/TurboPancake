@@ -2,8 +2,12 @@
 namespace Tests\TurboPancake\Twig;
 
 use PHPUnit\Framework\TestCase;
+use Tests\TwigExtensionTestCase;
 use TurboPancake\Twig\FormExtension;
 use TurboPancake\Validator\ValidationError;
+use Twig\Extension\ExtensionInterface;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 class FormExtensionTest extends TestCase {
 
@@ -15,6 +19,18 @@ class FormExtensionTest extends TestCase {
     public function setUp(): void
     {
         $this->formExtension = new FormExtension();
+    }
+
+    public function testValidExtension() {
+        $this->assertInstanceOf(ExtensionInterface::class, $this->formExtension);
+
+        $filters = $this->formExtension->getFilters();
+        $this->assertIsArray($filters);
+        $this->assertContainsOnlyInstancesOf(TwigFilter::class, $filters);
+
+        $functions = $this->formExtension->getFunctions();
+        $this->assertIsArray($functions);
+        $this->assertContainsOnlyInstancesOf(TwigFunction::class, $functions);
     }
 
     private function trim(string $string): string

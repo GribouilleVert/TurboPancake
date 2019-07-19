@@ -14,14 +14,19 @@ final class PagerFantaExtension extends AbstractExtension
     private $router;
 
     /**
+     * @var string
+     */
+    private $route;
+
+    /**
      * @var array
      */
     private $queryArgs;
 
     /**
-     * @var string
+     * @var array
      */
-    private $route;
+    private $routeParameters;
 
     public function __construct(Router $router)
     {
@@ -35,10 +40,15 @@ final class PagerFantaExtension extends AbstractExtension
         ];
     }
 
-    public function paginate(Pagerfanta $pagerFanta, string $route, array $queryArgs = []): string
-    {
-        $this->queryArgs = $queryArgs;
+    public function paginate(
+        Pagerfanta $pagerFanta,
+        string $route,
+        array $routeParameters = [],
+        array $queryParams = []
+    ): string {
         $this->route = $route;
+        $this->routeParameters = $routeParameters;
+        $this->queryArgs = $queryParams;
 
         if ($pagerFanta->hasPreviousPage()) {
             $prevLink = $this->makeUri($pagerFanta->getPreviousPage());
@@ -134,17 +144,17 @@ final class PagerFantaExtension extends AbstractExtension
             $queryArgs['page'] = $page;
         }
 
-        return $this->router->generateUri($this->route, [], $queryArgs);
+        return $this->router->generateUri($this->route, $this->routeParameters, $queryArgs);
     }
 
     private function paginationLIWithLink(string $content, array $classes = [], ?string $href = null): string
     {
         if (is_null($href)) {
-            $href = '#';
+            $href = '#!';
         }
-        $liContent = '<a href="' . $href . '">';
+        $liContent  = '<a href="' . $href . '">';
         $liContent .= $content;
-        $liContent .= '</a></li>';
+        $liContent .= '</a>';
 
         return $this->paginationLI($liContent, $classes);
     }
@@ -156,7 +166,7 @@ final class PagerFantaExtension extends AbstractExtension
             $classesString .= ' ' . $class;
         }
 
-        $li =  '<li class="page-item' . $classesString . '">';
+        $li  = '<li class="page-item' . $classesString . '">';
         $li .= $content;
         $li .= '</li>';
 

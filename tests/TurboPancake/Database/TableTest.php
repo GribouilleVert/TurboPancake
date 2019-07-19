@@ -4,6 +4,7 @@ namespace Tests\TurboPancake\Database;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use stdClass;
 use TurboPancake\Database\Table;
 
 class TableTest extends TestCase {
@@ -65,6 +66,48 @@ class TableTest extends TestCase {
 
         $this->assertTrue($this->table->exists(1));
         $this->assertFalse($this->table->exists(42));
+    }
+
+    public function testFindAll()
+    {
+        $this->table->getPdo()->exec("INSERT INTO test (name) VALUES ('elem 1');");
+        $this->table->getPdo()->exec("INSERT INTO test (name) VALUES ('elem 2');");
+
+        $items = $this->table->findAll();
+
+        $this->assertIsArray($items);
+        $this->assertCount(2, $items);
+        $this->assertInstanceOf(stdClass::class, $items[0]);
+
+        $this->assertEquals('elem 1', $items[0]->name);
+        $this->assertEquals('elem 2', $items[1]->name);
+    }
+
+    public function testFindBy()
+    {
+        $this->table->getPdo()->exec("INSERT INTO test (name) VALUES ('elem 1');");
+        $this->table->getPdo()->exec("INSERT INTO test (name) VALUES ('elem 2');");
+        $this->table->getPdo()->exec("INSERT INTO test (name) VALUES ('elem 2');");
+
+        $items = $this->table->findBy('name', 'elem 2');
+
+        $this->assertIsArray($items);
+        $this->assertCount(2, $items);
+        $this->assertInstanceOf(stdClass::class, $items[0]);
+
+        $this->assertEquals('elem 2', $items[1]->name);
+    }
+
+    public function testCount()
+    {
+        for ($i = 0; $i < 25; $i++) {
+            $this->table->getPdo()->exec("INSERT INTO test (name) VALUES ('elem $i');");
+        }
+
+        $count = $this->table->count();
+
+        $this->assertIsInt($count);
+        $this->assertEquals(25, $count);
     }
 
 }

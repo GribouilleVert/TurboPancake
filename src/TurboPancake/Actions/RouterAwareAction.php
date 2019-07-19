@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
  * @package TurboPancake\Actions
  * @property $router TurboPancake\Router
  */
-trait RouterAware {
+trait RouterAwareAction {
 
     /**
      * Permet de faire une redirection temporaire (302)

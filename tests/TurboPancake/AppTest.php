@@ -124,7 +124,7 @@ class AppTest extends TestCase {
         $response = $app->run($request);
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertStringContainsString('test_module.rendered_view - 123', (string)$response->getBody());
+        $this->assertStringContainsString('test_module.rendered_view', (string)$response->getBody());
     }
 
 }

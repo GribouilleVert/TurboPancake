@@ -9,18 +9,12 @@ use Twig\Environment as TwigEnvironment;
 class TwigRenderer implements RendererInterface {
 
     /**
-     * @var TwigFilesystemLoader
-     */
-    private $loader;
-
-    /**
      * @var TwigEnvironment
      */
     private $twig;
 
     /**
      * TwigRenderer constructor.
-     * @param TwigFilesystemLoader $loader
      * @param TwigEnvironment $twig
      */
     public function __construct(TwigEnvironment $twig)
@@ -32,7 +26,6 @@ class TwigRenderer implements RendererInterface {
      * Permet d'ajouter un chemin d'ou se trouvent les sources
      * @param string $path Le chemin des vues, si $namespace est null, alors ce sera le chemin par défaut
      * @param string|null $namespace Le namespace a associer au chemin
-     * @throws \Twig\Error\LoaderError
      */
     public function addPath(string $path, ?string $namespace = null): void
     {
@@ -61,6 +54,14 @@ class TwigRenderer implements RendererInterface {
     public function render(string $view, array $parameters = []): string
     {
         return $this->twig->render($view . '.twig', $parameters);
+    }
+
+    /**
+     * @return TwigEnvironment
+     */
+    public function getTwig(): TwigEnvironment
+    {
+        return $this->twig;
     }
 
 }

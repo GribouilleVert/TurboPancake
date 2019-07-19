@@ -1,7 +1,7 @@
 <?php
 namespace Tests\TurboPancake\Modules;
 
-use TurboPancake\Actions\RouterAware;
+use TurboPancake\Actions\RouterAwareAction;
 use TurboPancake\Module;
 use TurboPancake\Router;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -13,7 +13,7 @@ class RouterAwareModule extends Module {
      */
     private $router;
 
-    use RouterAware;
+    use RouterAwareAction;
 
     public function __construct(Router $router)
     {

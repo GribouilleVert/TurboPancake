@@ -13,14 +13,14 @@ use Zend\Expressive\Router\Route as ZendRoute;
  */
 final class Router {
 
-    private $router;
+    private $internalRouter;
 
     /**
      * Router constructor.
      */
     public function __construct()
     {
-        $this->router = new FastRouteRouter();
+        $this->internalRouter = new FastRouteRouter();
     }
 
     /**
@@ -31,7 +31,7 @@ final class Router {
      */
     public function get(string $path, $callback, string $name)
     {
-        $this->router->addRoute(new ZendRoute($path, $callback, ['GET'], $name));
+        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['GET'], $name));
     }
 
     /**
@@ -42,7 +42,7 @@ final class Router {
      */
     public function post(string $path, $callback, ?string $name = null)
     {
-        $this->router->addRoute(new ZendRoute($path, $callback, ['POST'], $name));
+        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['POST'], $name));
     }
 
     /**
@@ -53,7 +53,18 @@ final class Router {
      */
     public function put(string $path, $callback, ?string $name = null)
     {
-        $this->router->addRoute(new ZendRoute($path, $callback, ['PUT'], $name));
+        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['PUT'], $name));
+    }
+
+    /**
+     * Permet d'ajouter une URI en PATCH
+     * @param string $path URI (avec paramètres ex: "/edit/{id:[0-9]+}")
+     * @param string|callable $callback Callback a appeler, si string, transmis au conteneur de dépendance pour résolution.
+     * @param string|null $name Nom de la route
+     */
+    public function patch(string $path, $callback, ?string $name = null)
+    {
+        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['PATCH'], $name));
     }
 
     /**
@@ -64,7 +75,45 @@ final class Router {
      */
     public function delete(string $path, $callback, ?string $name = null)
     {
-        $this->router->addRoute(new ZendRoute($path, $callback, ['DELETE'], $name));
+        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['DELETE'], $name));
+    }
+
+    /**
+     * Permet d'ajouter une URI en OPTIONS
+     * @param string $path URI (avec paramètres ex: "/delete/{id:[0-9]+}")
+     * @param string|callable $callback Callback a appeler, si string, transmis au conteneur de dépendance pour résolution.
+     * @param string|null $name Nom de la route
+     */
+    public function options(string $path, $callback, ?string $name = null)
+    {
+        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['OPTIONS'], $name));
+    }
+
+    /**
+     * Permet d'ajouter une URI en HEAD
+     * @param string $path URI (avec paramètres ex: "/delete/{id:[0-9]+}")
+     * @param string|callable $callback Callback a appeler, si string, transmis au conteneur de dépendance pour résolution.
+     * @param string|null $name Nom de la route
+     */
+    public function head(string $path, $callback, ?string $name = null)
+    {
+        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['HEAD'], $name));
+    }
+
+    /**
+     * Permet d'ajouter une URI en GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD
+     * @param string $path URI (avec paramètres ex: "/delete/{id:[0-9]+}")
+     * @param string|callable $callback Callback a appeler, si string, transmis au conteneur de dépendance pour résolution.
+     * @param string $name Nom de la route
+     */
+    public function all(string $path, $callback, string $name)
+    {
+        $this->internalRouter->addRoute(new ZendRoute(
+            $path,
+            $callback,
+            ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
+            $name
+        ));
     }
 
     /**
@@ -91,7 +140,7 @@ final class Router {
      */
     public function match(ServerRequestInterface $request): ?Route
     {
-        $result = $this->router->match($request);
+        $result = $this->internalRouter->match($request);
 
         if ($result->isSuccess()) {
             return new Route(
@@ -112,7 +161,7 @@ final class Router {
      */
     public function generateUri(string $name, array $parameters = [], array $queryParameters = []): ?string
     {
-        $uri = $this->router->generateUri($name, $parameters);
+        $uri = $this->internalRouter->generateUri($name, $parameters);
         if (!empty($queryParameters)) {
             return $uri . '?' . http_build_query($queryParameters);
         }

@@ -1,5 +1,6 @@
 <?php
 
+use Psr\Container\ContainerInterface;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Renderer\TwigRendererFactory;
 use TurboPancake\Router;
@@ -23,6 +24,7 @@ return [
         'debug' => true,
         'charset' => 'utf-8',
         'auto_reload' => true,
+        'cache' => false,
     ],
     'twig.extensions' => [
         \DI\get(RouterTwigExtension::class),
@@ -35,7 +37,7 @@ return [
     SessionInterface::class => \DI\autowire(PHPSession::class),
     Router::class => \DI\autowire(Router::class),
     RendererInterface::class => \DI\Factory(TwigRendererFactory::class),
-    PDO::class => function (\Psr\Container\ContainerInterface $c) {
+    PDO::class => function (ContainerInterface $c) {
         $pdo = new PDO(
             "mysql:host={$c->get('database.host')};port=3306;dbname={$c->get('database.name')};charset=UTF8",
             $c->get('database.username'),
