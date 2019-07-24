@@ -2,6 +2,9 @@
 namespace TurboPancake;
 
 use DI\Container;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use mysql_xdevapi\Exception;
 use TurboPancake\Renderer\RendererInterface;
 use GuzzleHttp\Psr7\Response;
 use Psr\Container\ContainerInterface;
@@ -12,13 +15,19 @@ use Psr\Http\Message\ServerRequestInterface;
  * Class App
  * @package TurboPancake
  */
-final class App {
+final class App implements DelegateInterface {
 
     /**
-     * Modules instanciés
-     * @var array
+     * Modules
+     * @var string[]
      */
-    private $module = [];
+    private $modules = [];
+
+    /**
+     * Middlewares
+     * @var string[]
+     */
+    private $middlewares;
 
     /**
      * Router de l'application
@@ -27,16 +36,65 @@ final class App {
     private $container;
 
     /**
-     * App constructor.
-     * @param ContainerInterface $container Conteneur de dépendances
-     * @param array $modules Liste des modules a charger
+     * @var string
      */
-    public function __construct(ContainerInterface $container, array $modules = [])
+    private $containerDefinition;
+
+    /**
+     * @var int index des middlewares
+     */
+    private $index = 0;
+
+    /**
+     * App constructor.
+     * @param mixed $containerDefinitions Definitions du conteneur d'injection de dépandendances
+     * @param array $modules
+     */
+    public function __construct($containerDefinitions, array $modules = [])
     {
-        $this->container = $container;
-        foreach ($modules as $module) {
-            $this->module[] = $container->get($module);
+        $this->containerDefinition = $containerDefinitions;
+        $this->modules = $modules;
+    }
+
+    /**
+     * Ajoute un module
+     * @param string $module
+     * @return App
+     */
+    public function addModule(string $module): self
+    {
+        $this->modules[] = $module;
+        return $this;
+    }
+
+    /**
+     * Ajoute un middleware
+     * @param string $middware
+     * @return App
+     */
+    public function pipe(string $middware): self
+    {
+        $this->middlewares[] = $middware;
+        return $this;
+    }
+
+    /**
+     * Execute les middlewares
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     * @throws \Exception
+     */
+    public function process(ServerRequestInterface $request): ResponseInterface
+    {
+        $middleware = $this->getMiddleware();
+        if (is_null($middleware)) {
+            throw new \Exception('None of the middlewares catched de request.');
+        } elseif (is_callable($middleware)) {
+            return $middleware($request, [$this, 'process']);
+        } elseif ($middleware instanceof MiddlewareInterface) {
+            return $middleware->process($request, $this);
         }
+        throw new \Exception('Invalid middleware type');
     }
 
     /**
@@ -46,59 +104,45 @@ final class App {
      */
     public function run(ServerRequestInterface $request): ResponseInterface
     {
-        $parsedBody = $request->getParsedBody();
-        if (!is_null($parsedBody)
-            AND array_key_exists('_method', $parsedBody)
-            AND in_array($parsedBody['_method'], ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'])
-        ) {
-            $request = $request->withMethod($parsedBody['_method']);
+        foreach ($this->modules as $module) {
+            $this->getContainer()->get($module);
         }
 
-        $uri = $request->getUri()->getPath();
-        if (!empty($uri) AND $uri[-1] === '/') {
-            return new Response(301, ['Location' => substr($uri, 0, -1)]);
-        }
-
-        $route = $this->container->get(Router::class)->match($request);
-        if (is_null($route)) {
-            return new Response(404, [], '<h1>Erreur 404</h1>');
-        }
-
-        if ($this->container->has(RendererInterface::class)) {
-            $renderer = $this->container->get(RendererInterface::class);
-            $renderer->addGlobal('route', $route->getName());
-        }
-
-        $parameters = $route->getParams();
-        $request = array_reduce(
-            array_keys($parameters),
-            function (ServerRequestInterface $request, $key) use ($parameters) {
-                return $request->withAttribute($key, $parameters[$key]);
-            },
-            $request
-        );
-
-        $callback = $route->getCallback();
-        if (is_string($callback)) {
-            $callback = $this->container->get($callback);
-        }
-
-        $response = call_user_func_array($callback, [$request]);
-        if (is_string($response)) {
-            return new Response(200, [], $response);
-        } elseif ($response instanceof ResponseInterface) {
-            return $response;
-        } else {
-            throw new \Exception('Response type is invalid, expected string or ResponseInterface instance');
-        }
+        return $this->process($request);
     }
 
     /**
      * @return ContainerInterface
+     * @throws \Exception
      */
     public function getContainer(): ContainerInterface
     {
+        if (!$this->container instanceof ContainerInterface) {
+            $builder = new \DI\ContainerBuilder();
+            $builder->addDefinitions($this->containerDefinition);
+            foreach ($this->modules as $module) {
+                if (!is_null($module::DEFINITIONS)) {
+                    $builder->addDefinitions($module::DEFINITIONS);
+                }
+            }
+            $this->container = $builder->build();
+        }
+
         return $this->container;
+    }
+
+    /**
+     * @return MiddlewareInterface|callable|null
+     * @throws \Exception
+     */
+    private function getMiddleware(): ?object
+    {
+        if (array_key_exists($this->index, $this->middlewares)) {
+            $middleware = $this->getContainer()->get($this->middlewares[$this->index]);
+            $this->index++;
+            return $middleware;
+        }
+        return null;
     }
 
 }

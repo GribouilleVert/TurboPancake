@@ -151,7 +151,7 @@ class ValidatorTest extends DatabaseTestCase {
         $this->assertTrue($this->buildValidator(['test' => 'a'])->exists('test', [42, 'a', true])->check());
         $this->assertFalse($this->buildValidator(['test' => false])->exists('test', [42, 'a', true])->check());
 
-        $this->expectException(\Exception::class);
+        $this->expectException(\TypeError::class);
         $this->assertFalse($this->buildValidator(['test' => false])->exists('test', 'This will trigger an exception')->check());
     }
 

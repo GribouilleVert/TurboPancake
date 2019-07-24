@@ -4,7 +4,7 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item">
-        <a href="{{ path(route) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>: Page {{ page??1 }}
+        <a href="{{ path(routePrefix ~ '.index') }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>: Page {{ page??1 }}
     </li>
 {% endblock %}
 
@@ -26,6 +26,7 @@
                 </tr>
                 </thead>
                 <tbody>
+                {% set csrf_input = csrf_input() %}
                 {% for item in items %}
                     <tr>
                         <td>{{ item.name }}</td>
@@ -34,6 +35,7 @@
                             <form action="{{ path(routePrefix ~ '.delete', {id: item.id}) }}" class="d-inline-block" method="post">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="btn btn-error"><i class="icon icon-delete"></i> Supprimer</button>
+                                {{ csrf_input }}
                             </form>
                         </td>
                     </tr>

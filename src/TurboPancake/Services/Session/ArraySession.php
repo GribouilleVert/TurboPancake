@@ -19,7 +19,6 @@ final class ArraySession implements SessionInterface {
      * @param string $key
      * @param ?mixed $default
      * @return mixed
-     * @throws \Exception
      */
     public function get(string $key, $default = null)
     {
@@ -33,7 +32,6 @@ final class ArraySession implements SessionInterface {
      * Défini où met à jour une information de session
      * @param string $key
      * @param mixed $value
-     * @throws \Exception
      */
     public function set(string $key, $value): void
     {
@@ -43,11 +41,51 @@ final class ArraySession implements SessionInterface {
     /**
      * Supprime une information de session
      * @param string $key
-     * @throws \Exception
      */
     public function delete(string $key): void
     {
         unset($this->data[$key]);
+    }
+
+    /**
+     * Si un offset existe
+     * @param mixed $offset <p>
+     * @return boolean true on success or false on failure.
+     */
+    public function offsetExists($offset): bool
+    {
+        return array_key_exists($offset, $this->data);
+    }
+
+    /**
+     * @alias $this->get
+     * @param mixed $offset
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    /**
+     * @alias $this->set
+     * @param mixed $offset
+     * @param mixed $value
+     * @return void
+     */
+    public function offsetSet($offset, $value): void
+    {
+        $this->set($offset, $value);
+    }
+
+    /**
+     * @alias $this->delete
+     * @param mixed $offset
+     * @return void
+     */
+    public function offsetUnset($offset): void
+    {
+        $this->delete($offset);
     }
 
 }

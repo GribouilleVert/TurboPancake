@@ -7,7 +7,7 @@
         <a href="{{ path(routePrefix ~ '.index') }}" class="tooltip" data-tooltip="Blog">Blog</a>
     </li>
     <li class="breadcrumb-item">
-        Editer: <a href="{{ path(route, {id: item.id}) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ item.name }}</a>
+        Editer: <a href="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ item.name }}</a>
     </li>
 {% endblock %}
 

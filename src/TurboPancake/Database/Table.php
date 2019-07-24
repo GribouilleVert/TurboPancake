@@ -102,7 +102,10 @@ class Table {
     public function findBy(string $column, $toCompareValue, string $operator = '='): ?array
     {
         if (!in_array($operator, ['=', '!=', '<', '<=', '>', '>='])) {
-            throw new \Exception("The comparison opartor $operator is not accepted by the function " . Table::class . "::findBy, please check the function's PHPDoc for a list of accepted comparaison oparators.");
+            throw new \Exception(
+                "The comparison opartor $operator is not accepted by the function " . Table::class .
+                "::findBy, please check the function's PHPDoc for a list of accepted comparaison oparators."
+            );
         }
         return $this->fetch("SELECT * FROM {$this->table} WHERE $column $operator ?", [$toCompareValue], true);
     }

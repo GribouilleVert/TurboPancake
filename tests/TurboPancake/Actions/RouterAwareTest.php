@@ -24,9 +24,10 @@ class RouterAwareTest extends TestCase {
     }
 
     public function test301Redirection() {
-        $app = new App($this->container, [
+        $app = (new App([], [
             RouterAwareModule::class
-        ]);
+        ]))->pipe(\TurboPancake\Middleware\RouterMiddleware::class)
+            ->pipe(\TurboPancake\Middleware\DispatcherMiddleware::class);
 
         $request = new ServerRequest('GET', '/301/vert');
         $response = $app->run($request);
@@ -37,9 +38,10 @@ class RouterAwareTest extends TestCase {
     }
 
     public function test302Redirection() {
-        $app = new App($this->container, [
+        $app = (new App([], [
             RouterAwareModule::class
-        ]);
+        ]))->pipe(\TurboPancake\Middleware\RouterMiddleware::class)
+            ->pipe(\TurboPancake\Middleware\DispatcherMiddleware::class);
 
         $request = new ServerRequest('GET', '/302/violet');
         $response = $app->run($request);

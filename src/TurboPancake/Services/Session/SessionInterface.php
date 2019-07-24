@@ -1,7 +1,7 @@
 <?php
 namespace TurboPancake\Services\Session;
 
-interface SessionInterface {
+interface SessionInterface extends \ArrayAccess {
 
     /**
      * Récupère une information de session
@@ -12,7 +12,7 @@ interface SessionInterface {
     public function get(string $key, $default = null);
 
     /**
-     * Défini où met à jour une information de session
+     * Défini ou met à jour une information de session
      * @param string $key
      * @param mixed$value
      */

@@ -57,6 +57,52 @@ class PHPSession implements SessionInterface {
     }
 
     /**
+     * Si un offset existe
+     * @param mixed $offset <p>
+     * @return boolean true on success or false on failure.
+     * @throws \Exception
+     */
+    public function offsetExists($offset): bool
+    {
+        $this->ensureStarted();
+        return array_key_exists($offset, $_SESSION);
+    }
+
+    /**
+     * @alias $this->get
+     * @param mixed $offset
+     * @return mixed
+     * @throws \Exception
+     */
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    /**
+     * @alias $this->set
+     * @param mixed $offset
+     * @param mixed $value
+     * @return void
+     * @throws \Exception
+     */
+    public function offsetSet($offset, $value): void
+    {
+        $this->set($offset, $value);
+    }
+
+    /**
+     * @alias $this->delete
+     * @param mixed $offset
+     * @return void
+     * @throws \Exception
+     */
+    public function offsetUnset($offset): void
+    {
+        $this->delete($offset);
+    }
+
+    /**
      * S'assure que la session est démarrée et si ce n'est pas le cas, suis la directive $this->comportment
      * @throws \Exception
      */

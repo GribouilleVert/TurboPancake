@@ -7,7 +7,7 @@
         <a href="{{ path('blog.index') }}" class="tooltip" data-tooltip="Le Blog">Le Blog</a>
     </li>
     <li class="breadcrumb-item">
-        <a href="{{ path(route) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>: Page {{ page??1 }}
+        <a href="{{ path('blog.category', {slug: category.slug}) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>: Page {{ page??1 }}
     </li>
 {% endblock %}
 

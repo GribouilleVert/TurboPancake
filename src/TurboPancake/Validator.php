@@ -187,7 +187,7 @@ class Validator {
                 $this->addError($field, 'exists', [], $customError);
             }
         } else {
-            throw new \Exception(
+            throw new \TypeError(
                 'Validation error: the $dataSource parameters must be an array or a Table instance.',
                 E_WARNING
             );
@@ -228,7 +228,7 @@ class Validator {
                 $this->addError($field, 'unique', [$value], $customError);
             }
         } else {
-            throw new \Exception(
+            throw new \TypeError(
                 'Validation error: the $dataSource parameters must be an array or a Table instance.',
                 E_WARNING
             );

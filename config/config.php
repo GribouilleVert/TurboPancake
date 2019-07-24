@@ -1,12 +1,14 @@
 <?php
 
 use Psr\Container\ContainerInterface;
+use TurboPancake\Middleware\CsrfMiddleware;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Renderer\TwigRendererFactory;
 use TurboPancake\Router;
 use TurboPancake\Router\RouterTwigExtension;
 use TurboPancake\Services\Session\PHPSession;
 use TurboPancake\Services\Session\SessionInterface;
+use TurboPancake\Twig\CsrfExtension;
 use TurboPancake\Twig\FlashExtension;
 use TurboPancake\Twig\FormExtension;
 use TurboPancake\Twig\PagerFantaExtension;
@@ -33,7 +35,9 @@ return [
         \DI\get(TimeExtension::class),
         \DI\get(FlashExtension::class),
         \DI\get(FormExtension::class),
+        \DI\get(CsrfExtension::class),
     ],
+    //Objets globaux
     SessionInterface::class => \DI\autowire(PHPSession::class),
     Router::class => \DI\autowire(Router::class),
     RendererInterface::class => \DI\Factory(TwigRendererFactory::class),
@@ -46,5 +50,8 @@ return [
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
         return $pdo;
-    }
+    },
+
+    //Middlwares
+    CsrfMiddleware::class => \DI\create()->constructor(\DI\get(SessionInterface::class)),
 ];
