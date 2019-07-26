@@ -5,6 +5,7 @@ use TurboPancake\Middleware\CsrfMiddleware;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Renderer\TwigRendererFactory;
 use TurboPancake\Router;
+use TurboPancake\Router\RouterFactory;
 use TurboPancake\Router\RouterTwigExtension;
 use TurboPancake\Services\Session\PHPSession;
 use TurboPancake\Services\Session\SessionInterface;
@@ -16,17 +17,18 @@ use TurboPancake\Twig\TextExtension;
 use TurboPancake\Twig\TimeExtension;
 
 return [
+    'env'    => \DI\env('ENV', 'production'),
+
+    //Base de donnée
     'database.host' => 'localhost',
     'database.name' => 'TurboPancake',
     'database.username' => 'TurboPancake',
     'database.password' => 'La8zS1tLYuN9PPRz',
 
-    'views.path' => dirname(__DIR__) . '/views',
+    //Twig
+    'views.path' => 'views',
     'twig.configuration' => [
-        'debug' => true,
-        'charset' => 'utf-8',
-        'auto_reload' => true,
-        'cache' => false,
+        'charset' => 'utf-8'
     ],
     'twig.extensions' => [
         \DI\get(RouterTwigExtension::class),
@@ -37,9 +39,10 @@ return [
         \DI\get(FormExtension::class),
         \DI\get(CsrfExtension::class),
     ],
+
     //Objets globaux
     SessionInterface::class => \DI\autowire(PHPSession::class),
-    Router::class => \DI\autowire(Router::class),
+    Router::class => \DI\factory(RouterFactory::class),
     RendererInterface::class => \DI\Factory(TwigRendererFactory::class),
     PDO::class => function (ContainerInterface $c) {
         $pdo = new PDO(
@@ -53,5 +56,5 @@ return [
     },
 
     //Middlwares
-    CsrfMiddleware::class => \DI\create()->constructor(\DI\get(SessionInterface::class)),
+    CsrfMiddleware::class => \DI\autowire()->constructor(\DI\get(SessionInterface::class)),
 ];

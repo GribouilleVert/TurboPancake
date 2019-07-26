@@ -9,6 +9,7 @@ class TwigRendererFactory {
 
     public function __invoke(ContainerInterface $container): TwigRenderer
     {
+        $production = $container->get('env') === 'production';
         $viewsPaths = $container->get('views.path');
         $loader = new FilesystemLoader($viewsPaths);
 
@@ -17,6 +18,12 @@ class TwigRendererFactory {
         } else {
             $configuration = [];
         }
+
+        $configuration = array_merge($configuration, [
+            'debug' => !$production,
+            'auto_reload' => !$production,
+            'cache' => $production ? 'tmp/twig' : false,
+        ]);
 
         $twig = new \Twig\Environment($loader, $configuration);
         if ($container->has('twig.extensions')) {

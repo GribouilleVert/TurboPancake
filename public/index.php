@@ -1,15 +1,14 @@
 <?php
-if (!defined('ROOT')) {
-    define('ROOT', dirname(__DIR__));
-}
-require ROOT . '/vendor/autoload.php';
+chdir(dirname(__DIR__));
+
+require 'vendor/autoload.php';
 
 $modules = [
     \TurboModule\Administration\AdministrationModule::class,
     \TurboModule\Blog\BlogModule::class,
 ];
 
-$app = (new TurboPancake\App(ROOT . '/config/config.php', $modules))
+$app = (new TurboPancake\App('config/config.php', $modules))
     ->pipe(\Middlewares\Whoops::class)
     ->pipe(\TurboPancake\Middleware\TralingSlashMiddleware::class)
     ->pipe(\TurboPancake\Middleware\MethodDetectorMiddleware::class)

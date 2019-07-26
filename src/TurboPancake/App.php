@@ -119,6 +119,12 @@ final class App implements DelegateInterface {
     {
         if (!$this->container instanceof ContainerInterface) {
             $builder = new \DI\ContainerBuilder();
+            $env = getenv('ENV') ?: 'production';
+            if ($env === 'production') {
+                $builder->enableDefinitionCache();
+//                $builder->enableCompilation('tmp'); #Actually buged, TODO: Check is the bug is fixed
+                $builder->writeProxiesToFile(true, 'tmp/proxies');
+            }
             $builder->addDefinitions($this->containerDefinition);
             foreach ($this->modules as $module) {
                 if (!is_null($module::DEFINITIONS)) {

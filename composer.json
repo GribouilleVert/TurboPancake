@@ -24,13 +24,13 @@
         "twig/twig": "3.x-dev",
         "php-di/php-di": "dev-master",
         "pagerfanta/pagerfanta": "^1.0@dev",
-        "sensiolabs/security-checker": "^5.0@dev",
         "psr/http-server-middleware": "^1.0@dev",
         "middlewares/whoops": "^0.4.1",
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-json": "*",
-        "ext-intl": "*"
+        "ext-intl": "*",
+        "sensiolabs/security-checker": "^6.0@dev"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.0@dev",

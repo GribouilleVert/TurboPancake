@@ -19,8 +19,8 @@ return [
     ],
     'environments' => [
         'default_migration_table' => '_phinxlog',
-        'default_database' => 'development',
-        'development' => [
+        'default_database' => 'database',
+        'database' => [
             'adapter' => 'mysql',
             'host' => $app->getContainer()->get('database.host'),
             'name' => $app->getContainer()->get('database.name'),
