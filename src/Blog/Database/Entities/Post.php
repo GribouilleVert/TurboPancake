@@ -1,6 +1,8 @@
 <?php
 namespace TurboModule\Blog\Database\Entities;
 
+use TypeError;
+
 class Post {
 
     /**
@@ -21,12 +23,12 @@ class Post {
     /**
      * @var int
      */
-    public $category_id;
+    public $categoryId;
 
     /**
      * @var string
      */
-    public $category_name;
+    public $categoryName;
 
     /**
      * @var string
@@ -36,21 +38,40 @@ class Post {
     /**
      * @var \DateTime
      */
-    public $created_at;
+    public $createdAt;
 
     /**
      * @var \DateTime
      */
-    public $updated_at;
+    public $updatedAt;
 
-    public function __construct()
+    /**
+     * @param \DateTime|string $createdAt
+     * @throws \Exception
+     */
+    public function setCreatedAt($createdAt): void
     {
-        if ($this->created_at) {
-            $this->created_at = new \DateTime($this->created_at);
-        }
-        if ($this->updated_at) {
-            $this->updated_at = new \DateTime($this->updated_at);
+        if (is_string($createdAt)) {
+            $this->createdAt = new \DateTime($createdAt);
+        } elseif ($createdAt instanceof  \DateTime) {
+            $this->createdAt = $createdAt;
+        } else {
+            throw new TypeError('Unexpected type '.gettype($createdAt). ' for parameter $createdAt');
         }
     }
 
+    /**
+     * @param \DateTime|string $updatedAt
+     * @throws \Exception
+     */
+    public function setUpdatedAt($updatedAt): void
+    {
+        if (is_string($updatedAt)) {
+            $this->updatedAt = new \DateTime($updatedAt);
+        } elseif ($updatedAt instanceof  \DateTime) {
+            $this->updatedAt = $updatedAt;
+        } else {
+            throw new TypeError('Unexpected type '.gettype($updatedAt). ' for parameter $createdAt');
+        }
+    }
 }

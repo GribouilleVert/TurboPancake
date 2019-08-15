@@ -4,6 +4,7 @@ namespace TurboPancake\Database;
 use mysql_xdevapi\Exception;
 use Pagerfanta\Pagerfanta;
 use PDO;
+use TurboPancake\Database\Exception\NoRecordExpection;
 
 class Table {
 
@@ -245,6 +246,7 @@ class Table {
      * @param array $parameters
      * @param bool $fetchAll
      * @return null|array|mixed
+     * @throws NoRecordExpection
      */
     protected function fetch(string $query, array $parameters = [], bool $fetchAll = false)
     {
@@ -258,10 +260,14 @@ class Table {
         }
 
         if ($fetchAll) {
-            return $statement->fetchAll() ?: null;
+            $result = $statement->fetchAll() ?: null;
         } else {
-            return $statement->fetch() ?: null;
+            $result = $statement->fetch() ?: null;
         }
+        if (is_null($result)) {
+            throw new NoRecordExpection('No record was found');
+        }
+        return $result;
     }
 
     /**

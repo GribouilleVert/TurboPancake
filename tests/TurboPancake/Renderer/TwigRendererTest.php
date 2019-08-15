@@ -18,6 +18,7 @@ class TwigRendererTest extends TestCase {
     public function setUp(): void {
         $container = new Container();
         $container->set('views.path', __DIR__ . '/views');
+        $container->set('env', getenv('ENV'));
         $this->renderer = (new TwigRendererFactory)->__invoke($container);
     }
 
@@ -50,6 +51,7 @@ class TwigRendererTest extends TestCase {
     public function testRendererWithCustomConfiguration() {
         $container = new Container();
         $container->set('views.path', __DIR__ . '/views');
+        $container->set('env', getenv('ENV'));
         $container->set('twig.configuration', [
             'strict_variables' => true
         ]);
@@ -62,6 +64,7 @@ class TwigRendererTest extends TestCase {
     public function testRendererWithCustomExtension() {
         $container = new Container();
         $container->set('views.path', __DIR__ . '/views');
+        $container->set('env', getenv('ENV'));
         $container->set('twig.extensions', [
             new TwigExtension()
         ]);

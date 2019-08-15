@@ -4,6 +4,7 @@ namespace Tests\TurboModule\Blog\Manager;
 use Tests\DatabaseTestCase;
 use TurboModule\Blog\Database\Entities\Post;
 use TurboModule\Blog\Database\Tables\PostsTable;
+use TurboPancake\Database\Exception\NoRecordExpection;
 
 class PostTableTest extends DatabaseTestCase {
 
@@ -27,8 +28,8 @@ class PostTableTest extends DatabaseTestCase {
     }
 
     public function testNoRecordFount() {
+        $this->expectException(NoRecordExpection::class);
         $result = $this->postTable->find(-1);
-        $this->assertNull($result);
     }
 
     public function testUpdate() {
