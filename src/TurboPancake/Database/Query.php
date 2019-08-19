@@ -1,7 +1,7 @@
 <?php
 namespace TurboPancake\Database;
 
-use TurboPancake\Database\Exception\QueryBuilderException;
+use TurboPancake\Database\Exceptions\QueryBuilderException;
 
 class Query {
 
@@ -138,8 +138,8 @@ class Query {
      */
     public function limit(int $size, ?int $start = null): self
     {
-        $start = is_null($start) ? '' : (string) $start . ', ';
-        $this->limit =  $start . (string) $size;
+        $start = is_null($start) ? '' : (string)$start . ', ';
+        $this->limit =  $start . (string)$size;
         return $this;
     }
 
@@ -161,7 +161,9 @@ class Query {
     public function count(string $column = 'id'): int
     {
         if (is_null($this->pdo)) {
-            throw new QueryBuilderException(self::class . "::count() Can't be called when pdo hasn't been defined in the constructor");
+            throw new QueryBuilderException(
+                self::class . "::count() Can't be called when pdo hasn't been defined in the constructor"
+            );
         }
         $this->columns = ["count($column)"];
         return (int)$this->execute($this->parameters)->fetchColumn();
@@ -174,7 +176,9 @@ class Query {
     public function fetch(): \stdClass
     {
         if (is_null($this->pdo)) {
-            throw new QueryBuilderException(self::class . "::fetch() Can't be called when pdo hasn't been defined in the constructor");
+            throw new QueryBuilderException(
+                self::class . "::fetch() Can't be called when pdo hasn't been defined in the constructor"
+            );
         }
 
         if ($this->entity) {
@@ -191,7 +195,9 @@ class Query {
     public function fetchAll(): QueryResult
     {
         if (is_null($this->pdo)) {
-            throw new QueryBuilderException(self::class . "::fetch() Can't be called when pdo hasn't been defined in the constructor");
+            throw new QueryBuilderException(
+                self::class . "::fetch() Can't be called when pdo hasn't been defined in the constructor"
+            );
         }
         $mode = is_null($this->entity) ? \PDO::FETCH_OBJ : \PDO::FETCH_ASSOC;
         $records = $this->execute($this->parameters)->fetchAll($mode);
@@ -205,7 +211,9 @@ class Query {
     public function run(): void
     {
         if (is_null($this->pdo)) {
-            throw new QueryBuilderException(self::class . "::run() Can't be called when pdo hasn't been defined in the constructor");
+            throw new QueryBuilderException(
+                self::class . "::run() Can't be called when pdo hasn't been defined in the constructor"
+            );
         }
         $this->execute($this->parameters);
     }
@@ -291,4 +299,5 @@ class Query {
         }
         return $this->pdo->query($query);
     }
+
 }

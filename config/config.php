@@ -1,7 +1,7 @@
 <?php
 
 use Psr\Container\ContainerInterface;
-use TurboPancake\Middleware\CsrfMiddleware;
+use TurboPancake\Middlewares\CsrfMiddleware;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Renderer\TwigRendererFactory;
 use TurboPancake\Router;
@@ -17,7 +17,7 @@ use TurboPancake\Twig\TextExtension;
 use TurboPancake\Twig\TimeExtension;
 
 return [
-    'env'    => \DI\env('ENV', 'production'),
+    'env'    => \DI\env('ENV', 'developpement'), //TODO: set back to `production`
 
     //Base de donnée
     'database.host' => 'localhost',

@@ -3,7 +3,7 @@ namespace Tests\TurboPancake\Database;
 
 use Tests\DatabaseTestCase;
 use Tests\TurboPancake\Database\Entities\Demo;
-use TurboPancake\Database\Exception\QueryBuilderException;
+use TurboPancake\Database\Exceptions\QueryBuilderException;
 use TurboPancake\Database\Query;
 use TurboPancake\Database\QueryResult;
 

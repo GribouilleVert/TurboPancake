@@ -1,5 +1,5 @@
 <?php
-namespace TurboPancake\Middleware;
+namespace TurboPancake\Middlewares;
 
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;

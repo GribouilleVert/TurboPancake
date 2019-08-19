@@ -6,7 +6,7 @@ use stdClass;
 use TurboPancake\Database\Table;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
-use TurboPancake\Services\FlashService;
+use TurboPancake\Services\Flash;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use TurboPancake\Validator;
 
@@ -23,7 +23,7 @@ class CrudAction {
     private $router;
 
     /**
-     * @var FlashService
+     * @var Flash
      */
     private $flash;
 
@@ -60,9 +60,9 @@ class CrudAction {
      * @param RendererInterface $renderer
      * @param Router $router
      * @param Table $table
-     * @param FlashService $flash
+     * @param Flash $flash
      */
-    public function __construct(RendererInterface $renderer, Router $router, Table $table, FlashService $flash)
+    public function __construct(RendererInterface $renderer, Router $router, Table $table, Flash $flash)
     {
         $this->renderer = $renderer;
         $this->table = $table;
@@ -118,28 +118,22 @@ class CrudAction {
      *
      * @param Request $request
      * @return ResponseInterface|string
+     * @throws \TurboPancake\Database\Exceptions\NoRecordException
      */
     public function edit(Request $request)
     {
         $errors = null;
         $item = $this->table->find($request->getAttribute('id'));
 
-        if (is_null($item)) {
-            $this->flash->warning($this->messages['not found']);
-            return $this->temporaryRedirect($this->routePrefix . '.index');
-        }
-
-        if ($request->getMethod() === 'PUT') {
-            $fields = $this->getFields($request);
+        if ($request->getMethod() === 'PATCH') {
             $validator = $this->getValidator($request, $item);
             if ($validator->check()) {
-                $this->table->update($item->id, $fields);
+                $this->table->update($item->id, $this->getFields($request, $item));
                 $this->flash->success($this->messages['edit']);
                 return $this->temporaryRedirect($this->routePrefix . '.index');
             }
             $errors = $validator->getErrors();
-            $fields['id'] = $item->id;
-            $item = $fields;
+            $item = array_merge($request->getParsedBody(), ['id' => $item->id]);
         }
 
         return $this->renderer->render(
@@ -159,14 +153,13 @@ class CrudAction {
         $errors = null;
         $item = $this->getDefaultEntity();
         if ($request->getMethod() === 'POST') {
-            $fields = $this->getFields($request);
-            $validator = $this->getValidator($request);
+            $validator = $this->getValidator($request, $item);
             if ($validator->check()) {
-                $this->table->insert($fields);
+                $this->table->insert($this->getFields($request, $item));
                 $this->flash->success($this->messages['create']);
                 return $this->temporaryRedirect($this->routePrefix . '.index');
             }
-            $item = $fields;
+            $item = $request->getParsedBody();
             $errors = $validator->getErrors();
         }
 
@@ -181,6 +174,7 @@ class CrudAction {
      *
      * @param Request $request
      * @return ResponseInterface|string
+     * @throws \TurboPancake\Database\Exceptions\NoRecordException
      */
     public function delete(Request $request)
     {
@@ -194,9 +188,10 @@ class CrudAction {
      * Récupère les champs compatibles dans la requête
      *
      * @param Request $request
+     * @param object $item
      * @return array
      */
-    protected function getFields(Request $request): array
+    protected function getFields(Request $request, $item): array
     {
         return array_filter($request->getParsedBody(), function ($key) {
             return in_array($key, []);
@@ -207,12 +202,12 @@ class CrudAction {
      * Crée le validateur et l'initialise
      *
      * @param Request $request
-     * @param null $itemDatas
+     * @param mixed $itemDatas Données du l'élément traité
      * @return Validator
      */
-    protected function getValidator(Request $request, $itemDatas = null): Validator
+    protected function getValidator(Request $request, $itemDatas): Validator
     {
-        return new Validator($request->getParsedBody());
+        return new Validator(array_merge($request->getParsedBody(), $request->getUploadedFiles()));
     }
 
     /**

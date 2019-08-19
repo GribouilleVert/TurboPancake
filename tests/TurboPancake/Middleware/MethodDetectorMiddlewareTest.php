@@ -4,7 +4,7 @@ namespace Tests\TurboPancake\Middleware;
 
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
-use TurboPancake\Middleware\MethodDetectorMiddleware;
+use TurboPancake\Middlewares\MethodDetectorMiddleware;
 
 class MethodDetectorMiddlewareTest extends TestCase {
 

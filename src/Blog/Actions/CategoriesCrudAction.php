@@ -6,7 +6,7 @@ use TurboModule\Blog\Database\Tables\CategoriesTable;
 use TurboPancake\Actions\CrudAction;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
-use TurboPancake\Services\FlashService;
+use TurboPancake\Services\Flash;
 use TurboPancake\Validator;
 
 final class CategoriesCrudAction extends CrudAction {
@@ -36,13 +36,13 @@ final class CategoriesCrudAction extends CrudAction {
      * @param RendererInterface $renderer
      * @param Router $router
      * @param CategoriesTable $table
-     * @param FlashService $flash
+     * @param Flash $flash
      */
     public function __construct(
         RendererInterface $renderer,
         Router $router,
         CategoriesTable $table,
-        FlashService $flash
+        Flash $flash
     ) {
         parent::__construct($renderer, $router, $table, $flash);
     }
@@ -70,7 +70,7 @@ final class CategoriesCrudAction extends CrudAction {
      */
     protected function getValidator(Request $request, $itemDatas = null): Validator
     {
-        return (new Validator($request->getParsedBody()))
+        return (parent::getValidator($request, $itemDatas))
             ->setCustomName('name', 'titre')
             ->setCustomName('slug', 'URL')
             ->filled('name', 'slug')

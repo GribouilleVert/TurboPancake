@@ -1,11 +1,11 @@
 <?php
-namespace TurboPancake\Middleware;
+namespace TurboPancake\Middlewares;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TurboPancake\Exception\CsrfException;
+use TurboPancake\Middlewares\Exceptions\CsrfException;
 
 class CsrfMiddleware implements MiddlewareInterface {
 
@@ -28,6 +28,7 @@ class CsrfMiddleware implements MiddlewareInterface {
         string $sessionKey = 'csrf'
     ) {
         $this->isValidSession($session);
+        $this->session = &$session;
         $this->session = &$session;
         $this->fieldName = $fieldName;
         $this->sessionKey = $sessionKey;

@@ -1,6 +1,6 @@
 <?php
 
-namespace TurboPancake\Database\Exception;
+namespace TurboPancake\Database\Exceptions;
 
 class ReadOnlyException extends \Exception {
 

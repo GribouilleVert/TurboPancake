@@ -14,6 +14,7 @@
         "psr-4": {
             "TurboPancake\\": "src/TurboPancake",
             "TurboModule\\": "src",
+            "TurboModule\\Blog\\": "src/Blog",
             "Tests\\": "tests"
         }
     },
@@ -30,7 +31,8 @@
         "ext-curl": "*",
         "ext-json": "*",
         "ext-intl": "*",
-        "sensiolabs/security-checker": "^6.0@dev"
+        "sensiolabs/security-checker": "^6.0@dev",
+        "ext-fileinfo": "*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.0@dev",

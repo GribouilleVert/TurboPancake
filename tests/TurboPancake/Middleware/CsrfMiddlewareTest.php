@@ -6,8 +6,8 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
-use TurboPancake\Exception\CsrfException;
-use TurboPancake\Middleware\CsrfMiddleware;
+use TurboPancake\Middlewares\Exceptions\CsrfException;
+use TurboPancake\Middlewares\CsrfMiddleware;
 
 class CsrfMiddlewareTest extends TestCase {
 

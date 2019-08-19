@@ -1,10 +1,9 @@
 <?php
 namespace TurboPancake\Database;
 
-use mysql_xdevapi\Exception;
 use Pagerfanta\Pagerfanta;
 use PDO;
-use TurboPancake\Database\Exception\NoRecordExpection;
+use TurboPancake\Database\Exceptions\NoRecordException;
 
 class Table {
 
@@ -24,6 +23,12 @@ class Table {
      * @var string
      */
     protected $entity;
+
+    /**
+     * Lancer une erreur en l'absence d'enregistrements
+     * @var bool
+     */
+    protected $throwOnNoteFound = true;
 
     /**
      * Table constructor.
@@ -52,6 +57,7 @@ class Table {
      *
      * @param int $id ID de l'article
      * @return \stdClass|mixed|null Données de l'article, null si aucune article n'a été trouvé
+     * @throws NoRecordException
      */
     public function find(int $id)
     {
@@ -83,6 +89,7 @@ class Table {
      * Renvoie un tableau d'objet contenant toutes les entrée de la table
      *
      * @return array
+     * @throws NoRecordException
      */
     public function findAll() :array
     {
@@ -208,6 +215,11 @@ class Table {
         return $this->table;
     }
 
+    public function setThrowOnNoteFound(bool $throwOnNoteFound)
+    {
+        $this->throwOnNoteFound = $throwOnNoteFound;
+    }
+
     /**
      * Requète a executer pour obtenir tous les éléments de la table
      *
@@ -246,7 +258,7 @@ class Table {
      * @param array $parameters
      * @param bool $fetchAll
      * @return null|array|mixed
-     * @throws NoRecordExpection
+     * @throws NoRecordException
      */
     protected function fetch(string $query, array $parameters = [], bool $fetchAll = false)
     {
@@ -260,12 +272,17 @@ class Table {
         }
 
         if ($fetchAll) {
+            //Return null only on failure
             $result = $statement->fetchAll() ?: null;
         } else {
+            //Return null only on failure
             $result = $statement->fetch() ?: null;
         }
         if (is_null($result)) {
-            throw new NoRecordExpection('No record was found');
+            if ($this->throwOnNoteFound) {
+                throw new NoRecordException('No record was found');
+            }
+            return $fetchAll?[]:null;
         }
         return $result;
     }

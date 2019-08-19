@@ -21,6 +21,11 @@ class Post {
     public $slug;
 
     /**
+     * @var string
+     */
+    public $image;
+
+    /**
      * @var int
      */
     public $categoryId;
@@ -56,7 +61,7 @@ class Post {
         } elseif ($createdAt instanceof  \DateTime) {
             $this->createdAt = $createdAt;
         } else {
-            throw new TypeError('Unexpected type '.gettype($createdAt). ' for parameter $createdAt');
+            throw new TypeError('Unexpected type ' . gettype($createdAt) . ' for parameter $createdAt');
         }
     }
 
@@ -71,7 +76,13 @@ class Post {
         } elseif ($updatedAt instanceof  \DateTime) {
             $this->updatedAt = $updatedAt;
         } else {
-            throw new TypeError('Unexpected type '.gettype($updatedAt). ' for parameter $createdAt');
+            throw new TypeError('Unexpected type ' . gettype($updatedAt) . ' for parameter $createdAt');
         }
     }
+
+    public function getThumbnail(): string
+    {
+        return '/uploads/thumbnails/' . $this->image;
+    }
+
 }

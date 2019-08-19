@@ -15,9 +15,9 @@
 
     <div class="container">
 
-        <form action="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" method="post">
+        <form action="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" method="post" enctype="multipart/form-data">
             {{ include(viewPath ~ '/blocks/form.twig') }}
-            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="_method" value="PATCH">
             <button class="btn btn-primary mt-2 float-right" type="submit">Enregistrer</button>
         </form>
 

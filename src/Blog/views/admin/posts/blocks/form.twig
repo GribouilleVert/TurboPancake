@@ -27,6 +27,21 @@
             wrapper_classes: ['column', 'col-4', 'col-sm-12'],
         }
     ) }}
+    {% if item.image %}
+        <img src="{{ item.thumbnail }}" alt="Image de l'article">
+    {% endif %}
+    {{ field(
+        'image',
+        'Miniature',
+        null,
+        {
+            type: 'file',
+            attributes: {
+                accept: 'image/*'
+            },
+            wrapper_classes: ['column', 'col-12'],
+        }
+    ) }}
     {{ field(
         'content',
         'Contenu',

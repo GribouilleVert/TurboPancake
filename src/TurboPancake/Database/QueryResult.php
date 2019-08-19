@@ -1,8 +1,8 @@
 <?php
 namespace TurboPancake\Database;
 
-use TurboPancake\Database\Exception\QueryBuilderException;
-use TurboPancake\Database\Exception\ReadOnlyException;
+use TurboPancake\Database\Exceptions\QueryBuilderException;
+use TurboPancake\Database\Exceptions\ReadOnlyException;
 
 class QueryResult implements \ArrayAccess, \Iterator {
 

@@ -1,7 +1,7 @@
 <?php
 namespace TurboPancake\Twig;
 
-use TurboPancake\Middleware\CsrfMiddleware;
+use TurboPancake\Middlewares\CsrfMiddleware;
 use Twig\Extension\AbstractExtension;
 
 final class CsrfExtension extends AbstractExtension {

@@ -119,7 +119,7 @@ final class App implements DelegateInterface {
     {
         if (!$this->container instanceof ContainerInterface) {
             $builder = new \DI\ContainerBuilder();
-            $env = getenv('ENV') ?: 'production';
+            $env = getenv('ENV') ?: 'developpement'; //TODO:  Set back to `production`
             if ($env === 'production') {
                 $builder->enableDefinitionCache();
 //                $builder->enableCompilation('tmp'); #Actually buged, TODO: Check is the bug is fixed

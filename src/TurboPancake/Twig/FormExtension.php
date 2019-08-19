@@ -39,8 +39,9 @@ final class FormExtension extends AbstractExtension {
             'lock_id' => false,
             'placeholder' => null,
             'extra_html' => null,
+            'error' => $context['errors'][$name] ?? false,
+            //Select specific options
             'select_options' => [],
-            'error' => $context['errors'][$name] ?? false
         ], $options);
 
         $id = $this->generateId($name, $options['lock_id']);
@@ -70,9 +71,15 @@ final class FormExtension extends AbstractExtension {
             case 'password':
             case 'date':
             case 'time':
+            case 'file':
                 $attributes['type'] = $type;
                 $attributes['value'] = $value;
                 $input = $this->input($label, $attributes);
+                break;
+
+            case 'file':
+                $attributes['type'] = $type;
+                $input = $this->file($label, $attributes);
                 break;
 
             case 'textarea':
@@ -162,6 +169,30 @@ final class FormExtension extends AbstractExtension {
      * @return string
      */
     private function input(?string $label, array $attributes)
+    {
+        if (!is_null($label)) {
+            $id = $attributes['id'] ?? '#';
+            $label = "<label class=\"form-label\" for=\"$id\">$label</label>";
+        } else {
+            $label = '';
+        }
+
+        $attributes['class'] = 'form-input' . $attributes['class'];
+        $attributesString = $this->buildAttributes($attributes);
+
+        $input = "<input $attributesString>";
+
+        return $label . $input;
+    }
+
+    /**
+     * Génère une entrée pour fichier
+     *
+     * @param null|string $label
+     * @param array $attributes
+     * @return string
+     */
+    private function file(?string $label, array $attributes)
     {
         if (!is_null($label)) {
             $id = $attributes['id'] ?? '#';

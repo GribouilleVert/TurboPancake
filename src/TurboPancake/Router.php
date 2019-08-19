@@ -132,7 +132,7 @@ final class Router {
         $this->get("$basePath/new", $callback, $baseName . '.create');
         $this->post("$basePath/new", $callback);
         $this->get("$basePath/{id:\d+}", $callback, $baseName . '.edit');
-        $this->put("$basePath/{id:\d+}", $callback);
+        $this->patch("$basePath/{id:\d+}", $callback);
         $this->delete("$basePath/{id:\d+}", $callback, $baseName . '.delete');
     }
 

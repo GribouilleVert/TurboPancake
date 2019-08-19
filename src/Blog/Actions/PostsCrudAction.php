@@ -3,13 +3,15 @@ namespace TurboModule\Blog\Actions;
 
 use DateTime;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\UploadedFileInterface;
+use TurboModule\Blog\BlogHelium;
 use TurboModule\Blog\Database\Entities\Post;
 use TurboModule\Blog\Database\Tables\CategoriesTable;
 use TurboModule\Blog\Database\Tables\PostsTable;
 use TurboPancake\Actions\CrudAction;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
-use TurboPancake\Services\FlashService;
+use TurboPancake\Services\Flash;
 use TurboPancake\Validator;
 
 final class PostsCrudAction extends CrudAction {
@@ -38,29 +40,42 @@ final class PostsCrudAction extends CrudAction {
         "create" => "L'article a bien été crée.",
         "delete" => "L'article a bien été supprimé.",
     ];
+    /**
+     * @var BlogHelium
+     */
+    private $helium;
 
     public function __construct(
         RendererInterface $renderer,
         Router $router,
         PostsTable $table,
         CategoriesTable $categoriesTable,
-        FlashService $flash
+        Flash $flash,
+        BlogHelium $helium
     ) {
         $table->privateMode = true;
         parent::__construct($renderer, $router, $table, $flash);
         $this->categoriesTable = $categoriesTable;
+        $this->helium = $helium;
     }
 
     /**
      * Récupère les champs compatibles dans la requête
      *
      * @param Request $request
+     * @param Post $item
      * @return array
      */
-    protected function getFields(Request $request): array
+    protected function getFields(Request $request, $item): array
     {
-        $fields =  array_filter($request->getParsedBody(), function ($key) {
-            return in_array($key, ['name', 'content', 'slug', 'created_at', 'category_id']);
+        $fields = array_merge($request->getParsedBody(), $request->getUploadedFiles());
+        if ($fields['image']->getError() === UPLOAD_ERR_OK) {
+            $fields['image'] = $this->helium->upload($fields['image'], $item->image);
+        } else {
+            $fields['image'] = $item->image;
+        }
+        $fields =  array_filter($fields, function ($key) {
+            return in_array($key, ['name', 'content', 'slug', 'created_at', 'category_id', 'image']);
         }, ARRAY_FILTER_USE_KEY);
         return array_merge($fields, [
             'updated_at' => date('Y-m-d H:i:s')
@@ -71,13 +86,13 @@ final class PostsCrudAction extends CrudAction {
      * Crée le validateur et l'initialise
      *
      * @param Request $request
-     * @param null $itemDatas
+     * @param mixed $itemDatas Données du l'élément traité
      * @return Validator
      * @throws \Exception
      */
-    protected function getValidator(Request $request, $itemDatas = null): Validator
+    protected function getValidator(Request $request, $itemDatas): Validator
     {
-        return (new Validator($request->getParsedBody()))
+        $validator = (parent::getValidator($request, $itemDatas))
             ->setCustomName('name', 'titre')
             ->setCustomName('slug', 'uri')
             ->setCustomName('content', 'contenu')
@@ -92,7 +107,14 @@ final class PostsCrudAction extends CrudAction {
             ->dateTime('created_at')
             ->slug('slug')
             ->unique('slug', $this->table, 'slug', [$itemDatas->slug])
-            ->unique('name', $this->table, 'name', [$itemDatas->name]);
+            ->unique('name', $this->table, 'name', [$itemDatas->name])
+            ->matchMimes('image', '%image/*%', 'Le fichier doit être une image.');
+
+        if ($request->getMethod() === "POST") {
+            $validator->uploaded('image');
+        }
+
+        return $validator;
     }
 
     /**
