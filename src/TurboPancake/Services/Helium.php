@@ -1,6 +1,7 @@
 <?php
 namespace TurboPancake\Services;
 
+use Intervention\Image\ImageManager;
 use Psr\Http\Message\UploadedFileInterface;
 
 class Helium {
@@ -29,6 +30,7 @@ class Helium {
         if ($oldFile) {
             $this->delete($oldFile);
         }
+
         $filename = $this->path . DS . $file->getClientFilename();
         $targetPath = $this->getPath($filename);
 
@@ -38,6 +40,9 @@ class Helium {
         }
 
         $file->moveTo($targetPath);
+
+         $this->generateImageFromFormats($targetPath);
+
         return pathinfo($targetPath, PATHINFO_BASENAME);
     }
 
@@ -47,16 +52,58 @@ class Helium {
         if (file_exists($targetPath)) {
             unlink($targetPath);
         }
+        $keys = array_keys($this->formats);
+        foreach ($keys as $key) {
+            $pathInfos = pathinfo($targetPath);
+            $tmpTargetPath = $this->suffixPath($targetPath, $key);
+            if (file_exists($tmpTargetPath)) {
+                unlink($tmpTargetPath);
+            }
+        }
+    }
+
+    protected function generateImageFromFormats(string $sourcePath): void
+    {
+        foreach ($this->formats as $format => $properties) {
+            $pathInfos = pathinfo($sourcePath);
+            $targetPath = $this->suffixPath($sourcePath, $format);
+            $targetPath = str_replace('.' . $pathInfos['extension'], '.png', $targetPath);
+
+            $manager = new ImageManager(['driver' => 'imagick']);
+            $image = $manager->make($sourcePath);
+
+            if (isset($properties['resize'])) {
+                [$width, $heigth, $fit] = $properties['resize'];
+                if ($fit) {
+                    $image->fit($width, $heigth);
+                } else {
+                    $image->resize($width, $heigth);
+                }
+            }
+
+            $image->save($targetPath, 100, 'png');
+        }
     }
 
     private function getPath(string $targetPath): string
     {
         if (file_exists($targetPath)) {
             $pathInfos = pathinfo($targetPath);
-            $targetPath = $pathInfos['dirname'] . DS . $pathInfos['filename'] . '_copy.' . $pathInfos['extension'];
+            if (strlen($pathInfos['filename']) <= 200) {
+                $targetPath = $this->suffixPath($targetPath, 'copy');
+            } else {
+                $targetPath = $this->suffixPath($targetPath, md5(time() . rand()));
+            }
             $targetPath = $this->getPath($targetPath);
         }
         return $targetPath;
+    }
+
+    private function suffixPath(string $path, string $suffix): string
+    {
+        $pathInfos = pathinfo($path);
+        return $pathInfos['dirname'] . self::DS .
+               $pathInfos['filename'] . '_' . $suffix . '.' . $pathInfos['extension'];
     }
 
 }

@@ -51,9 +51,10 @@ final class CategoriesCrudAction extends CrudAction {
      * Récupère les champs compatibles dans la requête
      *
      * @param Request $request
+     * @param $item
      * @return array
      */
-    protected function getFields(Request $request): array
+    protected function getFields(Request $request, $item): array
     {
         return array_filter($request->getParsedBody(), function ($key) {
             return in_array($key, ['name', 'slug']);

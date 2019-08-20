@@ -82,7 +82,9 @@ class Post {
 
     public function getThumbnail(): string
     {
-        return '/uploads/thumbnails/' . $this->image;
+        $pathInfos = pathinfo($this->image);
+        $targetPath = $pathInfos['filename'] . '_thumbnail.png';
+        return '/uploads/thumbnails/' . $targetPath;
     }
 
 }

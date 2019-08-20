@@ -2,6 +2,7 @@
 namespace TurboModule\Blog\Actions;
 
 use DateTime;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\UploadedFileInterface;
 use TurboModule\Blog\BlogHelium;
@@ -60,6 +61,23 @@ final class PostsCrudAction extends CrudAction {
     }
 
     /**
+     * Suppression d'un élément
+     *
+     * @param Request $request
+     * @return ResponseInterface|string
+     * @throws \TurboPancake\Database\Exceptions\NoRecordException
+     */
+    public function delete(Request $request)
+    {
+        /**
+         * @var $item Post
+         */
+        $item = $this->table->find($request->getAttribute('id'));
+        $this->helium->delete($item->image);
+        return parent::delete($request);
+    }
+
+    /**
      * Récupère les champs compatibles dans la requête
      *
      * @param Request $request
@@ -108,7 +126,8 @@ final class PostsCrudAction extends CrudAction {
             ->slug('slug')
             ->unique('slug', $this->table, 'slug', [$itemDatas->slug])
             ->unique('name', $this->table, 'name', [$itemDatas->name])
-            ->matchMimes('image', '%image/*%', 'Le fichier doit être une image.');
+            ->matchMimes('image', '%image/*%', 'Le fichier doit être une image.')
+            ->dimensions('image', 350, 350, 'L\'image doit faire au moins 350px par 350px');
 
         if ($request->getMethod() === "POST") {
             $validator->uploaded('image');

@@ -1291,6 +1291,41 @@ class Validator {
     }
 
     /**
+     * Vérifie qu'un fichier uploadé correspond a certaines dimensions minimum
+     * ATTENTION: Renvoie self sans faire de verification si l'upload a échoué
+     *
+     * @param string $field
+     * @param int $width Largeur minimum en px
+     * @param int $height Hauteur minimum en px
+     * @param string|null $customError
+     * @return Validator
+     * @throws ValidationException
+     */
+    public function dimensions(string $field, int $width, int $height, ?string $customError = null): self
+    {
+        /**
+         * @var $uploadedFile UploadedFileInterface
+         */
+        $uploadedFile = $this->getValue($field);
+        if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
+            return $this;
+        }
+
+        $filePath = $uploadedFile->getStream()->getMetadata('uri');
+        if (!file_exists($filePath)) {
+            throw new ValidationException('The uploaded file doesn\'t exist');
+        }
+
+        [$imageWidth, $imageHeight] = getimagesize($filePath);
+
+        if ($imageHeight < $height OR $imageWidth < $width) {
+            $this->addError('image', 'dimensions', [$width, $height], $customError);
+        }
+
+        return $this;
+    }
+
+    /**
      * Définit un nom d'affichage pour un champ
      *
      * @param string $field

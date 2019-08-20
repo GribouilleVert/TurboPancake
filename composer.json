@@ -27,12 +27,15 @@
         "pagerfanta/pagerfanta": "^1.0@dev",
         "psr/http-server-middleware": "^1.0@dev",
         "middlewares/whoops": "^0.4.1",
+        "sensiolabs/security-checker": "^6.0@dev",
+        "intervention/image": "^2.4@dev",
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-json": "*",
         "ext-intl": "*",
-        "sensiolabs/security-checker": "^6.0@dev",
-        "ext-fileinfo": "*"
+        "ext-fileinfo": "*",
+        "ext-gd": "*",
+        "ext-imagick": "*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.0@dev",

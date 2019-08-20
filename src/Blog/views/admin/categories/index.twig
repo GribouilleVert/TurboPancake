@@ -35,7 +35,7 @@
                             <form action="{{ path(routePrefix ~ '.delete', {id: item.id}) }}" class="d-inline-block" method="post">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="btn btn-error"><i class="icon icon-delete"></i> Supprimer</button>
-                                {{ csrf_input }}
+                                {{ csrf_input | raw }}
                             </form>
                         </td>
                     </tr>
