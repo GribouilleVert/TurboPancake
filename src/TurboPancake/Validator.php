@@ -1209,7 +1209,7 @@ class Validator {
         }
 
         if ($dataSource instanceof Table and !is_null($column)) {
-            $dataSource->setThrowOnNoteFound(false);
+            $dataSource->setThrowOnNotFound(false);
             if (count($dataSource->findBy($column, $value)) > 0) {
                 $this->addError($field, 'unique', [$value], $customError);
             }

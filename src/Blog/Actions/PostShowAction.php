@@ -34,7 +34,7 @@ final class PostShowAction {
 
     public function __invoke(Request $request)
     {
-        $post = $this->postTable->findWithCategory($request->getAttribute('id'));
+        $post = $this->postTable->findPublicWithCategory($request->getAttribute('id'));
         if (is_null($post)) {
             return $this->temporaryRedirect('blog.index');
         }

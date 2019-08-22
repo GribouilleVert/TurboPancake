@@ -26,7 +26,7 @@ class PostsSeeder extends AbstractSeed
 
         $data = [];
         $faker = \Faker\Factory::create('fr_FR');
-        for ($i = 0; $i < 2500; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $date = $faker->unixTime('now');
             $category = $categories[array_rand($categories)];
             $data[] = [

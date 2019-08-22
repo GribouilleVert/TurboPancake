@@ -4,7 +4,7 @@ namespace TurboPancake\Database;
 use TurboPancake\Database\Exceptions\QueryBuilderException;
 use TurboPancake\Database\Exceptions\ReadOnlyException;
 
-class QueryResult implements \ArrayAccess, \Iterator {
+class QueryResult implements \ArrayAccess, \Iterator, \Countable {
 
     /**
      * @var mixed[] Enregistements
@@ -174,6 +174,20 @@ class QueryResult implements \ArrayAccess, \Iterator {
     public function offsetUnset($offset)
     {
         throw new ReadOnlyException(self::class . ' array interface is read only !');
+    }
+
+    /**
+     * Count elements of an object
+     * @link https://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count(): int
+    {
+        return count($this->records);
     }
 
 }

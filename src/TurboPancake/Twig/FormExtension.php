@@ -42,6 +42,8 @@ final class FormExtension extends AbstractExtension {
             'error' => $context['errors'][$name] ?? false,
             //Select specific options
             'select_options' => [],
+            //Checkboxe specific options
+            'lever' => false,
         ], $options);
 
         $id = $this->generateId($name, $options['lock_id']);
@@ -91,6 +93,10 @@ final class FormExtension extends AbstractExtension {
                     return null;
                 }
                 $input = $this->select($label, $attributes, $value, $options['select_options']);
+                break;
+
+            case 'checkbox':
+                $input = $this->checkbox($label, $attributes, $value, $options['lever']);
                 break;
 
             default:
@@ -263,6 +269,39 @@ final class FormExtension extends AbstractExtension {
         $input = "<select $attributesString>$optionsString</select>";
 
         return $label . $input;
+    }
+
+    /**
+     * Génère une checkbox ou un levier
+     *
+     * @param null|string $label
+     * @param array $attributes
+     * @param bool $checked
+     * @param bool $isLever
+     * @return string
+     */
+    private function checkbox(?string $label, array $attributes, bool $checked, bool $isLever)
+    {
+        if (!is_null($label)) {
+            $id = $attributes['id'] ?? '#';
+            $label = "<i class=\"form-icon\"></i> $label";
+        } else {
+            $label = "<i class=\"form-icon\"></i> {$attributes['name']} ?";
+        }
+
+        $attributes['type'] = 'checkbox';
+        if ($checked) {
+            $attributes['checked'] = null;
+        }
+        $attributesString = $this->buildAttributes($attributes);
+
+        $input = "<input $attributesString>";
+
+        $mode = 'form-' . ($isLever ? 'switch' : 'checkbox');
+        $res  = "<label class='$mode' for='$id'>";
+        $res .= $input . $label;
+        $res .= '';
+        return $res;
     }
 
 }

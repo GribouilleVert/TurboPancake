@@ -34,7 +34,7 @@ final class PostsIndexAction {
     {
         $queryParams = $request->getQueryParams();
         $page = $queryParams['page'] ?? 1;
-        $posts = $this->postsTable->findPaginated(9, $page);
+        $posts = $this->postsTable->findPublic()->paginate(9, $page);
         $categories = $this->categoiesTable->findAll();
 
         return $this->renderer->render('@blog/index', compact('posts', 'categories', 'page'));

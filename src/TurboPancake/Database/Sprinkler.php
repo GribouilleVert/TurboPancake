@@ -3,9 +3,16 @@ namespace TurboPancake\Database;
 
 class Sprinkler {
 
-    public static function hydrate(array $datas, string $object): object
+    public static function hydrate(array $datas, $object): object
     {
-        $instance = new $object();
+        if (is_string($object)) {
+            $instance = new $object();
+        } elseif (is_object($object)) {
+            $instance = $object;
+        } else {
+            throw new \TypeError('Unexpected type ' . gettype($object) . ' expected string or object');
+        }
+
         foreach ($datas as $key => $value) {
             $method = self::getSetter($key);
             if (method_exists($object, $method)) {

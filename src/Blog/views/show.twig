@@ -5,7 +5,7 @@
 {% block head %}
     <h1 class="mb-1">{{ block('title') }}</h1>
     <div class="text-gray mb-4">
-        <a href="{{ path('blog.category', {slug: post.category_slug}) }}">{{ post.category_name }}</a> - {{ post.created_at | ago }}
+        <a href="{{ path('blog.category', {slug: post.categorySlug}) }}">{{ post.categoryName }}</a> - {{ post.createdAt | ago }}
     </div>
 {% endblock %}
 
@@ -21,7 +21,14 @@
 {% block content %}
 
     <div class="container">
-        {{ post.content | nl2br }}
+        {% if post.image is not null %}
+            <p>
+                <img src="{{ post.imageUrl }}" class="img-responsive" style="width: 100%;">
+            </p>
+        {% endif %}
+        <p>
+            {{ post.content | nl2br }}
+        </p>
     </div>
 
 {% endblock %}

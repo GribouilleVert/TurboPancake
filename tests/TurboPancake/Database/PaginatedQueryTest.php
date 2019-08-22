@@ -4,6 +4,8 @@ namespace Tests\TurboPancake\Database;
 use TurboModule\Blog\Database\Entities\Post;
 use TurboPancake\Database\PaginatedQuery;
 use Tests\DatabaseTestCase;
+use TurboPancake\Database\Query;
+use TurboPancake\Database\QueryResult;
 
 class PaginatedQueryTest extends DatabaseTestCase {
 
@@ -12,16 +14,19 @@ class PaginatedQueryTest extends DatabaseTestCase {
      */
     private $paginatedQuery;
 
+    /**
+     * @var Query
+     */
+    private $query;
+
     public function setUp(): void
     {
-        $this->pdo = $this->getPdo();
-        $this->manager = $this->getManager($this->pdo);
-        $this->seedDatabase($this->pdo, $this->manager);
-        $this->paginatedQuery = new PaginatedQuery(
-            $this->pdo,
-            "SELECT * FROM posts",
-            "SELECT count(id) FROM posts",
-        );
+        $pdo = $this->getPdo();
+        $this->manager = $this->getManager($pdo);
+        $this->seedDatabase($pdo, $this->manager);
+        $this->query = (new Query($pdo))
+            ->table('posts');
+        $this->paginatedQuery = new PaginatedQuery($this->query);
     }
 
     public function testNbResult()
@@ -31,20 +36,16 @@ class PaginatedQueryTest extends DatabaseTestCase {
 
     public function testSlice() {
         $result = $this->paginatedQuery->getSlice(0, 1);
-        $this->assertIsArray($result);
+        $this->assertInstanceOf(QueryResult::class, $result);
         $this->assertContainsOnlyInstancesOf(\stdClass::class, $result);
     }
 
     public function testSliceWithEntity() {
-        $paginatedQuery = new PaginatedQuery(
-            $this->pdo,
-            "SELECT * FROM posts",
-            "SELECT count(id) FROM posts",
-            Post::class
-        );
+        $this->query->using(Post::class);
+        $paginatedQuery = new PaginatedQuery($this->query);
         $result = $paginatedQuery->getSlice(0, 1);
 
-        $this->assertIsArray($result);
+        $this->assertInstanceOf(QueryResult::class, $result);
         $this->assertContainsOnlyInstancesOf(Post::class, $result);
     }
 

@@ -6,7 +6,7 @@ use TurboModule\Blog\Database\Entities\Post;
 use TurboModule\Blog\Database\Tables\PostsTable;
 use TurboPancake\Database\Exceptions\NoRecordException;
 
-class PostTableTest extends DatabaseTestCase {
+class PostsTableTest extends DatabaseTestCase {
 
     /**
      * @var PostsTable
@@ -47,7 +47,9 @@ class PostTableTest extends DatabaseTestCase {
     public function testInsert() {
         $this->postTable->insert([
             'name' => 'Comment faire cuir des patates douces ?',
-            'slug' => 'cuisson-patates-douces'
+            'slug' => 'cuisson-patates-douces',
+            'created_at' => '0000-00-00 00:00:00',
+            'updated_at' => '0000-00-00 00:00:00',
         ]);
 
         $post = $this->postTable->find(1);

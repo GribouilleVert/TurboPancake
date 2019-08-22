@@ -6,57 +6,28 @@ use Pagerfanta\Adapter\AdapterInterface;
 class PaginatedQuery implements AdapterInterface {
 
     /**
-     * @var \PDO
-     */
-    private $pdo;
-
-    /**
      * @var string
      */
     private $query;
 
     /**
-     * @var string
+     * PaginatedQuery constructor.
+     * @param Query $query
      */
-    private $countQuery;
-
-    /**
-     * @var null|string
-     */
-    private $entity;
-
-    /**
-     * @var array
-     */
-    private $parameters;
-
-    public function __construct(
-        \PDO $pdo,
-        string $query,
-        string $countQuery,
-        ?string $entity = null,
-        array $parameters = []
-    ) {
-        $this->pdo = $pdo;
+    public function __construct(Query $query)
+    {
         $this->query = $query;
-        $this->countQuery = $countQuery;
-        $this->entity = $entity;
-        $this->parameters = $parameters;
     }
 
     /**
      * Returns the number of results.
      *
      * @return integer The number of results.
+     * @throws Exceptions\QueryBuilderException
      */
     public function getNbResults(): int
     {
-        if (!empty($this->parameters)) {
-            $statement = $this->pdo->prepare($this->countQuery);
-            $statement->execute($this->parameters);
-            return $statement->fetchColumn();
-        }
-        return $this->pdo->query($this->countQuery)->fetchColumn();
+        return $this->query->count();
     }
 
     /**
@@ -66,21 +37,14 @@ class PaginatedQuery implements AdapterInterface {
      * @param integer $length The length.
      *
      * @return array|\Traversable The slice.
+     * @throws Exceptions\NoRecordException
+     * @throws Exceptions\QueryBuilderException
      */
     public function getSlice($offset, $length)
     {
-        $statement = $this->pdo->prepare($this->query . ' LIMIT :offset, :length');
-        foreach ($this->parameters as $alias => $value) {
-            $statement->bindParam($alias, $value);
-        }
-        $statement->bindParam('offset', $offset, \PDO::PARAM_INT);
-        $statement->bindParam('length', $length, \PDO::PARAM_INT);
-        $statement->execute();
-
-        if (!is_null($this->entity)) {
-            $statement->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
-        }
-        return $statement->fetchAll();
+        return (clone $this->query)
+            ->limit($length, $offset)
+            ->fetchAll();
     }
 
 }

@@ -31,7 +31,8 @@
                 {% for item in items %}
                     <tr>
                         <td>{{ item.name }}</td>
-                        <td class="{{ item.category_name == null ? 'text-error':'' }}">{{ item.category_name ?? "Non définie" }}</td>
+                        <td class="{{ item.categoryName == null ? 'text-error':'' }}">{{ item.categoryName ?? "Non définie" }}</td>
+                        <td class="{{ item.private == 1 ? 'text-error':'text-success' }}">{{ item.private ? "Hors Ligne" : 'En ligne' }}</td>
                         <td>
                             <a href="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" class="btn"><i class="icon icon-edit"></i>&ensp;Editer</a>
                             <form action="{{ path(routePrefix ~ '.delete', {id: item.id}) }}" class="d-inline-block" method="post">

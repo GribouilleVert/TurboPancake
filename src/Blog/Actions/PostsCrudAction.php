@@ -66,6 +66,7 @@ final class PostsCrudAction extends CrudAction {
      * @param Request $request
      * @return ResponseInterface|string
      * @throws \TurboPancake\Database\Exceptions\NoRecordException
+     * @throws \TurboPancake\Database\Exceptions\QueryBuilderException
      */
     public function delete(Request $request)
     {
@@ -73,7 +74,9 @@ final class PostsCrudAction extends CrudAction {
          * @var $item Post
          */
         $item = $this->table->find($request->getAttribute('id'));
-        $this->helium->delete($item->image);
+        if ($item->image) {
+            $this->helium->delete($item->image);
+        }
         return parent::delete($request);
     }
 
@@ -87,14 +90,17 @@ final class PostsCrudAction extends CrudAction {
     protected function getFields(Request $request, $item): array
     {
         $fields = array_merge($request->getParsedBody(), $request->getUploadedFiles());
-        if ($fields['image']->getError() === UPLOAD_ERR_OK) {
-            $fields['image'] = $this->helium->upload($fields['image'], $item->image);
-        } else {
+        $fields['image'] = $this->helium->upload($fields['image'], $item->image);
+        if (is_null($fields['image'])) {
             $fields['image'] = $item->image;
         }
+
+        $fields['private'] = isset($fields['private']);
+
         $fields =  array_filter($fields, function ($key) {
-            return in_array($key, ['name', 'content', 'slug', 'created_at', 'category_id', 'image']);
+            return in_array($key, ['name', 'content', 'slug', 'created_at', 'category_id', 'image', 'private']);
         }, ARRAY_FILTER_USE_KEY);
+
         return array_merge($fields, [
             'updated_at' => date('Y-m-d H:i:s')
         ]);

@@ -37,6 +37,10 @@ class HeliumTest extends TestCase {
             ->expects($this->any())
             ->method('getClientFilename')
             ->willReturn('photo.png');
+        $uploadedFile
+            ->expects($this->any())
+            ->method('getError')
+            ->willReturn(UPLOAD_ERR_OK);
 
         $uploadedFile
             ->expects($this->once())
@@ -58,6 +62,10 @@ class HeliumTest extends TestCase {
             ->expects($this->any())
             ->method('getClientFilename')
             ->willReturn('photo.png');
+        $uploadedFile
+            ->expects($this->any())
+            ->method('getError')
+            ->willReturn(UPLOAD_ERR_OK);
 
         touch(__DIR__ . DIRECTORY_SEPARATOR . 'tmp/photo.png');
 
@@ -71,6 +79,29 @@ class HeliumTest extends TestCase {
         $this->assertEquals('photo_copy.png', $result);
 
         unlink(__DIR__ . DIRECTORY_SEPARATOR . 'tmp/photo.png');
+    }
+
+    public function testUploadWithFailedFileTranfer()
+    {
+        $uploadedFile = $this->getMockBuilder(UploadedFileInterface::class)
+            ->getMock();
+
+        $uploadedFile
+            ->expects($this->any())
+            ->method('getClientFilename')
+            ->willReturn('photo.png');
+        $uploadedFile
+            ->expects($this->any())
+            ->method('getError')
+            ->willReturn(UPLOAD_ERR_CANT_WRITE);
+
+        $uploadedFile
+            ->expects($this->never())
+            ->method('moveTo');
+
+
+        $result = $this->helium->upload($uploadedFile, 'fail');
+        $this->assertNull($result);
     }
 
 }

@@ -51,6 +51,11 @@ class Post {
     public $updatedAt;
 
     /**
+     * @var bool
+     */
+    public $private = false;
+
+    /**
      * @param \DateTime|string $createdAt
      * @throws \Exception
      */
@@ -85,6 +90,11 @@ class Post {
         $pathInfos = pathinfo($this->image);
         $targetPath = $pathInfos['filename'] . '_thumbnail.png';
         return '/uploads/thumbnails/' . $targetPath;
+    }
+
+    public function getImageUrl(): string
+    {
+        return '/uploads/thumbnails/' . $this->image;
     }
 
 }

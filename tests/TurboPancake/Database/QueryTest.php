@@ -71,16 +71,40 @@ class QueryTest extends DatabaseTestCase {
         $query = (new Query)
             ->table('posts', 'p')
             ->select('id', 'name')
-            ->orderBy('id DESC');
+            ->order('id DESC');
 
         $this->assertEquals("SELECT id, name FROM posts as p ORDER BY id DESC", (string)$query);
 
         $query = (new Query)
             ->table('posts', 'p')
             ->select('id', 'name')
-            ->orderBy('id DESC', 'name ASC');
+            ->order('id DESC', 'name ASC');
 
         $this->assertEquals("SELECT id, name FROM posts as p ORDER BY id DESC, name ASC", (string)$query);
+    }
+
+    public function testQueryWithJoinDirective() {
+        $query = (new Query)
+            ->table('posts', 'p')
+            ->select('p.id', 'c.name')
+            ->join('categories as c', 'c.id = p.category_id');
+
+        $this->assertEquals("SELECT p.id, c.name FROM posts as p LEFT JOIN categories as c ON c.id = p.category_id", (string)$query);
+
+        $query = (new Query)
+            ->table('posts', 'p')
+            ->select('p.id', 'c.name')
+            ->join('categories as c', 'c.id = p.category_id', Query::LEFT_JOIN);
+
+        $this->assertEquals("SELECT p.id, c.name FROM posts as p LEFT JOIN categories as c ON c.id = p.category_id", (string)$query);
+
+        $query = (new Query)
+            ->table('posts', 'p')
+            ->select('p.id', 'c.name')
+            ->join('categories as c', 'c.id = p.category_id', Query::RIGHT_JOIN);
+
+        $this->assertEquals("SELECT p.id, c.name FROM posts as p RIGHT JOIN categories as c ON c.id = p.category_id", (string)$query);
+
     }
 
     public function testCount() {

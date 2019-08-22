@@ -1,14 +1,13 @@
 <?php
 namespace TurboPancake\Database;
 
-use Pagerfanta\Pagerfanta;
-use PDO;
 use TurboPancake\Database\Exceptions\NoRecordException;
+use TurboPancake\Database\Exceptions\QueryBuilderException;
 
 class Table {
 
     /**
-     * @var PDO
+     * @var null|\PDO
      */
     protected $pdo;
 
@@ -28,13 +27,13 @@ class Table {
      * Lancer une erreur en l'absence d'enregistrements
      * @var bool
      */
-    protected $throwOnNoteFound = true;
+    protected $throwOnNotFound = true;
 
     /**
      * Table constructor.
-     * @param PDO $pdo
+     * @param \PDO $pdo
      */
-    public function __construct(PDO $pdo)
+    public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
     }
@@ -57,11 +56,15 @@ class Table {
      *
      * @param int $id ID de l'article
      * @return \stdClass|mixed|null Données de l'article, null si aucune article n'a été trouvé
+     * @throws QueryBuilderException
      * @throws NoRecordException
      */
     public function find(int $id)
     {
-        return $this->fetch("SELECT * FROM {$this->table} WHERE id = ?", [$id]);
+        return ($this->makeQuery())
+            ->where('id = :id')
+            ->parameters(['id' => $id])
+            ->fetch();
     }
 
     /**
@@ -75,7 +78,7 @@ class Table {
     {
         $results = $this->pdo
             ->query("SELECT id, {$column} FROM {$this->table} ORDER BY {$column} ASC")
-            ->fetchAll(PDO::FETCH_NUM);
+            ->fetchAll(\PDO::FETCH_NUM);
 
         $list = [];
         foreach ($results as $result) {
@@ -88,12 +91,13 @@ class Table {
     /**
      * Renvoie un tableau d'objet contenant toutes les entrée de la table
      *
-     * @return array
-     * @throws NoRecordException
+     * @return Query
      */
-    public function findAll() :array
+    public function findAll(): Query
     {
-        return $this->fetch("SELECT * FROM {$this->table}", [], true);
+        $query = $this->makeQuery();
+        $query->setThrowOnNotFound(false);
+        return $query;
     }
 
     /**
@@ -104,10 +108,10 @@ class Table {
      * @param mixed $toCompareValue Valeur a compoarer. INFO: This argument is passed to MySQL trough
      * prepared request argument, in consequence, it can be considered as secured.
      * @param string $operator Operateur de comparaison, peut être: =, !=, >, >=, < ou <=
-     * @return array|null
+     * @return QueryResult
      * @throws \Exception
      */
-    public function findBy(string $column, $toCompareValue, string $operator = '='): ?array
+    public function findBy(string $column, $toCompareValue, string $operator = '='): QueryResult
     {
         if (!in_array($operator, ['=', '!=', '<', '<=', '>', '>='])) {
             throw new \Exception(
@@ -115,32 +119,10 @@ class Table {
                 "::findBy, please check the function's PHPDoc for a list of accepted comparaison oparators."
             );
         }
-        return $this->fetch("SELECT * FROM {$this->table} WHERE $column $operator ?", [$toCompareValue], true);
-    }
-
-    /**
-     * Permet d'obtenir une pagination des éléments
-     * @param int $maxPerPage
-     * @param int $currentPage
-     * @return Pagerfanta
-     */
-    public function findPaginated(int $maxPerPage, int $currentPage): ?Pagerfanta
-    {
-        $query = new PaginatedQuery(
-            $this->pdo,
-            $this->getPaginationQuery(),
-            $this->countQuery(),
-            $this->entity
-        );
-        $pagerFanta =  (new Pagerfanta($query))
-            ->setMaxPerPage($maxPerPage);
-
-        if ($pagerFanta->getNbPages() < $currentPage) {
-            return null;
-        }
-
-        $pagerFanta->setCurrentPage($currentPage);
-        return $pagerFanta;
+        return ($this->makeQuery())
+            ->where("$column $operator ?")
+            ->parameters([$toCompareValue])
+            ->fetchAll();
     }
 
     /**
@@ -192,11 +174,11 @@ class Table {
      * Obtient le nombre d'élément dans la table
      *
      * @return int
+     * @throws QueryBuilderException
      */
     public function count(): int
     {
-        $statement = $this->pdo->query("SELECT count(id) FROM {$this->table}");
-        return $statement->fetchColumn();
+        return $this->makeQuery()->count();
     }
 
     /**
@@ -215,29 +197,26 @@ class Table {
         return $this->table;
     }
 
-    public function setThrowOnNoteFound(bool $throwOnNoteFound)
+    /**
+     * @param bool $throwOnNotFound
+     */
+    public function setThrowOnNotFound(bool $throwOnNotFound): void
     {
-        $this->throwOnNoteFound = $throwOnNoteFound;
+        $this->throwOnNotFound = $throwOnNotFound;
     }
 
     /**
-     * Requète a executer pour obtenir tous les éléments de la table
-     *
-     * @return string
+     * @return Query
      */
-    protected function getPaginationQuery()
+    public function makeQuery(): Query
     {
-        return "SELECT * FROM {$this->table}";
-    }
-
-    /**
-     * Requète a executer pour obtenir le nombre d'éléments dans la table
-     *
-     * @return string
-     */
-    protected function countQuery()
-    {
-        return "SELECT count(id) FROM {$this->table}";
+        $query = (new Query($this->pdo))
+            ->table($this->table, strtolower($this->table[0]))
+            ->setThrowOnNotFound($this->throwOnNotFound);
+        if ($this->entity) {
+            $query->using($this->entity);
+        }
+        return $query;
     }
 
     /**
@@ -246,8 +225,13 @@ class Table {
      * @param array $parameters
      * @return bool
      */
-    protected function execute(string $query, array $parameters = [])
+    protected function execute(string $query, array $parameters = []): bool
     {
+        foreach ($parameters as $key => $parameter) {
+            if (is_bool($parameter)) {
+                $parameters[$key] = (int)$parameter;
+            }
+        }
         $statement = $this->pdo->prepare($query);
         return $statement->execute($parameters);
     }
@@ -266,9 +250,9 @@ class Table {
         $statement->execute($parameters);
 
         if ($this->entity) {
-            $statement->setFetchMode(PDO::FETCH_CLASS, $this->entity);
+            $statement->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
         } else {
-            $statement->setFetchMode(PDO::FETCH_OBJ);
+            $statement->setFetchMode(\PDO::FETCH_OBJ);
         }
 
         if ($fetchAll) {
@@ -279,7 +263,7 @@ class Table {
             $result = $statement->fetch() ?: null;
         }
         if (is_null($result)) {
-            if ($this->throwOnNoteFound) {
+            if ($this->throwOnNotFound) {
                 throw new NoRecordException('No record was found');
             }
             return $fetchAll?[]:null;

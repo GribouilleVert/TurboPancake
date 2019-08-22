@@ -16,7 +16,7 @@ class Helium {
     /**
      * @var array Liste des actions de formatages sur les images
      */
-    protected $formats;
+    protected $formats = [];
 
     public function __construct(?string $path = null)
     {
@@ -25,8 +25,12 @@ class Helium {
         }
     }
 
-    public function upload(UploadedFileInterface $file, ?string $oldFile = null): string
+    public function upload(UploadedFileInterface $file, ?string $oldFile = null): ?string
     {
+        if ($file->getError() !== UPLOAD_ERR_OK) {
+            return null;
+        }
+
         if ($oldFile) {
             $this->delete($oldFile);
         }

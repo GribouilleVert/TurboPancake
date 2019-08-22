@@ -5,6 +5,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use stdClass;
+use TurboPancake\Database\QueryResult;
 use TurboPancake\Database\Table;
 
 class TableTest extends TestCase {
@@ -73,9 +74,9 @@ class TableTest extends TestCase {
         $this->table->getPdo()->exec("INSERT INTO test (name) VALUES ('elem 1');");
         $this->table->getPdo()->exec("INSERT INTO test (name) VALUES ('elem 2');");
 
-        $items = $this->table->findAll();
+        $items = $this->table->findAll()->fetchAll();
 
-        $this->assertIsArray($items);
+        $this->assertInstanceOf(\Traversable::class, $items);
         $this->assertCount(2, $items);
         $this->assertInstanceOf(stdClass::class, $items[0]);
 
@@ -91,7 +92,7 @@ class TableTest extends TestCase {
 
         $items = $this->table->findBy('name', 'elem 2');
 
-        $this->assertIsArray($items);
+        $this->assertInstanceOf(QueryResult::class, $items);
         $this->assertCount(2, $items);
         $this->assertInstanceOf(stdClass::class, $items[0]);
 

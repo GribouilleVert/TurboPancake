@@ -47,14 +47,11 @@ final class CategoryShowAction {
     public function __invoke(Request $request)
     {
         $category = $this->categoriesTable->findBy('slug', $request->getAttribute('slug'))[0];
-        //Category not found
-        if (is_null($category)) {
-            return $this->temporaryRedirect('blog.index');
-        }
+
 
         $queryParams = $request->getQueryParams();
         $page = $queryParams['page'] ?? 1;
-        $posts = $this->postsTable->findPaginatedByCategory(9, $page, $category->id);
+        $posts = $this->postsTable->findPublicByCategory($category->id)->paginate(9, $page);
 
         $categories = $this->categoriesTable->findAll();
 

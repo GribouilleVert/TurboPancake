@@ -11,6 +11,7 @@ class BlogAddon implements AdminAddonInterface {
      * @var RendererInterface
      */
     private $renderer;
+
     /**
      * @var PostsTable
      */

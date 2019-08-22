@@ -3,6 +3,7 @@ namespace TurboPancake\Actions;
 
 use Psr\Http\Message\ResponseInterface;
 use stdClass;
+use TurboPancake\Database\Sprinkler;
 use TurboPancake\Database\Table;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
@@ -101,7 +102,7 @@ class CrudAction {
     {
         $queryParams = $request->getQueryParams();
         $page = $queryParams['page'] ?? 1;
-        $items = $this->table->findPaginated(8, $page);
+        $items = $this->table->findAll()->paginate(8, $page);
 
         if (is_null($items)) {
             return $this->temporaryRedirect($this->routePrefix . '.index');
@@ -119,6 +120,7 @@ class CrudAction {
      * @param Request $request
      * @return ResponseInterface|string
      * @throws \TurboPancake\Database\Exceptions\NoRecordException
+     * @throws \TurboPancake\Database\Exceptions\QueryBuilderException
      */
     public function edit(Request $request)
     {
@@ -133,7 +135,7 @@ class CrudAction {
                 return $this->temporaryRedirect($this->routePrefix . '.index');
             }
             $errors = $validator->getErrors();
-            $item = array_merge($request->getParsedBody(), ['id' => $item->id]);
+            $item = Sprinkler::hydrate($request->getParsedBody(), $item);
         }
 
         return $this->renderer->render(
@@ -175,6 +177,7 @@ class CrudAction {
      * @param Request $request
      * @return ResponseInterface|string
      * @throws \TurboPancake\Database\Exceptions\NoRecordException
+     * @throws \TurboPancake\Database\Exceptions\QueryBuilderException
      */
     public function delete(Request $request)
     {
