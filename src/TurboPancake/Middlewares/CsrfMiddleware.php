@@ -1,10 +1,10 @@
 <?php
 namespace TurboPancake\Middlewares;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Middlewares\Exceptions\CsrfException;
 
 class CsrfMiddleware implements MiddlewareInterface {
@@ -37,29 +37,29 @@ class CsrfMiddleware implements MiddlewareInterface {
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
+     * @param RequestHandlerInterface $handler
      * @return ResponseInterface
      * @throws \Exception
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if (in_array($request->getMethod(), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
             $params = $request->getParsedBody();
             if (is_null($params)) {
-                return $delegate->process($request);
+                return $handler->handle($request);
             } elseif (!array_key_exists($this->fieldName, $params)) {
                 return $this->reject();
             } else {
                 $tokensList = $this->session[$this->sessionKey] ?? [];
                 if (in_array($params[$this->fieldName], $tokensList)) {
                     $this->useToken($params[$this->fieldName]);
-                    return $delegate->process($request);
+                    return $handler->handle($request);
                 } else {
                     return $this->reject();
                 }
             }
         }
-        return $delegate->process($request);
+        return $handler->handle($request);
     }
 
     /**

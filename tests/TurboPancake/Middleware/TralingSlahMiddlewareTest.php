@@ -4,6 +4,8 @@ namespace Tests\TurboPancake\Middleware;
 
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Middlewares\TralingSlashMiddleware;
 
 class TralingSlahMiddlewareTest extends TestCase {
@@ -19,19 +21,33 @@ class TralingSlahMiddlewareTest extends TestCase {
     }
 
     public function testRemoveTrailingSlash() {
+        $handler = $this->getMockBuilder(RequestHandlerInterface::class)
+            ->setMethods(['handle'])
+            ->getMock();
+
+        $handler->expects($this->never())
+            ->method('handle');
+
         $request = new ServerRequest('GET', '/abcdef/12345/');
-        $response = ($this->middleware)($request, function($request){
-            $this->fail('Next should never be called');
-        });
+        $response = $this->middleware->process($request, $handler);
 
         $this->assertEquals('/abcdef/12345', $response->getHeader('Location')[0]);
     }
 
     public function testIgnoreCorrectsURIs() {
+        $handler = $this->getMockBuilder(RequestHandlerInterface::class)
+            ->setMethods(['handle'])
+            ->getMock();
+
         $request = new ServerRequest('GET', '/abcdef/12345');
-        $response = ($this->middleware)($request, function($r) use ($request) {
-            $this->assertEquals($request, $r);
-        });
+
+        $handler->expects($this->once())
+            ->method('handle')
+        ->with($this->callback(function (ServerRequestInterface $r) use ($request) {
+            return $r === $request;
+        }));
+
+        $response = $this->middleware->process($request, $handler);
     }
 
 }

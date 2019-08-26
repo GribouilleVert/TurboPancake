@@ -19,14 +19,15 @@ final class BlogModule extends Module {
     const DEFINITIONS = __DIR__ . '/config.php';
 
     /**
-     * Configuration de la base de données
+     * Dossiers pour la gestion de la base de donnée
      */
     const MIGRATIONS = __DIR__ . '/Database/mgmt/migrations';
+    const SEEDS = __DIR__ . '/Database/mgmt/seeds';
 
     /**
-     * Configuration des seeds
+     * @var ContainerInterface
      */
-    const SEEDS = __DIR__ . '/Database/mgmt/seeds';
+    private $container;
 
     /**
      * BlogModule constructor.
@@ -34,24 +35,29 @@ final class BlogModule extends Module {
      */
     public function __construct(ContainerInterface $container)
     {
-        $container->get(RendererInterface::class)->addPath(__DIR__ . '/views', 'blog');
+        $this->container = $container;
+    }
 
-        $router = $container->get(Router::class);
+    public function load(): void
+    {
+        $this->container->get(RendererInterface::class)->addPath(__DIR__ . '/views', 'blog');
 
-        $router->get($container->get('blog.prefix'), PostsIndexAction::class, 'blog.index');
+        $router = $this->container->get(Router::class);
+
+        $router->get($this->container->get('blog.prefix'), PostsIndexAction::class, 'blog.index');
         $router->get(
-            $container->get('blog.prefix') . '/{slug:[a-z0-9\-]+}-{id:\d+}',
+            $this->container->get('blog.prefix') . '/{slug:[a-z0-9\-]+}-{id:\d+}',
             PostShowAction::class,
             'blog.show'
         );
         $router->get(
-            $container->get('blog.prefix') . '/category/{slug:[a-z0-9\-]+}',
+            $this->container->get('blog.prefix') . '/category/{slug:[a-z0-9\-]+}',
             CategoryShowAction::class,
             'blog.category'
         );
 
-        if ($container->has('admin.prefix')) {
-            $prefix = $container->get('admin.prefix');
+        if ($this->container->has('admin.prefix')) {
+            $prefix = $this->container->get('admin.prefix');
             $router->crud("$prefix/posts", PostsCrudAction::class, 'blog.admin.posts');
             $router->crud("$prefix/categories", CategoriesCrudAction::class, 'blog.admin.categories');
         }

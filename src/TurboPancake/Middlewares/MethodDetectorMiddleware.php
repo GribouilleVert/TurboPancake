@@ -3,10 +3,12 @@ namespace TurboPancake\Middlewares;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class MethodDetectorMiddleware {
+class MethodDetectorMiddleware implements MiddlewareInterface {
 
-    public function __invoke(ServerRequestInterface $request, callable $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $parsedBody = $request->getParsedBody();
         if (!is_null($parsedBody)
@@ -15,7 +17,7 @@ class MethodDetectorMiddleware {
         ) {
             $request = $request->withMethod($parsedBody['_method']);
         }
-        return $next($request);
+        return $handler->handle($request);
     }
 
 }

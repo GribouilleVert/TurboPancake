@@ -1,6 +1,7 @@
 <?php
 namespace TurboPancake;
 
+use TurboPancake\Router\CallableMiddleware;
 use TurboPancake\Router\Route;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Router\FastRouteRouter;
@@ -17,6 +18,7 @@ final class Router {
 
     /**
      * Router constructor.
+     * @param string|null $cache
      */
     public function __construct(?string $cache = null)
     {
@@ -34,7 +36,7 @@ final class Router {
      */
     public function get(string $path, $callback, string $name)
     {
-        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['GET'], $name));
+        $this->internalRouter->addRoute(new ZendRoute($path, new CallableMiddleware($callback), ['GET'], $name));
     }
 
     /**
@@ -45,7 +47,7 @@ final class Router {
      */
     public function post(string $path, $callback, ?string $name = null)
     {
-        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['POST'], $name));
+        $this->internalRouter->addRoute(new ZendRoute($path, new CallableMiddleware($callback), ['POST'], $name));
     }
 
     /**
@@ -56,7 +58,7 @@ final class Router {
      */
     public function put(string $path, $callback, ?string $name = null)
     {
-        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['PUT'], $name));
+        $this->internalRouter->addRoute(new ZendRoute($path, new CallableMiddleware($callback), ['PUT'], $name));
     }
 
     /**
@@ -67,7 +69,7 @@ final class Router {
      */
     public function patch(string $path, $callback, ?string $name = null)
     {
-        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['PATCH'], $name));
+        $this->internalRouter->addRoute(new ZendRoute($path, new CallableMiddleware($callback), ['PATCH'], $name));
     }
 
     /**
@@ -78,7 +80,7 @@ final class Router {
      */
     public function delete(string $path, $callback, ?string $name = null)
     {
-        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['DELETE'], $name));
+        $this->internalRouter->addRoute(new ZendRoute($path, new CallableMiddleware($callback), ['DELETE'], $name));
     }
 
     /**
@@ -89,7 +91,7 @@ final class Router {
      */
     public function options(string $path, $callback, ?string $name = null)
     {
-        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['OPTIONS'], $name));
+        $this->internalRouter->addRoute(new ZendRoute($path, new CallableMiddleware($callback), ['OPTIONS'], $name));
     }
 
     /**
@@ -100,7 +102,7 @@ final class Router {
      */
     public function head(string $path, $callback, ?string $name = null)
     {
-        $this->internalRouter->addRoute(new ZendRoute($path, $callback, ['HEAD'], $name));
+        $this->internalRouter->addRoute(new ZendRoute($path, new CallableMiddleware($callback), ['HEAD'], $name));
     }
 
     /**
@@ -113,7 +115,7 @@ final class Router {
     {
         $this->internalRouter->addRoute(new ZendRoute(
             $path,
-            $callback,
+            new CallableMiddleware($callback),
             ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
             $name
         ));
@@ -148,7 +150,7 @@ final class Router {
         if ($result->isSuccess()) {
             return new Route(
                 $result->getMatchedRouteName(),
-                $result->getMatchedMiddleware(),
+                $result->getMatchedRoute()->getMiddleware()->getCallBack(),
                 $result->getMatchedParams()
             );
         }

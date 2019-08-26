@@ -1,11 +1,13 @@
 <?php
 namespace TurboPancake\Middlewares;
 
-use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Router;
 
-class RouterMiddleware {
+class RouterMiddleware implements MiddlewareInterface {
 
     /**
      * @var Router
@@ -17,11 +19,11 @@ class RouterMiddleware {
         $this->router = $router;
     }
 
-    public function __invoke(ServerRequestInterface $request, callable $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $route = $this->router->match($request);
         if (is_null($route)) {
-            return $next($request);
+            return $handler->handle($request);
         }
 
         $parameters = $route->getParams();
@@ -33,7 +35,7 @@ class RouterMiddleware {
             $request
         );
         $request = $request->withAttribute(get_class($route), $route);
-        return $next($request);
+        return $handler->handle($request);
     }
 
 }

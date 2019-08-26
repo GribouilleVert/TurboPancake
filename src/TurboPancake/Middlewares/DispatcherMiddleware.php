@@ -2,14 +2,14 @@
 namespace TurboPancake\Middlewares;
 
 use GuzzleHttp\Psr7\Response;
-use function PHPSTORM_META\type;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TurboPancake\Router;
 use TurboPancake\Router\Route;
 
-class DispatcherMiddleware {
+class DispatcherMiddleware implements MiddlewareInterface {
 
     /**
      * @var ContainerInterface
@@ -21,11 +21,11 @@ class DispatcherMiddleware {
         $this->container = $container;
     }
 
-    public function __invoke(ServerRequestInterface $request, callable $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $route = $request->getAttribute(Route::class);
         if (is_null($route)) {
-            return $next($request);
+            return $handler->handle($request);
         }
 
         $callback = $route->getCallback();
@@ -44,5 +44,4 @@ class DispatcherMiddleware {
             );
         }
     }
-
 }

@@ -1,7 +1,7 @@
 <?php
 namespace TurboModule\Blog\Actions;
 
-use TurboPancake\Actions\RouterAwareAction;
+use TurboPancake\Router\RouterAware;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
 use TurboModule\Blog\Database\Tables\PostsTable;
@@ -23,7 +23,7 @@ final class PostShowAction {
      */
     private $postTable;
 
-    use RouterAwareAction;
+    use RouterAware;
 
     public function __construct(RendererInterface $renderer, Router $router, PostsTable $postTable)
     {

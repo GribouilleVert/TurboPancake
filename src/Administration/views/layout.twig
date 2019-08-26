@@ -19,7 +19,8 @@
                     <i class="icon icon-menu"></i>
                 </a>
                 <section class="navbar-section links">
-                    <div class="dropdown dropdown-right">
+                    {% set user = get_current_user() %}
+                    <div class="dropdown dropdown-right mt-1">
                         <a href="#" class="btn btn-profile btn-link dropdown-toggle" tabindex="0">
                             Mon compte
                             <i class="icon icon-caret"></i>
@@ -27,35 +28,31 @@
                         <ul class="menu">
                             <li class="tile">
                                 <div class="tile-icon">
-                                    <figure class="avatar avatar" data-initial="VC">
-                                        <img src="img/avatar-1.png" alt="..." class="d-none">
-                                    </figure>
+                                    <figure class="avatar avatar" data-initial="{{ user.username | initials | upper }}"></figure>
                                 </div>
-                                <div class="tile-content">
-                                    <div class="tile-title">Vasco Compain</div>
-                                    <small class="tile-subtitle"><span class="label label-vip"><i class="plan vip-plan"></i>VIP</span></small>
+                                <div class="tile-content mt-1">
+                                    <div class="tile-title">{{ user.username | capitalize }}</div>
                                 </div>
                             </li>
-                            <li class="divider"></li>
-                            <li class="menu-item">
-                                <a href="#">
-                                    <i class="icon icon-people"></i>&emsp;Mon profil
-                                </a>
-                            </li>
+{#                            <li class="divider"></li>#}
+{#                            <li class="menu-item">#}
+{#                                <a href="#">#}
+{#                                    <i class="icon icon-people"></i>&emsp;Mon profil#}
+{#                                </a>#}
+{#                            </li>#}
                             <li class="divider" data-content="Actions"></li>
                             <li class="menu-item">
-                                <a href="#" class="text-success">
-                                    Mode modérateur
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="#" class="text-error">
-                                    <i class="icon icon-shutdown"></i>&emsp;Déconnexion
-                                </a>
+                                <form action="{{ path('auth.logout') }}" method="post">
+                                    {{ csrf_input() }}
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="text-error btn btn-link">
+                                        <i class="icon icon-shutdown"></i>&emsp;Déconnexion
+                                    </button>
+                                </form>
                             </li>
                         </ul>
                     </div>
-                    &nbsp;<a href="#" class="btn btn-link hide-xs">Accueil</a>
+                    &nbsp;<a href="/" class="btn btn-link hide-xs">Accueil</a>
                 </section>
             </header>
 

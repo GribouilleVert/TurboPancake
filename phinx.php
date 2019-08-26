@@ -3,7 +3,7 @@ require 'public/index.php';
 
 $migrations = [];
 $seeds = [];
-foreach ($modules as $module) {
+foreach ($app->getModules() as $module) {
     if (!is_null($module::MIGRATIONS)) {
         $migrations[] = $module::MIGRATIONS;
     }

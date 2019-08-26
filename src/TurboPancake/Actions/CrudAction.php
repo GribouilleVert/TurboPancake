@@ -7,6 +7,7 @@ use TurboPancake\Database\Sprinkler;
 use TurboPancake\Database\Table;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
+use TurboPancake\Router\RouterAware;
 use TurboPancake\Services\Flash;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use TurboPancake\Validator;
@@ -53,7 +54,7 @@ class CrudAction {
         "delete" => "L'élément a bien été supprimé.",
     ];
 
-    use RouterAwareAction;
+    use RouterAware;
 
     /**
      * CrudAction constructor.

@@ -1,21 +1,30 @@
 <?php
-namespace TurboPancake\Middlewares;
+namespace TurboPancake\Router;
 
-use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class TralingSlashMiddleware implements MiddlewareInterface {
+class CallableMiddleware implements MiddlewareInterface {
+
+    /**
+     * @var callable
+     */
+    private $callback;
+
+    public function __construct($callback)
+    {
+        $this->callback = $callback;
+    }
+
+    public function getCallback()
+    {
+        return $this->callback;
+    }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $uri = $request->getUri()->getPath();
-        if (!empty($uri) AND $uri[-1] === '/') {
-            return new Response(301, ['Location' => substr($uri, 0, -1)]);
-        }
         return $handler->handle($request);
     }
-
 }

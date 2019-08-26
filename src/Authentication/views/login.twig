@@ -1,0 +1,37 @@
+{% extends 'layout.twig' %}
+{% block title 'Connexion' %}
+
+{% block content %}
+    <div class="container">
+
+            <form action="{{ path('auth.login') }}" method="post">
+                <div class="columns">
+                {{ field(
+                    'username',
+                    'Nom d\'utilisateur',
+                    username,
+                    {
+                        placeholder: 'Gribouille',
+                        wrapper_classes: ['column', 'col-12'],
+                    }
+                ) }}
+
+                {{ field(
+                    'password',
+                    'Mot de passe',
+                    null,
+                    {
+                        type: 'password',
+                        wrapper_classes: ['column', 'col-12'],
+                        extra_html: '<p class="form-input-hint">Le mot de passe est sensible aux majuscules</p>'
+                    }
+                ) }}
+                {{ csrf_input() }}
+                <div class="column col-12">
+                    <button class="btn btn-primary float-right" type="submit">Connexion</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+{% endblock %}

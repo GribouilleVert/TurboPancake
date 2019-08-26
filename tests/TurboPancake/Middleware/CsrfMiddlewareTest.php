@@ -6,6 +6,7 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Middlewares\Exceptions\CsrfException;
 use TurboPancake\Middlewares\CsrfMiddleware;
 
@@ -30,8 +31,8 @@ class CsrfMiddlewareTest extends TestCase {
     {
         $this->session = [];
         $this->middleware = new CsrfMiddleware($this->session);
-        $delegate = $this->getMockBuilder(DelegateInterface::class)
-            ->setMethods(['process'])
+        $delegate = $this->getMockBuilder(RequestHandlerInterface::class)
+            ->setMethods(['handle'])
             ->getMock();
 
         $this->delegate = $delegate;
@@ -40,7 +41,7 @@ class CsrfMiddlewareTest extends TestCase {
     public function testLetGetMethodPass()
     {
         $this->delegate->expects($this->once())
-            ->method('process')
+            ->method('handle')
             ->willReturn(new Response);
 
         $request = new ServerRequest('GET', '/abcdef/12345');
@@ -50,7 +51,7 @@ class CsrfMiddlewareTest extends TestCase {
     public function testLetPostMethodPassWhenThereIsNoBody()
     {
         $this->delegate->expects($this->once())
-            ->method('process')
+            ->method('handle')
             ->willReturn(new Response);
 
         $request = new ServerRequest('POST', '/abcdef/12345');
@@ -60,7 +61,7 @@ class CsrfMiddlewareTest extends TestCase {
     public function testLetPostMethodPassWhenCsrfIsCorrect()
     {
         $this->delegate->expects($this->once())
-            ->method('process')
+            ->method('handle')
             ->willReturn(new Response);
 
         $token = $this->middleware->makeToken();
@@ -74,7 +75,7 @@ class CsrfMiddlewareTest extends TestCase {
     public function testBlockPostMethodWhenCsrfIsAbsent()
     {
         $this->delegate->expects($this->never())
-            ->method('process')
+            ->method('handle')
             ->willReturn(new Response);
 
         $request = new ServerRequest('POST', '/abcdef/12345');
@@ -87,7 +88,7 @@ class CsrfMiddlewareTest extends TestCase {
     public function testBlockPostMethodWhenCsrfIsInvalid()
     {
         $this->delegate->expects($this->never())
-            ->method('process')
+            ->method('handle')
             ->willReturn(new Response);
 
         $request = new ServerRequest('POST', '/abcdef/12345');
@@ -100,7 +101,7 @@ class CsrfMiddlewareTest extends TestCase {
     public function testBlockPostMethodWhenCsrfTokenIsUsedTwice()
     {
         $this->delegate->expects($this->once())
-            ->method('process')
+            ->method('handle')
             ->willReturn(new Response);
 
         $token = $this->middleware->makeToken();

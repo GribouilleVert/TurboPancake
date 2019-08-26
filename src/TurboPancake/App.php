@@ -2,20 +2,21 @@
 namespace TurboPancake;
 
 use DI\Container;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use mysql_xdevapi\Exception;
-use TurboPancake\Renderer\RendererInterface;
-use GuzzleHttp\Psr7\Response;
+use Exception;
+use PHPUnit\Framework\Warning;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TurboPancake\Middlewares\RoutedMiddleware;
+use TurboPancake\Renderer\RendererInterface;
 
 /**
  * Class App
  * @package TurboPancake
  */
-final class App implements DelegateInterface {
+final class App implements RequestHandlerInterface {
 
     /**
      * Modules
@@ -27,7 +28,7 @@ final class App implements DelegateInterface {
      * Middlewares
      * @var string[]
      */
-    private $middlewares;
+    private $middlewares = [];
 
     /**
      * Router de l'application
@@ -50,10 +51,11 @@ final class App implements DelegateInterface {
      * @param mixed $containerDefinitions Definitions du conteneur d'injection de dépandendances
      * @param array $modules
      */
-    public function __construct($containerDefinitions, array $modules = [])
+    public function __construct($containerDefinitions, array $modules = [], array $middlewares = [])
     {
         $this->containerDefinition = $containerDefinitions;
         $this->modules = $modules;
+        $this->middlewares = $middlewares;
     }
 
     /**
@@ -68,13 +70,27 @@ final class App implements DelegateInterface {
     }
 
     /**
+     * Renvoie la liste des modules
+     * @return string[]
+     */
+    public function getModules(): array
+    {
+        return $this->modules;
+    }
+
+    /**
      * Ajoute un middleware
-     * @param string $middware
+     * @param string $middlware
+     * @param string|null $path
      * @return App
      */
-    public function pipe(string $middware): self
+    public function trough(string $middlware, ?string $path = null): self
     {
-        $this->middlewares[] = $middware;
+        if (is_null($path)) {
+            $this->middlewares[] = $middlware;
+        } else {
+            $this->middlewares[] = new RoutedMiddleware($path, $middlware, $this->getContainer());
+        }
         return $this;
     }
 
@@ -84,13 +100,11 @@ final class App implements DelegateInterface {
      * @return ResponseInterface
      * @throws \Exception
      */
-    public function process(ServerRequestInterface $request): ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $middleware = $this->getMiddleware();
         if (is_null($middleware)) {
             throw new \Exception('None of the middlewares catched de request.');
-        } elseif (is_callable($middleware)) {
-            return $middleware($request, [$this, 'process']);
         } elseif ($middleware instanceof MiddlewareInterface) {
             return $middleware->process($request, $this);
         }
@@ -98,22 +112,62 @@ final class App implements DelegateInterface {
     }
 
     /**
+     * Lance de traitement global - ENTRY POINT
      * @param ServerRequestInterface $request
      * @return ResponseInterface
-     * @throws \Exception Si un callback est mal configuré
+     * @throws Exception Si un middleware est mal configuré
      */
     public function run(ServerRequestInterface $request): ResponseInterface
     {
+        $loadedModules = [];
         foreach ($this->modules as $module) {
-            $this->getContainer()->get($module);
+            /**
+             * @var $module Module
+             */
+            $moduleName = $module;
+            $module = $this->getContainer()->get($module);
+            $moduleDependencies = $module->getModuleDependencies();
+            $middlewareDependencies = $module->getMiddlewareDependencies();
+
+            foreach ($moduleDependencies as $moduleDependency) {
+                if (!in_array($moduleDependency, $this->modules)) {
+                    trigger_error(
+                        'Unable to load module ' . $moduleName . ' beacause the required module ' . $moduleDependency . ' is not present',
+                        E_USER_WARNING
+                    );
+                    continue 2;
+                }
+            }
+
+            foreach ($middlewareDependencies as $middlewareDependency) {
+                if (!in_array($middlewareDependency, $this->middlewares)) {
+                    foreach ($this->middlewares as $middleware) {
+                        if ($middleware instanceof RoutedMiddleware) {
+                            if ($middlewareDependency === $middleware->getMiddleware()) {
+                                continue 2;
+                            }
+                        }
+                    }
+                    trigger_error(
+                        'Unable to load module ' . $moduleName . ' beacause the required middleware ' . $middlewareDependency . ' is not present',
+                        E_USER_WARNING
+                    );
+                    continue 2;
+                }
+            }
+            $loadedModules[] = $moduleName;
+            $module->load();
         }
 
-        return $this->process($request);
+        if ($this->container->has(RendererInterface::class)) {
+            $this->container->get(RendererInterface::class)->addGlobal('modules', $loadedModules);
+        }
+
+        return $this->handle($request);
     }
 
     /**
      * @return ContainerInterface
-     * @throws \Exception
      */
     public function getContainer(): ContainerInterface
     {
@@ -131,7 +185,11 @@ final class App implements DelegateInterface {
                     $builder->addDefinitions($module::DEFINITIONS);
                 }
             }
-            $this->container = $builder->build();
+            try {
+                $this->container = $builder->build();
+            } catch (\Exception $e) {
+                die('Unable to build container: ' . $e->getMessage());
+            }
         }
 
         return $this->container;
@@ -144,7 +202,11 @@ final class App implements DelegateInterface {
     private function getMiddleware(): ?object
     {
         if (array_key_exists($this->index, $this->middlewares)) {
-            $middleware = $this->getContainer()->get($this->middlewares[$this->index]);
+            if (is_string($this->middlewares[$this->index])) {
+                $middleware = $this->getContainer()->get($this->middlewares[$this->index]);
+            } else {
+                $middleware = $this->middlewares[$this->index];
+            }
             $this->index++;
             return $middleware;
         }

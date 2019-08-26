@@ -17,7 +17,7 @@ final class PostsTable extends Table {
     {
         $categoryTable = (new CategoriesTable($this->pdo))->getTable();
         return $this->makeQuery()
-            ->select('p.*', 'c.name as category_name', 'c.name as category_name')
+            ->select('p.*', 'c.name as category_name', 'c.slug as category_slug')
             ->join($categoryTable . ' as c', 'p.category_id = c.id')
             ->order('p.created_at DESC')
             ->where('p.created_at <= NOW()', 'p.private = 0');

@@ -54,12 +54,12 @@ class Table {
     /**
      * Permet de trouver un élément
      *
-     * @param int $id ID de l'article
+     * @param mixed $id ID de l'article
      * @return \stdClass|mixed|null Données de l'article, null si aucune article n'a été trouvé
      * @throws QueryBuilderException
      * @throws NoRecordException
      */
-    public function find(int $id)
+    public function find($id)
     {
         return ($this->makeQuery())
             ->where('id = :id')

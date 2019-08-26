@@ -13,6 +13,7 @@ final class TextExtension extends AbstractExtension {
         return [
             new \Twig\TwigFilter('excerpt', [$this, 'excerpt']),
             new \Twig\TwigFilter('dump', [$this, 'dump'], ['is_safe' => ['html']]),
+            new \Twig\TwigFilter('initials', [$this, 'initials']),
         ];
     }
 
@@ -39,6 +40,16 @@ final class TextExtension extends AbstractExtension {
             $dumper->setTheme($theme);
         }
         return $dumper->dump($cloner->cloneVar($variable), true);
+    }
+
+    public function initials(string $text, string $glue = ''): string
+    {
+        $words = explode(' ', $text);
+        $initials = [];
+        foreach ($words as $word) {
+            $initials[] = $word[0];
+        }
+        return implode($glue, $initials);
     }
 
 }

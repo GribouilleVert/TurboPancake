@@ -56,7 +56,7 @@ class Flash {
         $this->set('error', $message);
     }
 
-    private function set(string $type, string $message)
+    private function set(string $type, string $message): void
     {
         $flash = $this->session->get($this->sessionKey, []);
         if (!isset($flash[$type])) {

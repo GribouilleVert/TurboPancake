@@ -12,16 +12,53 @@
 
     <body>
     <div class="off-canvas off-canvas-sidebar-show">
-        <header class="navbar">
-            <!-- off-screen toggle button -->
-            <a class="off-canvas-toggle btn btn-link btn-action" href="#sidebar">
-                <i class="icon icon-menu"></i>
-            </a>
-            <section class="navbar-section links">
-                <a href="#" class="btn btn-link">Connexion</a>
-                <a href="#" class="btn btn-link">Inscription</a>
-            </section>
-        </header>
+            <header class="navbar">
+                <!-- off-screen toggle button -->
+                <a class="off-canvas-toggle btn btn-link btn-action" href="#sidebar">
+                    <i class="icon icon-menu"></i>
+                </a>
+                {% if 'TurboModule\\Authentication\\AuthenticationModule' in modules %}
+                    <section class="navbar-section links">
+                    {% if is_logged() %}
+                        {% set user = get_current_user() %}
+                        <div class="dropdown dropdown-right">
+                            <a href="#" class="btn btn-profile btn-link dropdown-toggle" tabindex="0">
+                                Mon compte
+                                <i class="icon icon-caret"></i>
+                            </a>
+                            <ul class="menu">
+                                <li class="tile">
+                                    <div class="tile-icon">
+                                        <figure class="avatar avatar" data-initial="{{ user.username | initials | upper }}"></figure>
+                                    </div>
+                                    <div class="tile-content mt-1">
+                                        <div class="tile-title">{{ user.username | capitalize }}</div>
+                                    </div>
+                                </li>
+{#                                <li class="divider"></li>#}
+{#                                <li class="menu-item">#}
+{#                                    <a href="#">#}
+{#                                        <i class="icon icon-people"></i>&emsp;Mon profil#}
+{#                                    </a>#}
+{#                                </li>#}
+                                <li class="divider" data-content="Actions"></li>
+                                <li class="menu-item">
+                                    <form action="{{ path('auth.logout') }}" method="post">
+                                        {{ csrf_input() }}
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="text-error btn btn-link">
+                                            <i class="icon icon-shutdown"></i>&emsp;Déconnexion
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{{ path('auth.login') }}" class="btn btn-link">Connexion</a>
+                    {% endif %}
+                    </section>
+                {% endif %}
+            </header>
 
         <div id="sidebar" class="off-canvas-sidebar">
             <div class="brand">
@@ -63,12 +100,20 @@
                                 </li>
                                 {% block breadcrumb %}
                                     <li class="breadcrumb-item">
-                                        <a href="{{ path(route) }}" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
+                                        <a href="#" class="tooltip" data-tooltip="{{ block('title') }}">{{ block('title') }}</a>
                                     </li>
                                 {% endblock %}
                             </ul>
                         </div>
                     </div>
+                </div>
+                <div class="container">
+                    {% for flash in flashs() %}
+                        <div class="toast {{ flash.class }}">
+                            <button class="btn btn-clear float-right"></button>
+                            {{ flash.message }}
+                        </div>
+                    {% endfor %}
                 </div>
                 <div class="py-3"></div>
                 {% block content '' %}

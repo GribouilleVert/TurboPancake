@@ -1,7 +1,7 @@
 <?php
 namespace Tests\TurboPancake\Modules;
 
-use TurboPancake\Actions\RouterAwareAction;
+use TurboPancake\Router\RouterAware;
 use TurboPancake\Module;
 use TurboPancake\Router;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -13,11 +13,15 @@ class RouterAwareModule extends Module {
      */
     private $router;
 
-    use RouterAwareAction;
+    use RouterAware;
 
     public function __construct(Router $router)
     {
         $this->router = $router;
+    }
+
+    public function load(): void
+    {
         $this->router->get('/gribouille-{color}', function(){}, 'test_module.land_url');
 
         $this->router->get('/301/{color}', function (Request $r) {

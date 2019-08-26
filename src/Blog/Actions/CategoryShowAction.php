@@ -4,7 +4,7 @@ namespace TurboModule\Blog\Actions;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use TurboModule\Blog\Database\Tables\CategoriesTable;
 use TurboModule\Blog\Database\Tables\PostsTable;
-use TurboPancake\Actions\RouterAwareAction;
+use TurboPancake\Router\RouterAware;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
 
@@ -30,7 +30,7 @@ final class CategoryShowAction {
      */
     private $postsTable;
 
-    use RouterAwareAction;
+    use RouterAware;
 
     public function __construct(
         RendererInterface $renderer,

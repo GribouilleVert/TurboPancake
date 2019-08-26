@@ -57,4 +57,5 @@ return [
 
     //Middlwares
     CsrfMiddleware::class => \DI\autowire()->constructor(\DI\get(SessionInterface::class)),
+
 ];
