@@ -20,8 +20,11 @@ trait RouterAware {
      * @param array $queryParameters
      * @return ResponseInterface
      */
-    public function temporaryRedirect(string $route, array $parameters = [], array $queryParameters = []): ResponseInterface
-    {
+    public function temporaryRedirect(
+        string $route,
+        array $parameters = [],
+        array $queryParameters = []
+    ): ResponseInterface {
         return $this->redirect($route, $parameters, $queryParameters, 302);
     }
 
@@ -32,8 +35,11 @@ trait RouterAware {
      * @param array $queryParameters
      * @return ResponseInterface
      */
-    public function permanentRedirect(string $route, array $parameters = [], array $queryParameters = []): ResponseInterface
-    {
+    public function permanentRedirect(
+        string $route,
+        array $parameters = [],
+        array $queryParameters = []
+    ): ResponseInterface {
         return $this->redirect($route, $parameters, $queryParameters, 301);
     }
 

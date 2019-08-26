@@ -30,8 +30,12 @@ class LogoutAction {
 
     use RouterAware;
 
-    public function __construct(AuthentificationInterface $authentification, Router $router, Neon $flash, string $afterLogoutRoute)
-    {
+    public function __construct(
+        AuthentificationInterface $authentification,
+        Router $router,
+        Neon $flash,
+        string $afterLogoutRoute
+    ) {
 
         $this->authentification = $authentification;
         $this->router = $router;

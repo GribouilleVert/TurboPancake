@@ -44,4 +44,5 @@ class DispatcherMiddleware implements MiddlewareInterface {
             );
         }
     }
+
 }

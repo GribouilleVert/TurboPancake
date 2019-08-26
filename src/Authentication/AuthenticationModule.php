@@ -20,7 +20,7 @@ class AuthenticationModule extends Module {
      * Dossiers pour la gestion de la base de donnée
      */
     const MIGRATIONS = __DIR__ . '/Database/mgmt/migrations';
-    const SEEDS = __DIR__ .  '/Database/mgmt/seeds';
+    const SEEDS = __DIR__ . '/Database/mgmt/seeds';
 
     /**
      * @var ContainerInterface
@@ -51,4 +51,5 @@ class AuthenticationModule extends Module {
             \TurboModule\Authentication\Middlewares\ForbiddenHandlerMiddleware::class,
         ];
     }
+
 }

@@ -94,4 +94,5 @@ class DatabaseAuther implements AuthentificationInterface {
     {
         $this->session->delete('auth.user');
     }
+
 }

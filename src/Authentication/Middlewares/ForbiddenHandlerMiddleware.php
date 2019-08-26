@@ -49,4 +49,5 @@ class ForbiddenHandlerMiddleware implements MiddlewareInterface {
             return $this->temporaryRedirect('auth.login');
         }
     }
+
 }

@@ -1,4 +1,5 @@
 <?php
 namespace TurboPancake\Auth\Exceptions;
 
-class NotLoggedException extends \Exception {}
+class NotLoggedException extends \Exception {
+}

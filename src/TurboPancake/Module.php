@@ -26,7 +26,8 @@ abstract class Module {
      * Renvoie les modules qui doivent être presents pour le bon fonctionnement du module actuel
      * @return Module[]
      */
-    public function getModuleDependencies(): array {
+    public function getModuleDependencies(): array
+    {
         return [];
     }
 
@@ -34,7 +35,8 @@ abstract class Module {
      * Renvoie les middlewares qui doivent être presents pour le bon fonctionnement du module actuel
      * @return MiddlewareInterface[]
      */
-    public function getMiddlewareDependencies(): array {
+    public function getMiddlewareDependencies(): array
+    {
         return [];
     }
 

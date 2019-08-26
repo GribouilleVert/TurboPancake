@@ -1,4 +1,5 @@
 <?php
 namespace TurboPancake\Auth\Exceptions;
 
-class ForbiddenException extends \Exception {}
+class ForbiddenException extends \Exception {
+}

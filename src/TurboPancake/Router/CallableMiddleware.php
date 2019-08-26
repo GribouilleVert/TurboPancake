@@ -27,4 +27,5 @@ class CallableMiddleware implements MiddlewareInterface {
     {
         return $handler->handle($request);
     }
+
 }
