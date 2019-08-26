@@ -1,7 +1,7 @@
 <?php
 namespace TurboPancake\Services\Session;
 
-class PHPSession implements SessionInterface {
+class Lithium implements SessionInterface {
 
     const CREATE_SESSION_IF_ABSENT = 0;
     const IGNORE_SESSION_CREATION = 1;

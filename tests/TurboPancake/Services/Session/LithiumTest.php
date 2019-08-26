@@ -2,12 +2,12 @@
 namespace Tests\TurboPancake\Services\Session;
 
 use PHPUnit\Framework\TestCase;
-use TurboPancake\Services\Session\PHPSession;
+use TurboPancake\Services\Session\Lithium;
 
 class PHPSessionTest extends TestCase {
 
     /**
-     * @var PHPSession
+     * @var Lithium
      */
     private $session;
 
@@ -15,7 +15,7 @@ class PHPSessionTest extends TestCase {
     {
         global $_SESSION;
         $_SESSION = [];
-        $this->session = new PHPSession(PHPSession::IGNORE_SESSION_CREATION);
+        $this->session = new Lithium(Lithium::IGNORE_SESSION_CREATION);
     }
 
     public function testGetDefault()
@@ -41,7 +41,7 @@ class PHPSessionTest extends TestCase {
 
     public function testInitWithStrictMode()
     {
-        $this->session = new PHPSession(PHPSession::THROW_ERROR_IF_ABSENT);
+        $this->session = new Lithium(Lithium::THROW_ERROR_IF_ABSENT);
 
         $this->expectException(\Exception::class);
         $this->session->set('test', 'Ca marche pas !');

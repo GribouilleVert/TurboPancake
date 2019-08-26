@@ -7,7 +7,7 @@ use TurboPancake\Renderer\TwigRendererFactory;
 use TurboPancake\Router;
 use TurboPancake\Router\RouterFactory;
 use TurboPancake\Router\RouterTwigExtension;
-use TurboPancake\Services\Session\PHPSession;
+use TurboPancake\Services\Session\Lithium;
 use TurboPancake\Services\Session\SessionInterface;
 use TurboPancake\Twig\CsrfExtension;
 use TurboPancake\Twig\FlashExtension;
@@ -41,7 +41,7 @@ return [
     ],
 
     //Objets globaux
-    SessionInterface::class => \DI\autowire(PHPSession::class),
+    SessionInterface::class => \DI\autowire(Lithium::class),
     Router::class => \DI\factory(RouterFactory::class),
     RendererInterface::class => \DI\Factory(TwigRendererFactory::class),
     PDO::class => function (ContainerInterface $c) {
