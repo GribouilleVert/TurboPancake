@@ -8,7 +8,7 @@ use TurboPancake\Database\Table;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
 use TurboPancake\Router\RouterAware;
-use TurboPancake\Services\Flash;
+use TurboPancake\Services\Neon;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use TurboPancake\Validator;
 
@@ -25,7 +25,7 @@ class CrudAction {
     private $router;
 
     /**
-     * @var Flash
+     * @var Neon
      */
     private $flash;
 
@@ -62,9 +62,9 @@ class CrudAction {
      * @param RendererInterface $renderer
      * @param Router $router
      * @param Table $table
-     * @param Flash $flash
+     * @param Neon $flash
      */
-    public function __construct(RendererInterface $renderer, Router $router, Table $table, Flash $flash)
+    public function __construct(RendererInterface $renderer, Router $router, Table $table, Neon $flash)
     {
         $this->renderer = $renderer;
         $this->table = $table;

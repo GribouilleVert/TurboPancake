@@ -6,7 +6,7 @@ use TurboPancake\Router\RouterAware;
 use TurboPancake\AuthentificationInterface;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
-use TurboPancake\Services\Flash;
+use TurboPancake\Services\Neon;
 use TurboPancake\Services\Session\SessionInterface;
 
 class AttemptLoginAction {
@@ -27,7 +27,7 @@ class AttemptLoginAction {
     private $router;
 
     /**
-     * @var Flash
+     * @var Neon
      */
     private $flash;
 
@@ -54,7 +54,7 @@ class AttemptLoginAction {
         $this->renderer = $renderer;
         $this->router = $router;
         $this->session = $session;
-        $this->flash = new Flash($session);
+        $this->flash = new Neon($session);
         $this->afterLoginRoute = $afterLoginRoute;
     }
 

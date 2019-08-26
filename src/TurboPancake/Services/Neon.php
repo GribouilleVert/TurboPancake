@@ -4,7 +4,7 @@ namespace TurboPancake\Services;
 use TurboPancake\Services\Flash\FlashRendererInterface;
 use TurboPancake\Services\Session\SessionInterface;
 
-class Flash {
+class Neon {
 
     /**
      * @var SessionInterface

@@ -12,7 +12,7 @@ use TurboModule\Blog\Database\Tables\PostsTable;
 use TurboPancake\Actions\CrudAction;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
-use TurboPancake\Services\Flash;
+use TurboPancake\Services\Neon;
 use TurboPancake\Validator;
 
 final class PostsCrudAction extends CrudAction {
@@ -51,7 +51,7 @@ final class PostsCrudAction extends CrudAction {
         Router $router,
         PostsTable $table,
         CategoriesTable $categoriesTable,
-        Flash $flash,
+        Neon $flash,
         BlogHelium $helium
     ) {
         $table->privateMode = true;

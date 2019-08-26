@@ -8,7 +8,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Auth\Exceptions\ForbiddenException;
 use TurboPancake\Router;
 use TurboPancake\Router\RouterAware;
-use TurboPancake\Services\Flash;
+use TurboPancake\Services\Neon;
 use TurboPancake\Services\Session\SessionInterface;
 
 class ForbiddenHandlerMiddleware implements MiddlewareInterface {
@@ -43,7 +43,7 @@ class ForbiddenHandlerMiddleware implements MiddlewareInterface {
         try {
             return $handler->handle($request);
         } catch (ForbiddenException $e) {
-            (new Flash($this->session))->warning('Vous devez être connecté pour acceder à cette page');
+            (new Neon($this->session))->warning('Vous devez être connecté pour acceder à cette page');
             $uri = $request->getUri();
             $this->session->set('auth.redirect', $uri->getPath() . '?' . $uri->getQuery());
             return $this->temporaryRedirect('auth.login');

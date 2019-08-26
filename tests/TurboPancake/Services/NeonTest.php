@@ -2,11 +2,11 @@
 namespace Tests\TurboPancake\Services;
 
 use Traversable;
-use TurboPancake\Services\Flash;
+use TurboPancake\Services\Neon;
 use TurboPancake\Services\Session\ArraySession;
 use PHPUnit\Framework\TestCase;
 
-class FlashTest extends TestCase {
+class NeonTest extends TestCase {
 
     /**
      * @var ArraySession
@@ -14,14 +14,14 @@ class FlashTest extends TestCase {
     private $session;
 
     /**
-     * @var Flash
+     * @var Neon
      */
     private $flash;
 
     protected function setUp(): void
     {
         $this->session = new ArraySession();
-        $this->flash = new Flash($this->session);
+        $this->flash = new Neon($this->session);
     }
 
     public function testAddFlash() {

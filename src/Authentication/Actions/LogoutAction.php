@@ -4,7 +4,7 @@ namespace TurboModule\Authentication\Actions;
 use TurboPancake\Router\RouterAware;
 use TurboPancake\AuthentificationInterface;
 use TurboPancake\Router;
-use TurboPancake\Services\Flash;
+use TurboPancake\Services\Neon;
 
 class LogoutAction {
 
@@ -19,7 +19,7 @@ class LogoutAction {
     private $router;
 
     /**
-     * @var Flash
+     * @var Neon
      */
     private $flash;
 
@@ -30,7 +30,7 @@ class LogoutAction {
 
     use RouterAware;
 
-    public function __construct(AuthentificationInterface $authentification, Router $router, Flash $flash, string $afterLogoutRoute)
+    public function __construct(AuthentificationInterface $authentification, Router $router, Neon $flash, string $afterLogoutRoute)
     {
 
         $this->authentification = $authentification;

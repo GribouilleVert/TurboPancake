@@ -1,18 +1,18 @@
 <?php
 namespace TurboPancake\Twig;
 
-use TurboPancake\Services\Flash;
+use TurboPancake\Services\Neon;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 final class FlashExtension extends AbstractExtension {
 
     /**
-     * @var Flash
+     * @var Neon
      */
     private $flash;
 
-    public function __construct(Flash $flash)
+    public function __construct(Neon $flash)
     {
         $this->flash = $flash;
     }

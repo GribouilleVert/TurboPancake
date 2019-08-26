@@ -6,7 +6,7 @@ use TurboModule\Blog\Database\Tables\CategoriesTable;
 use TurboPancake\Actions\CrudAction;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
-use TurboPancake\Services\Flash;
+use TurboPancake\Services\Neon;
 use TurboPancake\Validator;
 
 final class CategoriesCrudAction extends CrudAction {
@@ -36,13 +36,13 @@ final class CategoriesCrudAction extends CrudAction {
      * @param RendererInterface $renderer
      * @param Router $router
      * @param CategoriesTable $table
-     * @param Flash $flash
+     * @param Neon $flash
      */
     public function __construct(
         RendererInterface $renderer,
         Router $router,
         CategoriesTable $table,
-        Flash $flash
+        Neon $flash
     ) {
         parent::__construct($renderer, $router, $table, $flash);
     }
