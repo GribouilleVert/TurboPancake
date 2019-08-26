@@ -1,6 +1,7 @@
 <?php
 namespace TurboModule\Authentication;
 
+use TurboPancake\Auth\RoleInterface;
 use TurboPancake\Auth\UserInterface;
 
 class User implements UserInterface {
@@ -32,7 +33,7 @@ class User implements UserInterface {
     }
 
     /**
-     * @return string[] La liste des roles d'un utilisateur
+     * @return RoleInterface[] La liste des roles d'un utilisateur
      */
     public function getRoles(): array
     {

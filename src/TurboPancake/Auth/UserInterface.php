@@ -14,7 +14,7 @@ interface UserInterface {
     public function getUsername(): string;
 
     /**
-     * @return string[] La liste des roles d'un utilisateur
+     * @return RoleInterface[] La liste des roles d'un utilisateur
      */
     public function getRoles(): array;
 
