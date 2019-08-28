@@ -35,7 +35,8 @@
         "ext-intl": "*",
         "ext-fileinfo": "*",
         "ext-gd": "*",
-        "ext-imagick": "*"
+        "ext-imagick": "*",
+        "phpmailer/phpmailer": "dev-master"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.0@dev",

@@ -1,6 +1,9 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 use Psr\Container\ContainerInterface;
+use TurboPancake\MailerFactory;
 use TurboPancake\Middlewares\CsrfMiddleware;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Renderer\TwigRendererFactory;
@@ -25,6 +28,23 @@ return [
     'database.username' => 'TurboPancake',
     'database.password' => 'La8zS1tLYuN9PPRz',
 
+    //Email (SMTP)
+    'email.host' => 'localhost',
+    'email.port' => 25,
+    'email.encryption' => false,
+    'email.username' => '',
+    'email.password' => '',
+
+    'email.from.name' => 'Turbopancake',
+    'email.from.adress' => 'no-reply@turbopancake.dev',
+
+    'email.replyTo' => [
+        'contact@turbopancake.dev' => 'Turbopancake'
+    ],
+
+    'email.debug.level' => SMTP::DEBUG_OFF,
+    'email.debug.lang' => 'fr',
+
     //Twig
     'views.path' => 'views',
     'twig.configuration' => [
@@ -44,6 +64,7 @@ return [
     SessionInterface::class => \DI\autowire(Lithium::class),
     Router::class => \DI\factory(RouterFactory::class),
     RendererInterface::class => \DI\Factory(TwigRendererFactory::class),
+    PHPMailer::class => \DI\factory(MailerFactory::class),
     PDO::class => function (ContainerInterface $c) {
         $pdo = new PDO(
             "mysql:host={$c->get('database.host')};port=3306;dbname={$c->get('database.name')};charset=UTF8",
