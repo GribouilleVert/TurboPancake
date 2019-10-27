@@ -2,18 +2,20 @@
 <ruleset name="TurboPancake">
     <description>Liste des règles pour le code de TurboPancake</description>
 
-    <arg name="colors"></arg>
-    <arg value="p"></arg>
+    <arg name="colors" />
+    <arg value="p" />
 
     <file>src</file>
     <file>public/index.php</file>
 
     <exclude-pattern>*/Database/mgmt</exclude-pattern>
 
-    <rule ref="PSR2"></rule>
+    <rule ref="PSR2">
+        <exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine" />
+        <exclude name="Generic.PHP.LowerCaseKeyword" />
+    </rule>
 
-    <rule ref="Generic.Arrays.DisallowLongArraySyntax"></rule>
-
-    <rule ref="~/.config/thewayicode.xml"></rule>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax" />
+    <rule ref="Generic.Classes.OpeningBraceSameLine" />
 
 </ruleset>
