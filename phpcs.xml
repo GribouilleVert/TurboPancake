@@ -2,7 +2,6 @@
 <ruleset name="TurboPancake">
     <description>Liste des règles pour le code de TurboPancake</description>
 
-    <arg name="colors" />
     <arg value="p" />
 
     <file>src</file>
