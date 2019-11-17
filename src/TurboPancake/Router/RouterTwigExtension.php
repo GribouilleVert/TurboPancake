@@ -5,8 +5,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use TurboPancake\Router;
 use Twig\Extension\AbstractExtension;
 
-final class RouterTwigExtension extends AbstractExtension
-{
+final class RouterTwigExtension extends AbstractExtension {
+
 
     /**
      * @var Router
@@ -53,5 +53,4 @@ final class RouterTwigExtension extends AbstractExtension
         $expectedUri = $this->router->generateUri($route, $parameters);
         return strpos($uri, $expectedUri) === 0;
     }
-
 }

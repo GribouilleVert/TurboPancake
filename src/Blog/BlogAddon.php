@@ -33,5 +33,4 @@ class BlogAddon implements AdminAddonInterface {
     {
         return $this->renderer->render('@blog/admin/menu_item');
     }
-
 }

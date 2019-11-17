@@ -17,5 +17,4 @@ interface UserInterface {
      * @return RoleInterface[] La liste des roles d'un utilisateur
      */
     public function getRoles(): array;
-
 }

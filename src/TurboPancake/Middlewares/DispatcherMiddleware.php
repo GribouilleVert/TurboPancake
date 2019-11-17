@@ -23,26 +23,14 @@ class DispatcherMiddleware implements MiddlewareInterface {
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        /**
+         * @var $route Route
+         */
         $route = $request->getAttribute(Route::class);
         if (is_null($route)) {
             return $handler->handle($request);
         }
 
-        $callback = $route->getCallback();
-        if (is_string($callback)) {
-            $callback = $this->container->get($callback);
-        }
-
-        $response = call_user_func_array($callback, [$request]);
-        if (is_string($response)) {
-            return new Response(200, [], $response);
-        } elseif ($response instanceof ResponseInterface) {
-            return $response;
-        } else {
-            throw new \Exception(
-                'Response type is invalid, expected string or ResponseInterface instance, got ' . gettype($response)
-            );
-        }
+        return $route->getMiddleware()->process($request, $handler);
     }
-
 }

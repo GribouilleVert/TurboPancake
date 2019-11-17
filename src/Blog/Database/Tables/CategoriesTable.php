@@ -11,5 +11,4 @@ final class CategoriesTable extends Table {
     {
         return parent::getPaginationQuery() . " ORDER BY name ASC";
     }
-
 }

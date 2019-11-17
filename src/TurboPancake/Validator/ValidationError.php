@@ -42,5 +42,4 @@ class ValidationError {
         $params = array_merge([$this->customError??$this->messages[$this->rule], $this->field], $this->attributes);
         return call_user_func_array('sprintf', $params);
     }
-
 }

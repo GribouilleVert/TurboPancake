@@ -13,5 +13,4 @@ class NotFoundMiddleware implements MiddlewareInterface {
     {
         return new Response(404, [], '<h1>Erreur 404</h1>');
     }
-
 }

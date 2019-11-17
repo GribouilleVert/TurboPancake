@@ -55,5 +55,4 @@ class RoutedMiddleware implements MiddlewareInterface {
     {
         return $this->middleware;
     }
-
 }

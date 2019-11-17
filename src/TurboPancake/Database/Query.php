@@ -423,5 +423,4 @@ class Query implements \IteratorAggregate {
     {
         return $this->fetchAll();
     }
-
 }

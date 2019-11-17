@@ -63,5 +63,4 @@ class TwigRenderer implements RendererInterface {
     {
         return $this->twig;
     }
-
 }

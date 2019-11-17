@@ -166,5 +166,4 @@ final class PostsCrudAction extends CrudAction {
         $datas['categories'] = $this->categoriesTable->findList();
         return $datas;
     }
-
 }

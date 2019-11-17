@@ -1,10 +1,14 @@
 <?php
 namespace TurboModule\Authentication\Actions;
 
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Renderer\RendererInterface;
 
-class LoginAction {
+class LoginAction implements MiddlewareInterface {
 
     /**
      * @var RendererInterface
@@ -16,9 +20,8 @@ class LoginAction {
         $this->renderer = $renderer;
     }
 
-    public function __invoke(ServerRequestInterface $request)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        return $this->renderer->render('@auth/login');
+        return new Response(200, [], $this->renderer->render('@auth/login'));
     }
-
 }

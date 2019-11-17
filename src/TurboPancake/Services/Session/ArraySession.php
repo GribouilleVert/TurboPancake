@@ -87,5 +87,4 @@ final class ArraySession implements SessionInterface {
     {
         $this->delete($offset);
     }
-
 }

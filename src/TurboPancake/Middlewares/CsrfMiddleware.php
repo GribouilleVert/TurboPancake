@@ -129,5 +129,4 @@ class CsrfMiddleware implements MiddlewareInterface {
     {
         return $this->fieldName;
     }
-
 }

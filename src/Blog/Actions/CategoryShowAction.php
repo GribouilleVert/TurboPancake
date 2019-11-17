@@ -1,14 +1,18 @@
 <?php
 namespace TurboModule\Blog\Actions;
 
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TurboModule\Blog\Database\Tables\CategoriesTable;
 use TurboModule\Blog\Database\Tables\PostsTable;
 use TurboPancake\Router\RouterAware;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
 
-final class CategoryShowAction {
+final class CategoryShowAction implements MiddlewareInterface {
 
     /**
      * @var RendererInterface
@@ -44,7 +48,7 @@ final class CategoryShowAction {
         $this->postsTable = $postsTable;
     }
 
-    public function __invoke(Request $request)
+    public function process(Request $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $category = $this->categoriesTable->findBy('slug', $request->getAttribute('slug'))[0];
 
@@ -55,7 +59,9 @@ final class CategoryShowAction {
 
         $categories = $this->categoriesTable->findAll();
 
-        return $this->renderer->render('@blog/category', compact('category', 'categories', 'posts', 'page'));
+        return new Response(200, [], $this->renderer->render(
+            '@blog/category',
+            compact('category', 'categories', 'posts', 'page')
+        ));
     }
-
 }

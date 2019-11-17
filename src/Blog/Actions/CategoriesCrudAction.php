@@ -80,5 +80,4 @@ final class CategoriesCrudAction extends CrudAction {
             ->slug('slug')
             ->unique('slug', $this->table, 'slug', [$itemDatas->slug]);
     }
-
 }

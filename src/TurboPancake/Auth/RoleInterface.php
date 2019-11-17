@@ -25,5 +25,4 @@ interface RoleInterface {
      * @return mixed[]
      */
     public function getPermissions(): array;
-
 }

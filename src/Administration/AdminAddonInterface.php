@@ -6,5 +6,4 @@ interface AdminAddonInterface {
     public function renderWidget(): ?string;
 
     public function renderMenuItem(): ?string;
-
 }

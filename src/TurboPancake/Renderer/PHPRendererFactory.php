@@ -9,5 +9,4 @@ class PHPRendererFactory {
     {
         return new PHPRenderer($container->get('views.path'));
     }
-
 }

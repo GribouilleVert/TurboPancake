@@ -35,5 +35,4 @@ interface AuthentificationInterface {
      * Permet de déconnecter la sessions
      */
     public function logout(): void;
-
 }

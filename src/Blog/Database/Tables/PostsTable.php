@@ -46,5 +46,4 @@ final class PostsTable extends Table {
             ->join($categoryTable . ' as c', 'p.category_id = c.id')
             ->order('p.created_at DESC');
     }
-
 }

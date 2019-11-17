@@ -51,5 +51,4 @@ class AuthenticationModule extends Module {
             \TurboModule\Authentication\Middlewares\ForbiddenHandlerMiddleware::class,
         ];
     }
-
 }

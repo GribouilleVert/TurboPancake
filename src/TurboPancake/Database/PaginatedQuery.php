@@ -46,5 +46,4 @@ class PaginatedQuery implements AdapterInterface {
             ->limit($length, $offset)
             ->fetchAll();
     }
-
 }

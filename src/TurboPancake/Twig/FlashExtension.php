@@ -48,5 +48,4 @@ final class FlashExtension extends AbstractExtension {
 
         return $flashes;
     }
-
 }

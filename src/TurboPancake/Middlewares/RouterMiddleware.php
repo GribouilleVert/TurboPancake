@@ -37,5 +37,4 @@ class RouterMiddleware implements MiddlewareInterface {
         $request = $request->withAttribute(get_class($route), $route);
         return $handler->handle($request);
     }
-
 }

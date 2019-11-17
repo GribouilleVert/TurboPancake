@@ -12,5 +12,4 @@ class BlogHelium extends Helium {
             'resize' => [320, 200, true]
         ]
     ];
-
 }

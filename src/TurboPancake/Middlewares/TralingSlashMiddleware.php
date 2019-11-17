@@ -17,5 +17,4 @@ class TralingSlashMiddleware implements MiddlewareInterface {
         }
         return $handler->handle($request);
     }
-
 }

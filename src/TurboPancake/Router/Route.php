@@ -1,6 +1,8 @@
 <?php
 namespace TurboPancake\Router;
 
+use Psr\Http\Server\MiddlewareInterface;
+
 /**
  * Class Route
  * @package TurboPancake\Router
@@ -13,9 +15,9 @@ class Route {
     private $name;
 
     /**
-     * @var callable Callback a appeler lors d'un match
+     * @var MiddlewareInterface Callback a appeler lors d'un match
      */
-    private $callback;
+    private $middleware;
 
     /**
      * @var array Paramètres
@@ -25,13 +27,13 @@ class Route {
     /**
      * Route constructor.
      * @param string $name
-     * @param string|callable $callback
+     * @param MiddlewareInterface $middleware
      * @param array $parameters
      */
-    public function __construct(string $name, $callback, array $parameters)
+    public function __construct(string $name, MiddlewareInterface $middleware, array $parameters)
     {
         $this->name = $name;
-        $this->callback = $callback;
+        $this->middleware = $middleware;
         $this->parameters = $parameters;
     }
 
@@ -44,11 +46,11 @@ class Route {
     }
 
     /**
-     * @return string|callable
+     * @return MiddlewareInterface
      */
-    public function getCallback()
+    public function getMiddleware(): MiddlewareInterface
     {
-        return $this->callback;
+        return $this->middleware;
     }
 
     /**
@@ -59,5 +61,4 @@ class Route {
     {
         return $this->parameters;
     }
-
 }

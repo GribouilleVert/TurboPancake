@@ -1,7 +1,11 @@
 <?php
 namespace TurboModule\Authentication\Actions;
 
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Router\RouterAware;
 use TurboPancake\AuthentificationInterface;
 use TurboPancake\Renderer\RendererInterface;
@@ -9,7 +13,7 @@ use TurboPancake\Router;
 use TurboPancake\Services\Neon;
 use TurboPancake\Services\Session\SessionInterface;
 
-class AttemptLoginAction {
+class AttemptLoginAction implements MiddlewareInterface {
 
     /**
      * @var RendererInterface
@@ -58,7 +62,7 @@ class AttemptLoginAction {
         $this->afterLoginRoute = $afterLoginRoute;
     }
 
-    public function __invoke(ServerRequestInterface $request)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $fields = $request->getParsedBody();
         if (!empty($fields['username']) AND !empty($fields['password'])) {
@@ -79,7 +83,9 @@ class AttemptLoginAction {
         }
 
         $username = $fields['username']??'';
-        return $this->renderer->render('@auth/login', compact('username'));
+        return new Response(200, [], $this->renderer->render(
+            '@auth/login',
+            compact('username')
+        ));
     }
-
 }

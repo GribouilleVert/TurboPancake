@@ -5,8 +5,8 @@ use TurboPancake\Router;
 use Pagerfanta\Pagerfanta;
 use Twig\Extension\AbstractExtension;
 
-final class PagerFantaExtension extends AbstractExtension
-{
+final class PagerFantaExtension extends AbstractExtension {
+
 
     /**
      * @var Router
@@ -172,5 +172,4 @@ final class PagerFantaExtension extends AbstractExtension
 
         return $li;
     }
-
 }

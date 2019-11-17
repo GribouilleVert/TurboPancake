@@ -19,5 +19,4 @@ final class TimeExtension extends AbstractExtension {
             . $date->format($format) .
             '</time>';
     }
-
 }

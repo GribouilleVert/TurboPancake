@@ -98,5 +98,4 @@ class Neon {
 
         return null;
     }
-
 }

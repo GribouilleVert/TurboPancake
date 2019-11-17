@@ -27,5 +27,4 @@ class AuthCheckerMiddleware implements MiddlewareInterface {
         }
         return $handler->handle($request->withAttribute(UserInterface::class, $this->auth->getUser()));
     }
-
 }

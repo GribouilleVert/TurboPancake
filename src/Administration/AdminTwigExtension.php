@@ -36,5 +36,4 @@ final class AdminTwigExtension extends AbstractExtension {
             return $html;
         }, '');
     }
-
 }

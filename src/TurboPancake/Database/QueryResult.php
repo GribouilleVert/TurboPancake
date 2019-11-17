@@ -189,5 +189,4 @@ class QueryResult implements \ArrayAccess, \Iterator, \Countable {
     {
         return count($this->records);
     }
-
 }

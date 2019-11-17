@@ -51,5 +51,4 @@ final class TextExtension extends AbstractExtension {
         }
         return implode($glue, $initials);
     }
-
 }

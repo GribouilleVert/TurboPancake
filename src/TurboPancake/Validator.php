@@ -1396,5 +1396,4 @@ class Validator {
             $this->errors[$field] = new ValidationError($fieldName, $rule, $attributes, $customError);
         }
     }
-
 }

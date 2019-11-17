@@ -37,5 +37,4 @@ final class CsrfExtension extends AbstractExtension {
     {
         return $this->csrfMiddleware->makeToken();
     }
-
 }

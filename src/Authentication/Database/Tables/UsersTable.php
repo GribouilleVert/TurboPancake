@@ -11,5 +11,4 @@ class UsersTable extends Table {
     protected $entity = User::class;
 
     public $throwOnNotFound = false;
-
 }

@@ -109,5 +109,4 @@ class Helium {
         return $pathInfos['dirname'] . self::DS .
                $pathInfos['filename'] . '_' . $suffix . '.' . $pathInfos['extension'];
     }
-
 }

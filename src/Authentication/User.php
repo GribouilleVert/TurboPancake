@@ -39,5 +39,4 @@ class User implements UserInterface {
     {
         return [];
     }
-
 }

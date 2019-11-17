@@ -19,5 +19,4 @@ class MethodDetectorMiddleware implements MiddlewareInterface {
         }
         return $handler->handle($request);
     }
-
 }

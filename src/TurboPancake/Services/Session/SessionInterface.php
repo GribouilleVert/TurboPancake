@@ -23,5 +23,4 @@ interface SessionInterface extends \ArrayAccess {
      * @param string $key
      */
     public function delete(string $key): void;
-
 }

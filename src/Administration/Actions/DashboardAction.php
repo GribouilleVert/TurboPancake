@@ -1,11 +1,15 @@
 <?php
 namespace TurboModule\Administration\Actions;
 
-use Psr\Container\ContainerInterface;
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TurboModule\Administration\AdminAddonInterface;
 use TurboPancake\Renderer\RendererInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class DashboardAction {
+class DashboardAction implements MiddlewareInterface {
 
     /**
      * @var RendererInterface
@@ -24,7 +28,7 @@ class DashboardAction {
         $this->addons = $addons;
     }
 
-    public function __invoke()
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $widgets = array_map(function (AdminAddonInterface $addon) {
             return $addon->renderWidget()??null;
@@ -33,7 +37,9 @@ class DashboardAction {
             return $widget !== null;
         });
 
-        return $this->renderer->render('@admin/dashboard', compact('widgets'));
+        return new Response(200, [], $this->renderer->render(
+            '@admin/dashboard',
+            compact('widgets')
+        ));
     }
-
 }

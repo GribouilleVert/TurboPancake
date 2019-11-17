@@ -25,5 +25,4 @@ Interface RendererInterface {
      * @return string
      */
     public function render(string $view, array $parameters = []): string;
-
 }

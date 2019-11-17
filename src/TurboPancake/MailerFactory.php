@@ -34,5 +34,4 @@ class MailerFactory {
 
         return $mailer;
     }
-
 }

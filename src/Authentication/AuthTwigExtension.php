@@ -24,5 +24,4 @@ class AuthTwigExtension extends AbstractExtension {
             new TwigFunction('get_current_user', [$this->authentification, 'getUser']),
         ];
     }
-
 }

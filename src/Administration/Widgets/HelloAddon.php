@@ -23,5 +23,4 @@ class HelloAddon implements AdminAddonInterface {
     {
         return null;
     }
-
 }

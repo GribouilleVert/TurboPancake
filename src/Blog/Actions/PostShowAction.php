@@ -1,13 +1,17 @@
 <?php
 namespace TurboModule\Blog\Actions;
 
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Router\RouterAware;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
 use TurboModule\Blog\Database\Tables\PostsTable;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface;
 
-final class PostShowAction {
+final class PostShowAction implements MiddlewareInterface {
 
     /**
      * @var RendererInterface
@@ -32,7 +36,7 @@ final class PostShowAction {
         $this->postTable = $postTable;
     }
 
-    public function __invoke(Request $request)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $post = $this->postTable->findPublicWithCategory($request->getAttribute('id'));
         if (is_null($post)) {
@@ -47,7 +51,9 @@ final class PostShowAction {
             ]);
         }
 
-        return $this->renderer->render('@blog/show', compact('post'));
+        return new Response(200, [], $this->renderer->render(
+            '@blog/show',
+            compact('post')
+        ));
     }
-
 }

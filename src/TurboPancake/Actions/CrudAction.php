@@ -1,7 +1,10 @@
 <?php
 namespace TurboPancake\Actions;
 
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use stdClass;
 use TurboPancake\Database\Sprinkler;
 use TurboPancake\Database\Table;
@@ -12,7 +15,7 @@ use TurboPancake\Services\Neon;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use TurboPancake\Validator;
 
-class CrudAction {
+class CrudAction implements MiddlewareInterface {
 
     /**
      * @var RendererInterface
@@ -72,7 +75,8 @@ class CrudAction {
         $this->flash = $flash;
     }
 
-    public function __invoke(Request $request)
+
+    public function process(Request $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->renderer->addGlobal('viewPath', $this->viewPath);
         $this->renderer->addGlobal('routePrefix', $this->routePrefix);
@@ -109,10 +113,11 @@ class CrudAction {
             return $this->temporaryRedirect($this->routePrefix . '.index');
         }
 
-        return $this->renderer->render(
+
+        return new Response(200, [], $this->renderer->render(
             $this->viewPath . '/index',
             $this->viewDatas(compact('items', 'page'))
-        );
+        ));
     }
 
     /**
@@ -139,10 +144,10 @@ class CrudAction {
             $item = Sprinkler::hydrate($request->getParsedBody(), $item);
         }
 
-        return $this->renderer->render(
+        return new Response(200, [], $this->renderer->render(
             $this->viewPath . '/edit',
             $this->viewDatas(compact('item', 'errors'))
-        );
+        ));
     }
 
     /**
@@ -166,10 +171,10 @@ class CrudAction {
             $errors = $validator->getErrors();
         }
 
-        return $this->renderer->render(
+        return new Response(200, [], $this->renderer->render(
             $this->viewPath . '/create',
             $this->viewDatas(compact('item', 'errors'))
-        );
+        ));
     }
 
     /**
@@ -234,5 +239,4 @@ class CrudAction {
     {
         return $datas;
     }
-
 }

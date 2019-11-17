@@ -12,7 +12,6 @@ class RouterFactory {
         if ($container->get('env') === 'production') {
             $cache = 'tmp/routes.php';
         }
-        return new Router($cache);
+        return new Router($container, $cache);
     }
-
 }

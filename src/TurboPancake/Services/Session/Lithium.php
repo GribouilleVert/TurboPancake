@@ -123,5 +123,4 @@ class Lithium implements SessionInterface {
             throw new \Exception('PHP Session is disabled', E_ERROR);
         }
     }
-
 }

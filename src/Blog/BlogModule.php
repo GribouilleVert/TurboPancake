@@ -62,5 +62,4 @@ final class BlogModule extends Module {
             $router->crud("$prefix/categories", CategoriesCrudAction::class, 'blog.admin.categories');
         }
     }
-
 }

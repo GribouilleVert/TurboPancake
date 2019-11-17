@@ -63,5 +63,4 @@ final class AdministrationModule extends Module {
             \TurboModule\Authentication\AuthenticationModule::class,
         ];
     }
-
 }

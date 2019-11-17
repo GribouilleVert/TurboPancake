@@ -96,5 +96,4 @@ class Post {
     {
         return '/uploads/thumbnails/' . $this->image;
     }
-
 }

@@ -34,5 +34,4 @@ class TwigRendererFactory {
 
         return new TwigRenderer($twig);
     }
-
 }

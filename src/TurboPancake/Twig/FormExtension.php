@@ -303,5 +303,4 @@ final class FormExtension extends AbstractExtension {
         $res .= '';
         return $res;
     }
-
 }

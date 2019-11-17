@@ -70,5 +70,4 @@ trait RouterAware {
             ->withStatus(302)
             ->withHeader('location', $fullPath);
     }
-
 }
