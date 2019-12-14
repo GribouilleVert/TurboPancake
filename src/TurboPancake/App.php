@@ -2,6 +2,7 @@
 namespace TurboPancake;
 
 use DI\Container;
+use DI\DependencyException;
 use Exception;
 use PHPUnit\Framework\Warning;
 use Psr\Http\Server\MiddlewareInterface;
@@ -125,44 +126,53 @@ final class App implements RequestHandlerInterface {
              * @var $module Module
              */
             $moduleName = $module;
-            $module = $this->getContainer()->get($module);
-            $moduleDependencies = $module->getModuleDependencies();
-            $middlewareDependencies = $module->getMiddlewareDependencies();
+            try {
+                $module = $this->getContainer()->get($module);
+                $moduleDependencies = $module->getModuleDependencies();
+                $middlewareDependencies = $module->getMiddlewareDependencies();
 
-            foreach ($moduleDependencies as $moduleDependency) {
-                if (!in_array($moduleDependency, $this->modules)) {
-                    trigger_error(
-                        'Unable to load module ' . $moduleName .
-                        ' beacause the required module ' . $moduleDependency . ' is not present',
-                        E_USER_WARNING
-                    );
-                    continue 2;
+                foreach ($moduleDependencies as $moduleDependency) {
+                    if (!in_array($moduleDependency, $this->modules)) {
+                        trigger_error(
+                            'Unable to load module ' . $moduleName .
+                            ' beacause the required module ' . $moduleDependency . ' is not present',
+                            E_USER_WARNING
+                        );
+                        continue 2;
+                    }
                 }
-            }
 
-            foreach ($middlewareDependencies as $middlewareDependency) {
-                if (!in_array($middlewareDependency, $this->middlewares)) {
-                    foreach ($this->middlewares as $middleware) {
-                        if ($middleware instanceof RoutedMiddleware) {
-                            if ($middlewareDependency === $middleware->getMiddleware()) {
-                                continue 2;
+                foreach ($middlewareDependencies as $middlewareDependency) {
+                    if (!in_array($middlewareDependency, $this->middlewares)) {
+                        foreach ($this->middlewares as $middleware) {
+                            if ($middleware instanceof RoutedMiddleware) {
+                                if ($middlewareDependency === $middleware->getMiddleware()) {
+                                    continue 2;
+                                }
                             }
                         }
+                        trigger_error(
+                            'Unable to load module ' . $moduleName .
+                            ' beacause the required middleware ' . $middlewareDependency . ' is not present',
+                            E_USER_WARNING
+                        );
+                        continue 2;
                     }
-                    trigger_error(
-                        'Unable to load module ' . $moduleName .
-                        ' beacause the required middleware ' . $middlewareDependency . ' is not present',
-                        E_USER_WARNING
-                    );
-                    continue 2;
                 }
+                $loadedModules[] = $moduleName;
+                $module->load();
+            } catch (DependencyException $e) {
+                trigger_error(
+                    'Unable to load module ' . $moduleName .
+                    ' beacause the __construct requirements can\'t be met by the container',
+                    E_USER_WARNING
+                );
             }
-            $loadedModules[] = $moduleName;
-            $module->load();
         }
 
         if ($this->container->has(RendererInterface::class)) {
             $this->container->get(RendererInterface::class)->addGlobal('modules', $loadedModules);
+            $this->container->set('app.loadedModules', $loadedModules);
         }
 
         return $this->handle($request);
