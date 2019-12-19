@@ -2,21 +2,45 @@
 namespace TurboPancake\Twig;
 
 use Twig\Extension\AbstractExtension;
+use function TurboPancake\timeDiffText;
+use function TurboPancake\ago;
+use function TurboPancake\in;
 
 final class TimeExtension extends AbstractExtension {
 
     public function getFilters(): array
     {
         return [
-            new \Twig\TwigFilter('ago', [$this, 'ago'], ['is_safe' => ['html']]),
+            new \Twig\TwigFilter('time_diff', [$this, 'timeDiff']),
+            new \Twig\TwigFilter('ago', [$this, 'ago']),
+            new \Twig\TwigFilter('in', [$this, 'in']),
         ];
     }
 
-    public function ago(\DateTime $date, string $format = 'd/m/Y H:i')
+    public function getFunctions()
     {
-        return  $result =
-            '<time class="timeago" datetime="' . $date->format(\DateTime::ISO8601) . '">'
-            . $date->format($format) .
-            '</time>';
+        return [
+            new \Twig\TwigFunction('year', [$this, 'currentYear'])
+        ];
+    }
+
+    public function timeDiff(\DateTime $date)
+    {
+        return timeDiffText($date);
+    }
+
+    public function ago(\DateTime $date)
+    {
+        return ago($date);
+    }
+
+    public function in(\DateTime $date)
+    {
+        return in($date);
+    }
+
+    public function currentYear(): string
+    {
+        return date('Y');
     }
 }
