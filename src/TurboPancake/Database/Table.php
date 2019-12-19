@@ -46,9 +46,9 @@ class Table {
      */
     public function exists($id): bool
     {
-        $statemenet = $this->pdo->prepare("SELECT id FROM {$this->table} WHERE id = ?");
-        $statemenet->execute([$id]);
-        return $statemenet->fetchColumn() !== false;
+        $statement = $this->pdo->prepare("SELECT id FROM {$this->table} WHERE id = ?");
+        $statement->execute([$id]);
+        return $statement->fetchColumn() !== false;
     }
 
     /**

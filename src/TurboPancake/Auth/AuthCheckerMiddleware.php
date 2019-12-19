@@ -6,16 +6,16 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Auth\Exceptions\ForbiddenException;
-use TurboPancake\AuthentificationInterface;
+use TurboPancake\AuthenticationInterface;
 
 class AuthCheckerMiddleware implements MiddlewareInterface {
 
     /**
-     * @var AuthentificationInterface
+     * @var AuthenticationInterface
      */
     private $auth;
 
-    public function __construct(AuthentificationInterface $auth)
+    public function __construct(AuthenticationInterface $auth)
     {
         $this->auth = $auth;
     }

@@ -4,7 +4,7 @@ namespace TurboPancake;
 use TurboPancake\Auth\Exceptions\NotLoggedException;
 use TurboPancake\Auth\UserInterface;
 
-interface AuthentificationInterface {
+interface AuthenticationInterface {
 
     /**
      * Renvoie l'utilisateur actif, si l'utilisateur n'est pas connecté renvoie
