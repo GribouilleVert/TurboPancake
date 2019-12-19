@@ -170,9 +170,21 @@ final class App implements RequestHandlerInterface {
             }
         }
 
+        $applicationDetails = [
+            'version' => 'TurboPancake 2.0',
+            'container' => get_class($this->container),
+            'renderer' => get_class($this->container->get(RendererInterface::class)),
+        ];
+
+        $this->container->set('turbopancake.details', $applicationDetails);
+        $this->container->set('turbopancake.modules', $this->modules);
+        $this->container->set('turbopancake.loadedModules', $loadedModules);
+        $this->container->set('turbopancake.middlewares', $this->middlewares);
+
         if ($this->container->has(RendererInterface::class)) {
             $this->container->get(RendererInterface::class)->addGlobal('modules', $loadedModules);
-            $this->container->set('app.loadedModules', $loadedModules);
+            $this->container->get(RendererInterface::class)->addGlobal('middlewares', $this->middlewares);
+            $this->container->get(RendererInterface::class)->addGlobal('applicationDetails', $applicationDetails);
         }
 
         return $this->handle($request);
