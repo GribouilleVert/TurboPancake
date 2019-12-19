@@ -7,7 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Router\RouterAware;
-use TurboPancake\AuthentificationInterface;
+use TurboPancake\AuthenticationInterface;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Router;
 use TurboPancake\Services\Neon;
@@ -21,7 +21,7 @@ class AttemptLoginAction implements MiddlewareInterface {
     private $renderer;
 
     /**
-     * @var AuthentificationInterface
+     * @var AuthenticationInterface
      */
     private $authentification;
 
@@ -49,7 +49,7 @@ class AttemptLoginAction implements MiddlewareInterface {
 
     public function __construct(
         RendererInterface $renderer,
-        AuthentificationInterface $authentification,
+        AuthenticationInterface $authentification,
         Router $router,
         SessionInterface $session,
         string $afterLoginRoute

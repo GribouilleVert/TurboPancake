@@ -4,12 +4,12 @@ namespace TurboModule\Authentication;
 use TurboModule\Authentication\Database\Tables\UsersTable;
 use TurboPancake\Auth\Exceptions\NotLoggedException;
 use TurboPancake\Auth\UserInterface;
-use TurboPancake\AuthentificationInterface;
+use TurboPancake\AuthenticationInterface;
 use TurboPancake\Database\Exceptions\NoRecordException;
 use TurboPancake\Database\Exceptions\QueryBuilderException;
 use TurboPancake\Services\Session\SessionInterface;
 
-class DatabaseAuther implements AuthentificationInterface {
+class DatabaseAuther implements AuthenticationInterface {
 
     /**
      * @var UsersTable

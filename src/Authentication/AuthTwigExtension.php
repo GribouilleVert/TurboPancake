@@ -1,18 +1,18 @@
 <?php
 namespace TurboModule\Authentication;
 
-use TurboPancake\AuthentificationInterface;
+use TurboPancake\AuthenticationInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class AuthTwigExtension extends AbstractExtension {
 
     /**
-     * @var AuthentificationInterface
+     * @var AuthenticationInterface
      */
     private $authentification;
 
-    public function __construct(AuthentificationInterface $authentification)
+    public function __construct(AuthenticationInterface $authentification)
     {
         $this->authentification = $authentification;
     }

@@ -6,14 +6,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Router\RouterAware;
-use TurboPancake\AuthentificationInterface;
+use TurboPancake\AuthenticationInterface;
 use TurboPancake\Router;
 use TurboPancake\Services\Neon;
 
 class LogoutAction implements MiddlewareInterface {
 
     /**
-     * @var AuthentificationInterface
+     * @var AuthenticationInterface
      */
     private $authentification;
 
@@ -35,7 +35,7 @@ class LogoutAction implements MiddlewareInterface {
     use RouterAware;
 
     public function __construct(
-        AuthentificationInterface $authentification,
+        AuthenticationInterface $authentification,
         Router $router,
         Neon $flash,
         string $afterLogoutRoute

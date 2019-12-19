@@ -6,7 +6,7 @@ use TurboModule\Authentication\AuthTwigExtension;
 use TurboModule\Authentication\DatabaseAuther;
 use TurboModule\Authentication\Middlewares\ForbiddenHandlerMiddleware;
 use TurboPancake\Auth\UserInterface;
-use TurboPancake\AuthentificationInterface;
+use TurboPancake\AuthenticationInterface;
 
 return [
     'auth.login' => '/login',
@@ -19,10 +19,10 @@ return [
         \DI\get(AuthTwigExtension::class),
     ]),
 
-    AuthentificationInterface::class => \DI\get(DatabaseAuther::class),
-    UserInterface::class => \DI\factory(function (AuthentificationInterface $auth) {
+    AuthenticationInterface::class => \DI\get(DatabaseAuther::class),
+    UserInterface::class => \DI\factory(function (AuthenticationInterface $auth) {
         return $auth->getUser();
-    })->parameter('auth', AuthentificationInterface::class),
+    })->parameter('auth', AuthenticationInterface::class),
     AttemptLoginAction::class => \DI\autowire()->constructorParameter('afterLoginRoute', \DI\get('auth.afterLogin')),
     LogoutAction::class => \DI\autowire()->constructorParameter('afterLogoutRoute', \DI\get('auth.afterLogout')),
     ForbiddenHandlerMiddleware::class => \DI\autowire()->constructorParameter('destinationRoute', \DI\get('auth.login')),
