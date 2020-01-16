@@ -22,14 +22,14 @@ interface AuthenticationInterface {
     public function isLogged(): bool;
 
     /**
-     * Permet d'obtenir les iformations d'un utilisateur à partir de ses identifiants
-     * et de le connecter en session
+     * Permet de connecter l'utisateur (session)
+     * N'EFFECTUE PAS VERIFICATION
      *
      * @param string $identifier
-     * @param string $password
+     * @param array $options Options de connexion
      * @return UserInterface|null Renvoi null si l'utilisateur n'existe pas
      */
-    public function login(string $identifier, string $password): ?UserInterface;
+    public function login(string $identifier, array $options = []): ?UserInterface;
 
     /**
      * Permet de déconnecter la sessions

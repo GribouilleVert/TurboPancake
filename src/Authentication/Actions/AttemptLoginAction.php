@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TurboPancake\Auth\Identity\IdentityCheckerInterface;
 use TurboPancake\Router\RouterAware;
 use TurboPancake\AuthenticationInterface;
 use TurboPancake\Renderer\RendererInterface;
@@ -45,11 +46,17 @@ class AttemptLoginAction implements MiddlewareInterface {
      */
     private $session;
 
+    /**
+     * @var IdentityCheckerInterface
+     */
+    private $identityChecker;
+
     use RouterAware;
 
     public function __construct(
         RendererInterface $renderer,
         AuthenticationInterface $authentification,
+        IdentityCheckerInterface $identityChecker,
         Router $router,
         SessionInterface $session,
         string $afterLoginRoute
@@ -60,14 +67,18 @@ class AttemptLoginAction implements MiddlewareInterface {
         $this->session = $session;
         $this->flash = new Neon($session);
         $this->afterLoginRoute = $afterLoginRoute;
+        $this->identityChecker = $identityChecker;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $fields = $request->getParsedBody();
         if (!empty($fields['username']) AND !empty($fields['password'])) {
-            $user = $this->authentification->login($fields['username'], $fields['password']);
-            if ($user) {
+            $this->identityChecker
+                ->withIdentifier($fields['username'])
+                ->withPassword($fields['username']);
+            if ($this->identityChecker->check()) {
+                $user = $this->authentification->login($fields['username']);
                 $this->flash->success('Bienvenue !');
                 $redirect = $this->session->get('auth.redirect');
                 if ($redirect !== null) {

@@ -11,4 +11,12 @@ class UsersTable extends Table {
     protected $entity = User::class;
 
     public $throwOnNotFound = false;
+
+    public function findByIdentifier(string $identifier): ?User
+    {
+        return ($this->makeQuery())
+            ->where('username = :identifier OR email = :identifier')
+            ->parameters(['identifier' => $identifier])
+            ->fetch();
+    }
 }

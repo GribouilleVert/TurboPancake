@@ -69,19 +69,12 @@ class DatabaseAuther implements AuthenticationInterface {
         return $this->session->get('auth.user') !== null;
     }
 
-    public function login(string $username, string $password): ?UserInterface
+    public function login(string $identifier, array $options = []): ?UserInterface
     {
-        if (empty($username) OR empty($password)) {
-            return null;
-        }
-
-        $user = $this->usersTable->findBy('username', $username);
-        if (isset($user[0])) {
-            $user = $user[0];
-            if (password_verify($password, $user->password)) {
-                $this->session->set('auth.user', $user->id);
-                return $user;
-            }
+        $user = $this->usersTable->findByIdentifier($identifier);
+        if ($user) {
+            $this->session->set('auth.user', $user->id);
+            return $user;
         }
 
         return null;
