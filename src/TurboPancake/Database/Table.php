@@ -52,7 +52,9 @@ class Table {
      */
     public function exists($id): bool
     {
-        $statement = $this->pdo->prepare("SELECT `{$this->customIdColumn}` FROM {$this->table} WHERE id = ?");
+        $statement = $this->pdo->prepare(
+            "SELECT `{$this->customIdColumn}` FROM {$this->table} WHERE `{$this->customIdColumn}` = ?"
+        );
         $statement->execute([$id]);
         return $statement->fetchColumn() !== false;
     }
@@ -83,7 +85,7 @@ class Table {
     public function findList(string $column = 'name') :array
     {
         $results = $this->pdo
-            ->query("SELECT `{$this->customIdColumn}`, `{$column}` FROM {$this->table} ORDER BY {$column} ASC")
+            ->query("SELECT `{$this->customIdColumn}`, {$column} FROM {$this->table} ORDER BY {$column} ASC")
             ->fetchAll(\PDO::FETCH_NUM);
 
         $list = [];
@@ -126,7 +128,7 @@ class Table {
             );
         }
         return ($this->makeQuery())
-            ->where("$column `$operator` ?")
+            ->where("`$column` $operator ?")
             ->parameters([$toCompareValue])
             ->fetchAll();
     }
@@ -162,7 +164,7 @@ class Table {
         $fieldQuery = $this->createFieldQuery($fields);
         $fields['id'] = $id;
 
-        return $this->execute("UPDATE {$this->table} SET `$fieldQuery` WHERE `{$this->customIdColumn}` = :id", $fields);
+        return $this->execute("UPDATE {$this->table} SET $fieldQuery WHERE `{$this->customIdColumn}` = :id", $fields);
     }
 
     /**
@@ -288,7 +290,7 @@ class Table {
     private function createFieldQuery(array $fields): string
     {
         return join(', ', array_map(function ($field) {
-            return "`$field` = :$field";
+            return "$field = :$field";
         }, array_keys($fields)));
     }
 }
