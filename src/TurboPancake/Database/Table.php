@@ -30,6 +30,12 @@ class Table {
     protected $throwOnNotFound = true;
 
     /**
+     * Nom de la collonne primaire de la table
+     * @var string
+     */
+    protected $customIdColumn = 'id';
+
+    /**
      * Table constructor.
      * @param \PDO $pdo
      */
@@ -46,7 +52,7 @@ class Table {
      */
     public function exists($id): bool
     {
-        $statement = $this->pdo->prepare("SELECT id FROM {$this->table} WHERE id = ?");
+        $statement = $this->pdo->prepare("SELECT `{$this->customIdColumn}` FROM {$this->table} WHERE id = ?");
         $statement->execute([$id]);
         return $statement->fetchColumn() !== false;
     }
@@ -62,7 +68,7 @@ class Table {
     public function find($id)
     {
         return ($this->makeQuery())
-            ->where('id = :id')
+            ->where("`{$this->customIdColumn}` = :id")
             ->parameters(['id' => $id])
             ->fetch();
     }
@@ -77,7 +83,7 @@ class Table {
     public function findList(string $column = 'name') :array
     {
         $results = $this->pdo
-            ->query("SELECT id, {$column} FROM {$this->table} ORDER BY {$column} ASC")
+            ->query("SELECT `{$this->customIdColumn}`, `{$column}` FROM {$this->table} ORDER BY {$column} ASC")
             ->fetchAll(\PDO::FETCH_NUM);
 
         $list = [];
@@ -120,7 +126,7 @@ class Table {
             );
         }
         return ($this->makeQuery())
-            ->where("$column $operator ?")
+            ->where("$column `$operator` ?")
             ->parameters([$toCompareValue])
             ->fetchAll();
     }
@@ -156,7 +162,7 @@ class Table {
         $fieldQuery = $this->createFieldQuery($fields);
         $fields['id'] = $id;
 
-        return $this->execute("UPDATE {$this->table} SET $fieldQuery WHERE id = :id", $fields);
+        return $this->execute("UPDATE {$this->table} SET `$fieldQuery` WHERE `{$this->customIdColumn}` = :id", $fields);
     }
 
     /**
@@ -167,7 +173,7 @@ class Table {
      */
     public function delete(int $id): bool
     {
-        return $this->execute("DELETE FROM {$this->table} WHERE id = ?", [$id]);
+        return $this->execute("DELETE FROM {$this->table} WHERE `{$this->customIdColumn}` = ?", [$id]);
     }
 
     /**
@@ -282,7 +288,7 @@ class Table {
     private function createFieldQuery(array $fields): string
     {
         return join(', ', array_map(function ($field) {
-            return "$field = :$field";
+            return "`$field` = :$field";
         }, array_keys($fields)));
     }
 }

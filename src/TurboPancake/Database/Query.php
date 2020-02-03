@@ -242,7 +242,7 @@ class Query implements \IteratorAggregate {
 
         $clone = clone $this;
         $table = is_int(key($this->table)) ? current($this->table) : key($this->table);
-        $clone->columns = ["count($table.$column)"];
+        $clone->columns = ["count($table.`$column`)"];
         $clone->joins = [];
         $clone->group = [];
         $clone->order = null;
