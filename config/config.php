@@ -20,7 +20,7 @@ use TurboPancake\Twig\TextExtension;
 use TurboPancake\Twig\TimeExtension;
 
 return [
-    'env'    => \DI\env('ENV', 'developpement'), //TODO: set back to `production`
+    'env'    => \DI\env('ENV', 'development'), //TODO: set back to `production`
 
     //Base de donnée
     'database.host' => 'localhost',
