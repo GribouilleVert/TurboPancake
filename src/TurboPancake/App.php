@@ -10,6 +10,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TurboPancake\Database\Sprinkler;
 use TurboPancake\Middlewares\RoutedMiddleware;
 use TurboPancake\Renderer\RendererInterface;
 
@@ -211,6 +212,7 @@ final class App implements RequestHandlerInterface {
             }
             try {
                 $this->container = $builder->build();
+                Sprinkler::setContainer($this->container);
             } catch (\Exception $e) {
                 die('Unable to build container: ' . $e->getMessage());
             }
