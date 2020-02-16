@@ -35,12 +35,12 @@ interface AuthenticationInterface {
      * @param array $options Options de connexion
      * @return UserInterface|null Renvoi null si l'utilisateur n'existe pas
      */
-    public function login(string $identifier, ResponseInterface &$reponse, array $options = []): ?UserInterface;
+    public function login(string $identifier, ResponseInterface &$response, array $options = []): ?UserInterface;
 
     /**
      * Permet de déconnecter la sessions
      *
      * @param ResponseInterface $reponse Réponse à modifier
      */
-    public function logout(ResponseInterface &$reponse): void;
+    public function logout(ResponseInterface &$response): void;
 }
