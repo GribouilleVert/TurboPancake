@@ -6,9 +6,14 @@ use Psr\Http\Message\ResponseInterface;
 
 trait Simplifier {
 
-    protected function returnString($page, $code = 200): ResponseInterface
+    protected function stringResponse($page, $code = 200): ResponseInterface
     {
         return new Response($code, [], $page);
+    }
+
+    protected function jsonResponse($object, $code = 200): ResponseInterface
+    {
+        return new Response($code, ['Content-Type' => 'application/json'], json_encode($object));
     }
 
 }
