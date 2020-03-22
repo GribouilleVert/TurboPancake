@@ -4,7 +4,7 @@ namespace TurboPancake\Database;
 use TurboPancake\Database\Exceptions\NoRecordException;
 use TurboPancake\Database\Exceptions\QueryBuilderException;
 
-class Table {
+abstract class Table {
 
     /**
      * @var null|\PDO
