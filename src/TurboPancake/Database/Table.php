@@ -53,7 +53,7 @@ abstract class Table {
     public function exists($id): bool
     {
         $statement = $this->pdo->prepare(
-            "SELECT `{$this->customIdColumn}` FROM {$this->table} WHERE `{$this->customIdColumn}` = ?"
+            "SELECT `{$this->customIdColumn}` FROM `{$this->table}` WHERE `{$this->customIdColumn}` = ?"
         );
         $statement->execute([$id]);
         return $statement->fetchColumn() !== false;
@@ -85,7 +85,7 @@ abstract class Table {
     public function findList(string $column = 'name') :array
     {
         $results = $this->pdo
-            ->query("SELECT `{$this->customIdColumn}`, {$column} FROM {$this->table} ORDER BY {$column} ASC")
+            ->query("SELECT `{$this->customIdColumn}`, `{$column}` FROM `{$this->table}` ORDER BY {$column} ASC")
             ->fetchAll(\PDO::FETCH_NUM);
 
         $list = [];
@@ -146,36 +146,36 @@ abstract class Table {
             return ':' . $field;
         }, $columns);
 
-        $columnsQuery = join(', ', $columns);
+        $columnsQuery = '`' . join('`, `', $columns) . '`';
         $valuesQuery = join(', ', $values);
 
-        return $this->execute("INSERT INTO {$this->table} ($columnsQuery) VALUES ($valuesQuery)", $fields);
+        return $this->execute("INSERT INTO `{$this->table}` ($columnsQuery) VALUES ($valuesQuery)", $fields);
     }
 
     /**
      * Met a jour un élément
      *
-     * @param int $id
+     * @param mixed $id
      * @param array $fields
      * @return bool
      */
-    public function update(int $id, array $fields): bool
+    public function update($id, array $fields): bool
     {
         $fieldQuery = $this->createFieldQuery($fields);
         $fields['id'] = $id;
 
-        return $this->execute("UPDATE {$this->table} SET $fieldQuery WHERE `{$this->customIdColumn}` = :id", $fields);
+        return $this->execute("UPDATE `{$this->table}` SET $fieldQuery WHERE `{$this->customIdColumn}` = :id", $fields);
     }
 
     /**
      * Supprime un élément
      *
-     * @param int $id
+     * @param mixed $id
      * @return bool
      */
-    public function delete(int $id): bool
+    public function delete($id): bool
     {
-        return $this->execute("DELETE FROM {$this->table} WHERE `{$this->customIdColumn}` = ?", [$id]);
+        return $this->execute("DELETE FROM `{$this->table}` WHERE `{$this->customIdColumn}` = ?", [$id]);
     }
 
     /**
@@ -218,7 +218,7 @@ abstract class Table {
      */
     public function makeQuery(): Query
     {
-        $query = (new Query($this->pdo))
+        $query = (new Query($this->customIdColumn, $this->pdo))
             ->table($this->table, strtolower($this->table[0]))
             ->setThrowOnNotFound($this->throwOnNotFound);
         if ($this->entity) {
@@ -290,7 +290,7 @@ abstract class Table {
     private function createFieldQuery(array $fields): string
     {
         return join(', ', array_map(function ($field) {
-            return "$field = :$field";
+            return "`$field` = :$field";
         }, array_keys($fields)));
     }
 }

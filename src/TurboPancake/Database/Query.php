@@ -13,6 +13,11 @@ class Query implements \IteratorAggregate {
     private $pdo;
 
     /**
+     * @var string
+     */
+    private $primaryKeyColumn;
+
+    /**
      * @var string Mot clé SQL (ex: SELECT)
      */
     private $action = 'SELECT';
@@ -78,11 +83,13 @@ class Query implements \IteratorAggregate {
 
     /**
      * Query constructor.
+     * @param string|null $primaryKeyColumn
      * @param \PDO|null $pdo
      */
-    public function __construct(?\PDO $pdo = null)
+    public function __construct(string $primaryKeyColumn = null, ?\PDO $pdo = null)
     {
         $this->pdo = $pdo;
+        $this->primaryKeyColumn = $primaryKeyColumn??'id';
     }
 
     /**
@@ -166,7 +173,7 @@ class Query implements \IteratorAggregate {
             default:
                 throw new QueryBuilderException('Invalide join mode: ' . $mode);
         }
-        $this->joins[] = "$joinPrefix JOIN $table ON $condition";
+        $this->joins[] = "$joinPrefix JOIN `$table` ON $condition";
 
         return $this;
     }
@@ -232,8 +239,12 @@ class Query implements \IteratorAggregate {
      * @return int
      * @throws QueryBuilderException
      */
-    public function count(string $column = 'id'): int
+    public function count(?string $column = null): int
     {
+        if (is_null($column)) {
+            $column = $this->primaryKeyColumn;
+        }
+
         if (is_null($this->pdo)) {
             throw new QueryBuilderException(
                 self::class . "::count() Can't be called when pdo hasn't been defined in the constructor"
@@ -387,7 +398,7 @@ class Query implements \IteratorAggregate {
         $tables = [];
         foreach ($this->table as $alias => $table) {
             if (is_string($alias)) {
-                $tables[] = $table . ' as ' . $alias;
+                $tables[] = "`$table`" . ' as ' . $alias;
             } else {
                 $tables[] = $table;
             }
