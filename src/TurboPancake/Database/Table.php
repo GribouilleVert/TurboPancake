@@ -186,7 +186,7 @@ abstract class Table {
      */
     public function count(): int
     {
-        return $this->makeQuery()->count();
+        return $this->makeQuery()->count($this->customIdColumn);
     }
 
     /**
@@ -216,7 +216,7 @@ abstract class Table {
     /**
      * @return Query
      */
-    public function makeQuery(): Query
+    protected function makeQuery(): Query
     {
         $query = (new Query($this->customIdColumn, $this->pdo))
             ->table($this->table, strtolower($this->table[0]))
