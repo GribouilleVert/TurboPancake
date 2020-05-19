@@ -83,10 +83,10 @@ class Query implements \IteratorAggregate {
 
     /**
      * Query constructor.
-     * @param string|null $primaryKeyColumn
      * @param \PDO|null $pdo
+     * @param string|null $primaryKeyColumn
      */
-    public function __construct(string $primaryKeyColumn = null, ?\PDO $pdo = null)
+    public function __construct(?\PDO $pdo = null, string $primaryKeyColumn = null)
     {
         $this->pdo = $pdo;
         $this->primaryKeyColumn = $primaryKeyColumn??'id';

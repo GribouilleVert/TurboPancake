@@ -218,7 +218,7 @@ abstract class Table {
      */
     protected function makeQuery(): Query
     {
-        $query = (new Query($this->customIdColumn, $this->pdo))
+        $query = (new Query($this->pdo, $this->customIdColumn))
             ->table($this->table, strtolower($this->table[0]))
             ->setThrowOnNotFound($this->throwOnNotFound);
         if ($this->entity) {
