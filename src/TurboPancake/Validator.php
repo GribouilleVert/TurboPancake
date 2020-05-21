@@ -3,6 +3,7 @@ namespace TurboPancake;
 
 use DateTime;
 use Psr\Http\Message\UploadedFileInterface;
+use TurboPancake\Database\Exceptions\NoRecordException;
 use TurboPancake\Database\Table;
 use TurboPancake\Validator\ValidationError;
 use TurboPancake\Validator\ValidationException;
@@ -1161,15 +1162,18 @@ class Validator {
      *
      * @param string $field
      * @param Table|array $dataSource
+     * @param string|null $column
      * @param string|null $customError
      * @return Validator
      * @throws \Exception
      */
-    public function exists(string $field, $dataSource, ?string $customError = null): self
+    public function exists(string $field, $dataSource, string $column = null, ?string $customError = null): self
     {
         $value = $this->getValue($field);
-        if ($dataSource instanceof Table) {
-            if (!$dataSource->exists($value)) {
+        if ($dataSource instanceof Table and !is_null($column)) {
+            try {
+                $dataSource->findBy($column, $value);
+            } catch (NoRecordException $e) {
                 $this->addError($field, 'exists', [], $customError);
             }
         } elseif (is_array($dataSource)) {
@@ -1209,8 +1213,13 @@ class Validator {
         }
 
         if ($dataSource instanceof Table and !is_null($column)) {
-            $dataSource->setThrowOnNotFound(false);
-            if (count($dataSource->findBy($column, $value)) > 0) {
+            try {
+                $dataSource->findBy($column, $value);
+                $unique = false;
+            } catch (NoRecordException $e) {
+                $unique = true;
+            }
+            if (!$unique) {
                 $this->addError($field, 'unique', [$value], $customError);
             }
         } elseif (is_array($dataSource)) {
