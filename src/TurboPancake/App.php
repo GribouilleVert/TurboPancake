@@ -11,7 +11,9 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TurboPancake\Database\Sprinkler;
+use TurboPancake\Exceptions\SystemException;
 use TurboPancake\Middlewares\RoutedMiddleware;
+use TurboPancake\Renderer\PHPRenderer;
 use TurboPancake\Renderer\RendererInterface;
 
 /**
@@ -19,6 +21,11 @@ use TurboPancake\Renderer\RendererInterface;
  * @package TurboPancake
  */
 final class App implements RequestHandlerInterface {
+
+    public const SEVERITY_HIGH = 0x1;
+    public const SEVERITY_MEDIUM = 0x2;
+    public const SEVERITY_LOW = 0x2;
+    public const SEVERITY_CRITICAL = 0x3;
 
     /**
      * Modules
@@ -39,7 +46,7 @@ final class App implements RequestHandlerInterface {
     private $container;
 
     /**
-     * @var string
+     * @var string|array
      */
     private $containerDefinition;
 
@@ -108,7 +115,11 @@ final class App implements RequestHandlerInterface {
         if (is_null($middleware)) {
             throw new \Exception('None of the middlewares catched de request.');
         } elseif ($middleware instanceof MiddlewareInterface) {
-            return $middleware->process($request, $this);
+            try {
+                return $middleware->process($request, $this);
+            } catch (SystemException $exception) {
+                $this->error($exception);
+            }
         }
         throw new \Exception('Invalid middleware type');
     }
@@ -122,6 +133,7 @@ final class App implements RequestHandlerInterface {
     public function run(ServerRequestInterface $request): ResponseInterface
     {
         $loadedModules = [];
+        $errors = [];
         foreach ($this->modules as $module) {
             /**
              * @var $module Module
@@ -133,10 +145,10 @@ final class App implements RequestHandlerInterface {
 
             foreach ($moduleDependencies as $moduleDependency) {
                 if (!in_array($moduleDependency, $this->modules)) {
-                    trigger_error(
+                    $errors[] = new SystemException(
                         'Unable to load module ' . $moduleName .
                         ' beacause the required module ' . $moduleDependency . ' is not present',
-                        E_USER_WARNING
+                        self::SEVERITY_LOW
                     );
                     continue 2;
                 }
@@ -151,10 +163,10 @@ final class App implements RequestHandlerInterface {
                             }
                         }
                     }
-                    trigger_error(
+                    $errors[] = new SystemException(
                         'Unable to load module ' . $moduleName .
                         ' beacause the required middleware ' . $middlewareDependency . ' is not present',
-                        E_USER_WARNING
+                        self::SEVERITY_LOW
                     );
                     continue 2;
                 }
@@ -180,6 +192,10 @@ final class App implements RequestHandlerInterface {
             $this->container->get(RendererInterface::class)->addGlobal('applicationDetails', $applicationDetails);
         }
 
+        if (!empty($errors)) {
+            $this->error(...$errors);
+        }
+
         return $this->handle($request);
     }
 
@@ -193,10 +209,20 @@ final class App implements RequestHandlerInterface {
             $env = getenv('ENV') ?: 'development'; //TODO:  Set back to `production`
             if ($env === 'production') {
                 $builder->enableDefinitionCache();
-//                $builder->enableCompilation('tmp'); #Actually buged, TODO: Check is the bug is fixed
+                //                $builder->enableCompilation('tmp'); #Actually buged, TODO: Check is the bug is fixed
                 $builder->writeProxiesToFile(true, 'tmp/proxies');
             }
-            $builder->addDefinitions($this->containerDefinition);
+
+            if (is_string($this->containerDefinition)) {
+                $builder->addDefinitions($this->containerDefinitions);
+            } elseif (is_array($this->containerDefinitions)) {
+                foreach ($this->containerDefinitions as $containerDefinition) {
+                    $builder->addDefinitions($containerDefinition);
+                }
+            } else {
+                die('Unable to build container: Invalid Container definition type');
+            }
+
             foreach ($this->modules as $module) {
                 if (!is_null($module::DEFINITIONS)) {
                     $builder->addDefinitions($module::DEFINITIONS);
@@ -229,5 +255,18 @@ final class App implements RequestHandlerInterface {
             return $middleware;
         }
         return null;
+    }
+
+    private function error(...$exceptions)
+    {
+        $renderer = new PHPRenderer(__DIR__ . '/views');
+        echo $renderer->render('error', [
+            'exceptions' => $exceptions,
+            'details' => $this->getContainer()->get('turbopancake.details'),
+            'modules' => $this->getContainer()->get('turbopancake.modules'),
+            'loaded_modules' => $this->getContainer()->get('turbopancake.loadedModules'),
+            'middlewares' => $this->getContainer()->get('turbopancake.middlewares'),
+        ]);
+        die;
     }
 }
