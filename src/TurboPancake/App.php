@@ -48,7 +48,7 @@ final class App implements RequestHandlerInterface {
     /**
      * @var string|array
      */
-    private $containerDefinition;
+    private $containerDefinitions;
 
     /**
      * @var int index des middlewares
@@ -57,12 +57,13 @@ final class App implements RequestHandlerInterface {
 
     /**
      * App constructor.
-     * @param mixed $containerDefinitions Definitions du conteneur d'injection de dépandendances
+     * @param mixed $containerDefinitions Definitions du conteneur d'injection de dependence
      * @param array $modules
+     * @param array $middlewares
      */
     public function __construct($containerDefinitions, array $modules = [], array $middlewares = [])
     {
-        $this->containerDefinition = $containerDefinitions;
+        $this->containerDefinitions = $containerDefinitions;
         $this->modules = $modules;
         $this->middlewares = $middlewares;
     }
@@ -213,7 +214,7 @@ final class App implements RequestHandlerInterface {
                 $builder->writeProxiesToFile(true, 'tmp/proxies');
             }
 
-            if (is_string($this->containerDefinition)) {
+            if (is_string($this->containerDefinitions)) {
                 $builder->addDefinitions($this->containerDefinitions);
             } elseif (is_array($this->containerDefinitions)) {
                 foreach ($this->containerDefinitions as $containerDefinition) {
