@@ -1158,6 +1158,23 @@ class Validator {
     }
 
     /**
+     * Verifie un champ avec \filter_var()
+     *
+     * @param string $field
+     * @param string $filter
+     * @param string|null $customError
+     * @return self
+     */
+    public function filter(string $field, string $filter, ?string $customError = null): self
+    {
+        $value = $this->getValue($field);
+        if (!is_null($value) AND !filter_var($value, $filter)) {
+            $this->addError($field, 'validate', [$filter], $customError);
+        }
+        return $this;
+    }
+
+    /**
      * Vérifie qu'un id existe dans un instance donnée de Table ou dans un tableau
      *
      * @param string $field
@@ -1255,10 +1272,11 @@ class Validator {
      * @param string $field
      * @param string|array $mime si string, considère ce paramètre comme une regex
      * @param string|null $customError
+     * @param bool $dotFileOnly
      * @return Validator
      * @throws ValidationException
      */
-    public function matchMimes(string $field, $mime, ?string $customError = null): self
+    public function matchMimes(string $field, $mime, ?string $customError = null, bool $dotFileOnly = false): self
     {
         /**
          * @var $uploadedFile UploadedFileInterface
@@ -1278,10 +1296,12 @@ class Validator {
         $extension = mb_strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         if (str_replace($extension, '', pathinfo($filename, PATHINFO_BASENAME)) === '.') {
             $this->addError($field, 'dotfile');
-        } elseif (!empty($extension)) {
+            return $this;
+        } elseif (!empty($extension) && !$dotFileOnly) {
             $extensionMime = self::MIMES_TYPES[$extension]??'application/octet-stream';
             if ($currentMime !== $extensionMime) {
                 $this->addError($field, 'extensionMismatch');
+                return $this;
             }
         }
 
@@ -1295,6 +1315,37 @@ class Validator {
             }
         } else {
             throw new \TypeError('Validation error: the $mime parameters must be an array or a string.');
+        }
+        return $this;
+    }
+
+    /**
+     * Verifie la taille d'un fichier
+     *
+     * @param string $field
+     * @param int $maxSize Taille maximale en octets
+     * @param string|null $customError
+     * @return Validator
+     * @throws ValidationException
+     */
+    public function maxSize(string $field, int $maxSize, ?string $customError = null): self
+    {
+        /**
+         * @var $uploadedFile UploadedFileInterface
+         */
+        $uploadedFile = $this->getValue($field);
+        if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
+            return $this;
+        }
+
+        $filePath = $uploadedFile->getStream()->getMetadata('uri');
+        if (!file_exists($filePath)) {
+            throw new ValidationException('The uploaded file doesn\'t exist');
+        }
+
+        $size = $uploadedFile->getSize();
+        if ($size > $maxSize) {
+            $this->addError($field, 'oversizeFile', [formatSize($maxSize), formatSize($size)], $customError);
         }
         return $this;
     }
@@ -1331,6 +1382,22 @@ class Validator {
             $this->addError('image', 'dimensions', [$width, $height], $customError);
         }
 
+        return $this;
+    }
+
+    /**
+     * Verifie que deux champs sont identiques
+     *
+     * @param string $field1
+     * @param string $field2
+     * @param string|null $customError
+     * @return Validator
+     */
+    public function same(string $field1, string $field2, ?string $customError = null): self
+    {
+        if ($this->getValue($field1) !== $this->getValue($field2) OR empty($this->getValue($field2))) {
+            $this->addError($field2, 'same', [], $customError);
+        }
         return $this;
     }
 

@@ -157,3 +157,33 @@ if (!function_exists('TurboPancake\OneOfArrayInAnother')) {
     }
 
 }
+
+if (!function_exists('TurboPancake\formatSize')) {
+
+    function formatSize(int $size, bool $bytes = true): string
+    {
+        $prefixes = [
+            2**50 => 'Pio',
+            2**40 => 'Tio',
+            2**30 => 'Gio',
+            2**20 => 'Mio',
+            2**10 => 'Kio',
+            2**0 => 'o',
+        ];
+        krsort($prefixes);
+
+        if (!$bytes) {
+            $size = round($size/8, 0);
+        }
+
+        $r = $size . 'o';
+        foreach ($prefixes as $minSize => $prefix) {
+            if ($size >= $minSize) {
+                $r =  round($size/$minSize, 2) . $prefix;
+                break;
+            }
+        }
+        return $r;
+    }
+
+}
