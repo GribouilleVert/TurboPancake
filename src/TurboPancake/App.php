@@ -90,11 +90,11 @@ final class App implements RequestHandlerInterface {
 
     /**
      * Ajoute un middleware
-     * @param string $middlware
+     * @param string|MiddlewareInterface $middlware
      * @param string|null $path
      * @return App
      */
-    public function trough(string $middlware, ?string $path = null): self
+    public function trough($middlware, ?string $path = null): self
     {
         if (is_null($path)) {
             $this->middlewares[] = $middlware;
@@ -249,8 +249,10 @@ final class App implements RequestHandlerInterface {
         if (array_key_exists($this->index, $this->middlewares)) {
             if (is_string($this->middlewares[$this->index])) {
                 $middleware = $this->getContainer()->get($this->middlewares[$this->index]);
-            } else {
+            } elseif ($this->middlewares[$this->index] instanceof MiddlewareInterface) {
                 $middleware = $this->middlewares[$this->index];
+            } else {
+                throw new Exception('Invalid middleware type, only strings and instances of MiddlewareInterface are accepted.');
             }
             $this->index++;
             return $middleware;
