@@ -1,0 +1,2 @@
+RewriteEngine ON
+RewriteRule (.*) public/$1 [L,QSA]

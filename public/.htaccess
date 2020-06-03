@@ -1,0 +1,9 @@
+SetEnv ENV developement
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^.*$ index.php [QSA]
+
+Header always set X-XSS-Protection "1; mode=block"
+Header always set X-FRAME-OPTIONS "SAMEORIGIN"
+Header always set X-Content-Type-Options "nosniff"
