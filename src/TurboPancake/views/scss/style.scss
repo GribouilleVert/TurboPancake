@@ -1,0 +1,172 @@
+@import "variables";
+@import "reset";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500;1,700&display=swap');
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: Montserrat, sans-serif;
+
+    padding: 60px 80px;
+
+    display: flex;
+    height: calc(100vh - 120px);
+    flex-direction: column;
+}
+
+nav {
+    width: 100%;
+    height: 64px;
+
+    img {
+        max-height: 100%;
+        max-width: 100%;
+    }
+
+    margin-bottom: 48px;
+}
+
+main {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+    height: calc(100% - (64px + 48px));
+
+    .error-infos {
+        max-width: 760px;
+        flex: 1 0 auto;
+        padding-right: 40px;
+        border-right: solid 2px var(--dark-border-color);
+
+        overflow: auto;
+        max-height: 100%;
+    }
+
+    .details {
+        flex: 1 0 auto;
+    }
+}
+
+.error-infos {
+    .title {
+        font-size: 32px;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 24px;
+    }
+
+    .errors {
+        display: flex;
+        flex-direction: column;
+
+        .error {
+            width: 100%;
+            display: block;
+            &:not(:last-child) {
+                margin-bottom: 38px;
+            }
+
+            .details {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                .severity {
+                    font-size: 18px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+
+                    display: flex;
+                    align-items: center;
+
+                    &::before {
+                        content: '';
+                        display: inline-block;
+                        height: 16px;
+                        width: 16px;
+                        border-radius: 50%;
+                        background: #fff;
+                        margin-right: 6px;
+                        vertical-align: middle;
+                    }
+
+                    &.low {
+                        color: var(--safe-color);
+                        &::before {
+                            background: var(--safe-color);
+                        }
+                    }
+
+                    &.medium {
+                        color: var(--warning-color);
+                        &::before {
+                            background: var(--warning-color);
+                        }
+                    }
+
+                    &.high {
+                        color: var(--danger-color);
+                        &::before {
+                            background: var(--danger-color);
+                        }
+                    }
+
+                    &.critical {
+                        color: var(--critical-color);
+                        &::before {
+                            background: var(--critical-color);
+                        }
+                    }
+                }
+
+                .location {
+                    flex: 1 0;
+                    text-align: right;
+                    font-style: italic;
+                    font-size: 14px;
+                }
+            }
+
+            .message {
+                margin: 16px 0 0;
+                font-size: 22px;
+                font-weight: 700;
+
+                &.low {
+                    color: var(--safe-color);
+                }
+                &.medium {
+                    color: var(--warning-color);
+                }
+                &.high {
+                    color: var(--danger-color);
+                }
+                &.critical {
+                    color: var(--critical-color);
+                }
+            }
+        }
+
+        padding-bottom: 32px;
+        margin-bottom: 32px;
+        border-bottom: dashed 2px var(--border-color);
+    }
+
+    .framework-infos {
+        font-size: 18px;
+        margin: 0;
+
+        * {
+            display: block;
+        }
+
+        b {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        i {
+            font-weight: 300;
+        }
+    }
+}

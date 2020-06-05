@@ -39,15 +39,8 @@ use TurboPancake\Exceptions\SystemException;
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <div class="framework-infos">
-                    <b><?=$details['version']?></b>
-                    <i><?=$details['container']?></i>
-                    <i><?=$details['renderer']?></i>
-                </div>
             </div>
-            <div class="details">
-
-            </div>
+            <div class="details"></div>
         </main>
     </body>
 </html>

@@ -274,13 +274,19 @@ final class App implements RequestHandlerInterface {
     private function error(...$exceptions)
     {
         $renderer = new PHPRenderer(__DIR__ . '/views');
-        echo $renderer->render('error', [
-            'exceptions' => $exceptions,
-            'details' => $this->getContainer()->get('turbopancake.details'),
-            'modules' => $this->getContainer()->get('turbopancake.modules'),
-            'loaded_modules' => $this->getContainer()->get('turbopancake.loadedModules'),
-            'middlewares' => $this->getContainer()->get('turbopancake.middlewares'),
-        ]);
+        if (!is_null($this->container)) {
+            echo $renderer->render('error', [
+                'exceptions' => $exceptions,
+                'details' => $this->container->get('turbopancake.details'),
+                'modules' => $this->container->get('turbopancake.modules'),
+                'loaded_modules' => $this->container->get('turbopancake.loadedModules'),
+                'middlewares' => $this->container->get('turbopancake.middlewares'),
+            ]);
+        } else {
+            echo $renderer->render('error-no-container', [
+                'exceptions' => $exceptions
+            ]);
+        }
         die;
     }
 }
