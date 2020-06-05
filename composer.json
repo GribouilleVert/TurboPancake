@@ -40,7 +40,7 @@
         "nyholm/psr7-server": "^0.4.1",
         "kriswallsmith/buzz": "^1.1",
         "http-interop/response-sender": "^1.0.0",
-        "zendframework/zend-expressive-fastroute": "^3.0",
+        "mezzio/mezzio-fastroute": "^3.0",
         "twig/twig": "^3.0.0",
         "php-di/php-di": "^6.0.0",
         "pagerfanta/pagerfanta": "^2.1.0",

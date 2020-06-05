@@ -144,9 +144,9 @@ if (!function_exists('TurboPancake\transform_html_compatible')) {
     }
 }
 
-if (!function_exists('TurboPancake\OneOfArrayInAnother')) {
+if (!function_exists('TurboPancake\one_of_array_in_array')) {
 
-    function OneOfArrayInAnother(array $needles, array $haystack): bool
+    function one_of_array_in_array(array $needles, array $haystack): bool
     {
         foreach ($needles as $needle) {
             if (in_array($needle, $haystack)) {
@@ -154,6 +154,20 @@ if (!function_exists('TurboPancake\OneOfArrayInAnother')) {
             }
         }
         return false;
+    }
+
+}
+
+if (!function_exists('TurboPancake\every_item_in_array')) {
+
+    function every_item_in_array(array $needles, array $haystack): bool
+    {
+        foreach ($needles as $needle) {
+            if (!in_array($needle, $haystack)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

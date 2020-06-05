@@ -161,8 +161,13 @@ final class App implements RequestHandlerInterface {
                     continue 2;
                 }
             }
-            $loadedModules[] = $moduleName;
-            $module->load();
+
+            try {
+                $module->load();
+                $loadedModules[] = $moduleName;
+            } catch (SystemException $exception) {
+                $errors[] = $exception;
+            }
         }
 
         $applicationDetails = [

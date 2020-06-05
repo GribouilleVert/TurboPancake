@@ -1,13 +1,12 @@
 <?php
 namespace TurboPancake;
 
+use Mezzio\Router\FastRouteRouter;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use TurboPancake\Router\CallableMiddleware;
+use TurboPancake\Exceptions\SystemException;
 use TurboPancake\Router\Route;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Expressive\Router\FastRouteRouter;
-use Zend\Expressive\Router\Route as ZendRoute;
+use Mezzio\Router\Route as InternalRoute;
 
 /**
  * Class Router
@@ -15,6 +14,8 @@ use Zend\Expressive\Router\Route as ZendRoute;
  * Enregistre et vérifie les routes.
  */
 final class Router {
+
+    private const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'];
 
     private $internalRouter;
 
@@ -42,15 +43,11 @@ final class Router {
      * @param string $path URI (avec paramètres ex: "/blog/{id:[0-9]+}")
      * @param string $middleware Middleware a appeler.
      * @param string $name Nom de la route
+     * @throws SystemException
      */
     public function get(string $path, string $middleware, string $name)
     {
-        $this->internalRouter->addRoute(new ZendRoute(
-            $path,
-            $this->container->get($middleware),
-            ['GET'],
-            $name
-        ));
+        $this->custom($path, ['GET'], $middleware, $name);
     }
 
     /**
@@ -58,15 +55,11 @@ final class Router {
      * @param string $path URI (avec paramètres ex: "/create/{id:[0-9]+}"
      * @param string $middleware Middleware a appeler.
      * @param string|null $name Nom de la route
+     * @throws SystemException
      */
     public function post(string $path, string $middleware, ?string $name = null)
     {
-        $this->internalRouter->addRoute(new ZendRoute(
-            $path,
-            $this->container->get($middleware),
-            ['POST'],
-            $name
-        ));
+        $this->custom($path, ['POST'], $middleware, $name);
     }
 
     /**
@@ -74,15 +67,11 @@ final class Router {
      * @param string $path URI (avec paramètres ex: "/edit/{id:[0-9]+}")
      * @param string $middleware Middleware a appeler.
      * @param string|null $name Nom de la route
+     * @throws SystemException
      */
     public function put(string $path, string $middleware, ?string $name = null)
     {
-        $this->internalRouter->addRoute(new ZendRoute(
-            $path,
-            $this->container->get($middleware),
-            ['PUT'],
-            $name
-        ));
+        $this->custom($path, ['PUT'], $middleware, $name);
     }
 
     /**
@@ -90,15 +79,11 @@ final class Router {
      * @param string $path URI (avec paramètres ex: "/edit/{id:[0-9]+}")
      * @param string $middleware Middleware a appeler.
      * @param string|null $name Nom de la route
+     * @throws SystemException
      */
     public function patch(string $path, string $middleware, ?string $name = null)
     {
-        $this->internalRouter->addRoute(new ZendRoute(
-            $path,
-            $this->container->get($middleware),
-            ['PATCH'],
-            $name
-        ));
+        $this->custom($path, ['PATCH'], $middleware, $name);
     }
 
     /**
@@ -106,15 +91,11 @@ final class Router {
      * @param string $path URI (avec paramètres ex: "/delete/{id:[0-9]+}")
      * @param string $middleware Middleware a appeler.
      * @param string|null $name Nom de la route
+     * @throws SystemException
      */
     public function delete(string $path, string $middleware, ?string $name = null)
     {
-        $this->internalRouter->addRoute(new ZendRoute(
-            $path,
-            $this->container->get($middleware),
-            ['DELETE'],
-            $name
-        ));
+        $this->custom($path, ['DELETE'], $middleware, $name);
     }
 
     /**
@@ -122,15 +103,11 @@ final class Router {
      * @param string $path URI (avec paramètres ex: "/delete/{id:[0-9]+}")
      * @param string $middleware Middleware a appeler.
      * @param string|null $name Nom de la route
+     * @throws SystemException
      */
     public function options(string $path, string $middleware, ?string $name = null)
     {
-        $this->internalRouter->addRoute(new ZendRoute(
-            $path,
-            $this->container->get($middleware),
-            ['OPTIONS'],
-            $name
-        ));
+        $this->custom($path, ['OPTIONS'], $middleware, $name);
     }
 
     /**
@@ -138,15 +115,11 @@ final class Router {
      * @param string $path URI (avec paramètres ex: "/delete/{id:[0-9]+}")
      * @param string $middleware Middleware a appeler.
      * @param string|null $name Nom de la route
+     * @throws SystemException
      */
     public function head(string $path, string $middleware, ?string $name = null)
     {
-        $this->internalRouter->addRoute(new ZendRoute(
-            $path,
-            $this->container->get($middleware),
-            ['HEAD'],
-            $name
-        ));
+        $this->custom($path, ['HEAD'], $middleware, $name);
     }
 
     /**
@@ -154,32 +127,57 @@ final class Router {
      * @param string $path URI (avec paramètres ex: "/delete/{id:[0-9]+}")
      * @param string $middleware Middleware a appeler.
      * @param string $name Nom de la route
+     * @throws SystemException
      */
     public function all(string $path, string $middleware, string $name)
     {
-        $this->internalRouter->addRoute(new ZendRoute(
+        $this->custom($path, self::METHODS, $middleware, $name);
+    }
+
+    /**
+     * Permet d'ajouter une URI avec les méthodes de sont choix
+     * @param string $path URI (avec paramètres ex: "/delete/{id:[0-9]+}")
+     * @param array $methods Liste des méthodes
+     * @param string $middleware Middleware a appeler.
+     * @param string $name Nom de la route
+     * @throws SystemException
+     */
+    public function custom(string $path, array $methods, string $middleware, ?string $name = null)
+    {
+        foreach ($methods as $method) {
+            if (!in_array($method, self::METHODS)) {
+                throw new SystemException("Unsupported method '$method'.");
+            }
+        }
+
+        if (in_array('GET', $methods) AND is_null($name)) {
+            throw new SystemException('A route name is required when the GET method is present.');
+        }
+
+        $this->internalRouter->addRoute(new InternalRoute(
             $path,
             $this->container->get($middleware),
-            ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
+            $methods,
             $name
         ));
     }
+
 
     /**
      * Permet d'ajouter les URIs Create, Read, Update et Delete (CRUD)
      * @param string $basePath URI de base
      * @param string $middleware Middleware a appeler.
      * @param string|null $baseName Nom de base des routes
+     * @throws SystemException
      */
     public function crud(string $basePath, string $middleware, string $baseName)
     {
-
         $this->get("$basePath", $middleware, $baseName . '.index');
         $this->get("$basePath/new", $middleware, $baseName . '.create');
         $this->post("$basePath/new", $middleware);
-        $this->get("$basePath/{id:\d+}", $middleware, $baseName . '.edit');
-        $this->patch("$basePath/{id:\d+}", $middleware);
-        $this->delete("$basePath/{id:\d+}", $middleware, $baseName . '.delete');
+        $this->get("$basePath/{id}", $middleware, $baseName . '.edit');
+        $this->patch("$basePath/{id}", $middleware);
+        $this->delete("$basePath/{id}", $middleware, $baseName . '.delete');
     }
 
     /**
