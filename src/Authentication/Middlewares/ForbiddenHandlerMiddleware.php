@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Auth\Exceptions\ForbiddenException;
+use TurboPancake\Auth\Exceptions\NotLoggedException;
 use TurboPancake\Router;
 use TurboPancake\Router\RouterAware;
 use TurboPancake\Services\Neon;
@@ -42,7 +43,7 @@ class ForbiddenHandlerMiddleware implements MiddlewareInterface {
     {
         try {
             return $handler->handle($request);
-        } catch (ForbiddenException $e) {
+        } catch (NotLoggedException $e) {
             (new Neon($this->session))->warning('Vous devez être connecté pour acceder à cette page');
             $uri = $request->getUri();
             $this->session->set('auth.redirect', $uri->getPath() . '?' . $uri->getQuery());

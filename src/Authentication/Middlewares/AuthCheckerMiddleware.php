@@ -1,11 +1,12 @@
 <?php
-namespace TurboPancake\Auth;
+namespace TurboModule\Authentication\Middlewares;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Auth\Exceptions\ForbiddenException;
+use TurboPancake\Auth\Exceptions\NotLoggedException;
 use TurboPancake\AuthenticationInterface;
 
 class AuthCheckerMiddleware implements MiddlewareInterface {
@@ -22,9 +23,13 @@ class AuthCheckerMiddleware implements MiddlewareInterface {
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$this->auth->isLogged()) {
-            throw new ForbiddenException('Access denied');
+        $currentPath = $request->getUri()->getPath();
+        if (strpos($currentPath, '/cockpit') === 0) {
+            if (!$this->auth->isLogged()) {
+                throw new NotLoggedException('Access denied');
+            }
+            $request = $request->withAttribute(UserInterface::class, $this->auth->getUser());
         }
-        return $handler->handle($request->withAttribute(UserInterface::class, $this->auth->getUser()));
+        return $handler->handle($request);
     }
 }

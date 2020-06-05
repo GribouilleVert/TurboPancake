@@ -141,12 +141,13 @@ class Query implements \IteratorAggregate {
 
     /**
      * @param string $table
+     * @param string|null $alias
      * @param string $condition
      * @param int $mode
      * @return Query
      * @throws QueryBuilderException
      */
-    public function join(string $table, string $condition, int $mode = self::LEFT_JOIN): self
+    public function join(string $table, ?string $alias = null, string $condition, int $mode = self::LEFT_JOIN): self
     {
         switch ($mode) {
             case self::INNER_JOIN:
@@ -173,7 +174,11 @@ class Query implements \IteratorAggregate {
             default:
                 throw new QueryBuilderException('Invalide join mode: ' . $mode);
         }
-        $this->joins[] = "$joinPrefix JOIN `$table` ON $condition";
+        if (!is_null($alias)) {
+            $this->joins[] = "$joinPrefix JOIN `$table` as `$alias` ON $condition";
+        } else {
+            $this->joins[] = "$joinPrefix JOIN `$table` ON $condition";
+        }
 
         return $this;
     }

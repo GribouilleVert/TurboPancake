@@ -1,11 +1,10 @@
 <?php
 namespace TurboPancake\Actions;
 
-use GuzzleHttp\Psr7\Response;
+use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use stdClass;
 use TurboPancake\Database\Sprinkler;
 use TurboPancake\Database\Table;
 use TurboPancake\Renderer\RendererInterface;

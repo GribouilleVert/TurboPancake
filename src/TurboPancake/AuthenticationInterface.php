@@ -31,7 +31,7 @@ interface AuthenticationInterface {
      * N'EFFECTUE PAS VERIFICATION
      *
      * @param string $identifier
-     * @param ResponseInterface $reponse Réponse à modifier
+     * @param ResponseInterface $response Réponse à modifier
      * @param array $options Options de connexion
      * @return UserInterface|null Renvoi null si l'utilisateur n'existe pas
      */

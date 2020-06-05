@@ -2,9 +2,8 @@
 namespace TurboPancake;
 
 use DI\Container;
-use DI\DependencyException;
+use DI\NotFoundException;
 use Exception;
-use PHPUnit\Framework\Warning;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
@@ -12,7 +11,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TurboPancake\Database\Sprinkler;
 use TurboPancake\Exceptions\SystemException;
-use TurboPancake\Middlewares\RoutedMiddleware;
 use TurboPancake\Renderer\PHPRenderer;
 use TurboPancake\Renderer\RendererInterface;
 
@@ -21,11 +19,6 @@ use TurboPancake\Renderer\RendererInterface;
  * @package TurboPancake
  */
 final class App implements RequestHandlerInterface {
-
-    public const SEVERITY_HIGH = 0x1;
-    public const SEVERITY_MEDIUM = 0x2;
-    public const SEVERITY_LOW = 0x2;
-    public const SEVERITY_CRITICAL = 0x3;
 
     /**
      * Modules
@@ -94,13 +87,9 @@ final class App implements RequestHandlerInterface {
      * @param string|null $path
      * @return App
      */
-    public function trough($middlware, ?string $path = null): self
+    public function trough($middlware): self
     {
-        if (is_null($path)) {
-            $this->middlewares[] = $middlware;
-        } else {
-            $this->middlewares[] = new RoutedMiddleware($path, $middlware, $this->getContainer());
-        }
+        $this->middlewares[] = $middlware;
         return $this;
     }
 
@@ -112,17 +101,17 @@ final class App implements RequestHandlerInterface {
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $middleware = $this->getMiddleware();
-        if (is_null($middleware)) {
-            throw new \Exception('None of the middlewares catched de request.');
-        } elseif ($middleware instanceof MiddlewareInterface) {
-            try {
+        try {
+            $middleware = $this->getMiddleware();
+            if (is_null($middleware)) {
+                throw new SystemException('None of the middlewares catched de request.');
+            } elseif ($middleware instanceof MiddlewareInterface) {
                 return $middleware->process($request, $this);
-            } catch (SystemException $exception) {
-                $this->error($exception);
             }
+            throw new SystemException('Invalid middleware type', SystemException::SEVERITY_HIGH);
+        } catch (SystemException $exception) {
+            $this->error($exception);
         }
-        throw new \Exception('Invalid middleware type');
     }
 
     /**
@@ -149,7 +138,7 @@ final class App implements RequestHandlerInterface {
                     $errors[] = new SystemException(
                         'Unable to load module ' . $moduleName .
                         ' beacause the required module ' . $moduleDependency . ' is not present',
-                        self::SEVERITY_LOW
+                        SystemException::SEVERITY_LOW
                     );
                     continue 2;
                 }
@@ -167,7 +156,7 @@ final class App implements RequestHandlerInterface {
                     $errors[] = new SystemException(
                         'Unable to load module ' . $moduleName .
                         ' beacause the required middleware ' . $middlewareDependency . ' is not present',
-                        self::SEVERITY_LOW
+                        SystemException::SEVERITY_LOW
                     );
                     continue 2;
                 }
@@ -221,7 +210,10 @@ final class App implements RequestHandlerInterface {
                     $builder->addDefinitions($containerDefinition);
                 }
             } else {
-                die('Unable to build container: Invalid Container definition type');
+                $this->error(new SystemException(
+                    'Unable to build container: Invalid Container definition type',
+                    SystemException::SEVERITY_CRITICAL
+                ));
             }
 
             foreach ($this->modules as $module) {
@@ -233,11 +225,26 @@ final class App implements RequestHandlerInterface {
                 $this->container = $builder->build();
                 Sprinkler::setContainer($this->container);
             } catch (\Exception $e) {
-                die('Unable to build container: ' . $e->getMessage());
+                $this->error(new SystemException(
+                    'Unable to build container: ' . $e->getMessage(),
+                    SystemException::SEVERITY_CRITICAL
+                ));
             }
         }
 
         return $this->container;
+    }
+
+    public static function fromGlobals(): ServerRequestInterface
+    {
+        $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
+        $creator = new \Nyholm\Psr7Server\ServerRequestCreator(
+            $psr17Factory, // ServerRequestFactory
+            $psr17Factory, // UriFactory
+            $psr17Factory, // UploadedFileFactory
+            $psr17Factory  // StreamFactory
+        );
+        return $creator->fromGlobals();
     }
 
     /**
@@ -248,11 +255,15 @@ final class App implements RequestHandlerInterface {
     {
         if (array_key_exists($this->index, $this->middlewares)) {
             if (is_string($this->middlewares[$this->index])) {
-                $middleware = $this->getContainer()->get($this->middlewares[$this->index]);
+                try {
+                    $middleware = $this->getContainer()->get($this->middlewares[$this->index]);
+                } catch (NotFoundException $exception) {
+                    throw new SystemException('The container can\'t find the middleware: ' . $exception->getMessage());
+                }
             } elseif ($this->middlewares[$this->index] instanceof MiddlewareInterface) {
                 $middleware = $this->middlewares[$this->index];
             } else {
-                throw new Exception('Invalid middleware type, only strings and instances of MiddlewareInterface are accepted.');
+                throw new SystemException('Invalid middleware type, only strings and instances of MiddlewareInterface are accepted.');
             }
             $this->index++;
             return $middleware;

@@ -1,7 +1,6 @@
 <?php
 namespace TurboPancake\Services;
 
-use TurboPancake\Services\Flash\FlashRendererInterface;
 use TurboPancake\Services\Session\SessionInterface;
 
 class Neon {
@@ -14,7 +13,7 @@ class Neon {
     /**
      * @var string
      */
-    private $sessionKey = 'flashMessagesService';
+    private $sessionKey = 'services.neon';
 
     /**
      * @var

@@ -47,7 +47,7 @@ class AuthenticationModule extends Module {
     public function getMiddlewareDependencies(): array
     {
         return [
-            \TurboPancake\Auth\AuthCheckerMiddleware::class,
+            \TurboModule\Authentication\Middlewares\AuthCheckerMiddleware::class,
             \TurboModule\Authentication\Middlewares\ForbiddenHandlerMiddleware::class,
         ];
     }

@@ -25,6 +25,7 @@ final class Router {
 
     /**
      * Router constructor.
+     * @param ContainerInterface $container
      * @param string|null $cache
      */
     public function __construct(ContainerInterface $container, ?string $cache = null)

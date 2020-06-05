@@ -1,4 +1,7 @@
 <?php
+
+use TurboPancake\App;
+
 chdir(dirname(__DIR__));
 
 require 'vendor/autoload.php';
@@ -16,7 +19,7 @@ $app
     ->trough(Middlewares\Whoops::class)
     ->trough(TurboPancake\Middlewares\TralingSlashMiddleware::class)
     ->trough(TurboModule\Authentication\Middlewares\ForbiddenHandlerMiddleware::class)
-    ->trough(TurboPancake\Auth\AuthCheckerMiddleware::class, $container->get('admin.prefix'))
+    ->trough(TurboModule\Authentication\Middlewares\AuthCheckerMiddleware::class)
     ->trough(TurboPancake\Middlewares\MethodDetectorMiddleware::class)
     ->trough(TurboPancake\Middlewares\CsrfMiddleware::class)
     ->trough(TurboPancake\Middlewares\RouterMiddleware::class)
@@ -25,6 +28,6 @@ $app
 ;
 
 if (php_sapi_name() !== 'cli') {
-    $response = $app->run(GuzzleHttp\Psr7\ServerRequest::fromGlobals());
+    $response = $app->run(App::fromGlobals());
     \Http\Response\send($response);
 }

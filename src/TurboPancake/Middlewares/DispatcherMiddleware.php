@@ -1,7 +1,6 @@
 <?php
 namespace TurboPancake\Middlewares;
 
-use GuzzleHttp\Psr7\Response;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;

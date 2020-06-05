@@ -1,6 +1,4 @@
 <?php
-
-
 namespace TurboPancake\Renderer;
 
 use Twig\Loader\FilesystemLoader as TwigFilesystemLoader;

@@ -3,6 +3,8 @@ namespace TurboPancake\Router;
 
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
+use TurboPancake\Exceptions\SystemException;
+use TurboPancake\Router;
 
 /**
  * Ajoute les méthodes liées à l'utilisation du Router
@@ -50,24 +52,17 @@ trait RouterAware {
      * @param array $queryParameters
      * @param int $code Code HTTP de la réponse
      * @return ResponseInterface
+     * @throws SystemException
      */
     private function redirect(string $route, array $parameters, array $queryParameters, int $code): ResponseInterface
     {
+        if (!isset($this->router) OR !$route instanceof Router) {
+            throw new SystemException('Unable to use router redirect without a proper router.');
+        }
+
         $postUri = $this->router->generateUri($route, $parameters, $queryParameters);
         return (new Response())
             ->withStatus($code)
             ->withHeader('location', $postUri);
-    }
-
-    /**
-     * Permet de faire une redirection temporaire via une uri (302)
-     * @param string $fullPath
-     * @return ResponseInterface
-     */
-    public function directTemporaryRedirect(string $fullPath): ResponseInterface
-    {
-        return (new Response())
-            ->withStatus(302)
-            ->withHeader('location', $fullPath);
     }
 }

@@ -1,7 +1,6 @@
 <?php
 namespace TurboPancake\Twig;
 
-use phpDocumentor\Reflection\Types\String_;
 use TurboPancake\Validator\ValidationError;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
