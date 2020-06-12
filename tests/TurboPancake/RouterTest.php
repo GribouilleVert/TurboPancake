@@ -2,7 +2,7 @@
 namespace Tests\TurboPancake;
 
 use GuzzleHttp\Psr7\ServerRequest;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase {

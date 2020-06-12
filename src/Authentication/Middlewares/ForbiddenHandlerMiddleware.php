@@ -7,7 +7,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Auth\Exceptions\ForbiddenException;
 use TurboPancake\Auth\Exceptions\NotLoggedException;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use TurboPancake\Router\RouterAware;
 use TurboPancake\Services\Neon;
 use TurboPancake\Services\Session\SessionInterface;

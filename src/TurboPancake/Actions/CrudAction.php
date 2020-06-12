@@ -8,11 +8,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Database\Sprinkler;
 use TurboPancake\Database\Table;
 use TurboPancake\Renderer\RendererInterface;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use TurboPancake\Router\RouterAware;
 use TurboPancake\Services\Neon;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use TurboPancake\Validator;
+use TurboPancake\Validator\Validator;
 
 class CrudAction implements MiddlewareInterface {
 

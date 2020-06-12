@@ -5,9 +5,9 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use TurboModule\Blog\Database\Tables\CategoriesTable;
 use TurboPancake\Actions\CrudAction;
 use TurboPancake\Renderer\RendererInterface;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use TurboPancake\Services\Neon;
-use TurboPancake\Validator;
+use TurboPancake\Validator\Validator;
 
 final class CategoriesCrudAction extends CrudAction {
 

@@ -8,9 +8,9 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Auth\Identity\IdentityCheckerInterface;
 use TurboPancake\Router\RouterAware;
-use TurboPancake\AuthenticationInterface;
+use TurboPancake\Auth\AuthenticationInterface;
 use TurboPancake\Renderer\RendererInterface;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use TurboPancake\Services\Neon;
 use TurboPancake\Services\Session\SessionInterface;
 

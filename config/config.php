@@ -7,7 +7,7 @@ use TurboPancake\MailerFactory;
 use TurboPancake\Middlewares\CsrfMiddleware;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Renderer\TwigRendererFactory;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use TurboPancake\Router\RouterFactory;
 use TurboPancake\Router\RouterTwigExtension;
 use TurboPancake\Services\Session\Lithium;

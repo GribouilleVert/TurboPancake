@@ -1,7 +1,7 @@
 <?php
 namespace Tests\TurboPancake\Twig;
 
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use TurboPancake\Twig\PagerFantaExtension;
 use PHPUnit\Framework\TestCase;
 use Twig\Extension\ExtensionInterface;

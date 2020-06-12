@@ -3,7 +3,7 @@ namespace Tests\TurboPancake\Modules;
 
 use TurboPancake\Router\RouterAware;
 use TurboPancake\Module;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class RouterAwareModule extends Module {

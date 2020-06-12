@@ -5,7 +5,7 @@ use TurboModule\Administration\Actions\DashboardAction;
 use TurboPancake\Module;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Renderer\TwigRenderer;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 
 final class AdministrationModule extends Module {
 

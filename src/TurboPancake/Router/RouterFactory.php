@@ -2,7 +2,6 @@
 namespace TurboPancake\Router;
 
 use Psr\Container\ContainerInterface;
-use TurboPancake\Router;
 
 final class RouterFactory {
 

@@ -3,7 +3,7 @@ namespace Tests\TurboPancake;
 
 use DI\Container;
 use TurboPancake\Renderer\TwigRendererFactory;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use PHPUnit\Framework\TestCase;
 use Tests\TurboPancake\Renderer\TwigExtension;
 use Twig\Error\RuntimeError;

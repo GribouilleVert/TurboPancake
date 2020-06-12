@@ -7,7 +7,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Auth\Exceptions\ForbiddenException;
 use TurboPancake\Auth\Exceptions\NotLoggedException;
-use TurboPancake\AuthenticationInterface;
+use TurboPancake\Auth\AuthenticationInterface;
 
 class AuthCheckerMiddleware implements MiddlewareInterface {
 

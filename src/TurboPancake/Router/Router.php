@@ -1,10 +1,9 @@
 <?php
-namespace TurboPancake;
+namespace TurboPancake\Router;
 
 use Mezzio\Router\FastRouteRouter;
 use Psr\Container\ContainerInterface;
 use TurboPancake\Exceptions\SystemException;
-use TurboPancake\Router\Route;
 use Psr\Http\Message\ServerRequestInterface;
 use Mezzio\Router\Route as InternalRoute;
 

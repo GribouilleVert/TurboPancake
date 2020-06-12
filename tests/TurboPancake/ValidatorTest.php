@@ -5,7 +5,7 @@ use mysql_xdevapi\Exception;
 use ReflectionClass;
 use Tests\DatabaseTestCase;
 use TurboPancake\Database\Table;
-use TurboPancake\Validator;
+use TurboPancake\Validator\Validator;
 use TurboPancake\Validator\ValidationError;
 
 class ValidatorTest extends DatabaseTestCase {

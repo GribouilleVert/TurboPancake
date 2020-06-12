@@ -1,6 +1,5 @@
 <?php
-namespace TurboPancake\Validator;
+namespace TurboPancake\Validator\Exceptions;
 
 class ValidationException extends \Exception {
-
 }

@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use TurboModule\Authentication\Database\Tables\UsersTable;
 use TurboPancake\Auth\Exceptions\NotLoggedException;
 use TurboPancake\Auth\UserInterface;
-use TurboPancake\AuthenticationInterface;
+use TurboPancake\Auth\AuthenticationInterface;
 use TurboPancake\Database\Exceptions\NoRecordException;
 use TurboPancake\Database\Exceptions\QueryBuilderException;
 use TurboPancake\Services\Session\SessionInterface;

@@ -2,7 +2,6 @@
 namespace TurboPancake\Router;
 
 use Psr\Http\Message\ServerRequestInterface;
-use TurboPancake\Router;
 use Twig\Extension\AbstractExtension;
 
 final class RouterTwigExtension extends AbstractExtension {

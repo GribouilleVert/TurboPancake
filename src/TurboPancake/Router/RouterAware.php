@@ -4,7 +4,6 @@ namespace TurboPancake\Router;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use TurboPancake\Exceptions\SystemException;
-use TurboPancake\Router;
 
 /**
  * Ajoute les méthodes liées à l'utilisation du Router
@@ -21,6 +20,7 @@ trait RouterAware {
      * @param array $parameters
      * @param array $queryParameters
      * @return ResponseInterface
+     * @throws SystemException
      */
     public function temporaryRedirect(
         string $route,
@@ -36,6 +36,7 @@ trait RouterAware {
      * @param array $parameters
      * @param array $queryParameters
      * @return ResponseInterface
+     * @throws SystemException
      */
     public function permanentRedirect(
         string $route,

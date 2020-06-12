@@ -7,7 +7,7 @@ use TurboModule\Authentication\Actions\LoginAction;
 use TurboModule\Authentication\Actions\LogoutAction;
 use TurboPancake\Module;
 use TurboPancake\Renderer\RendererInterface;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 
 class AuthenticationModule extends Module {
 

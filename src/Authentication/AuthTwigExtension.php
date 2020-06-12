@@ -1,7 +1,7 @@
 <?php
 namespace TurboModule\Authentication;
 
-use TurboPancake\AuthenticationInterface;
+use TurboPancake\Auth\AuthenticationInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 

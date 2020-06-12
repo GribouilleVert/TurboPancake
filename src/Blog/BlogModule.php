@@ -6,7 +6,7 @@ use TurboModule\Blog\Actions\CategoryShowAction;
 use TurboModule\Blog\Actions\PostsIndexAction;
 use TurboPancake\Module;
 use TurboPancake\Renderer\RendererInterface;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use TurboModule\Blog\Actions\PostsCrudAction;
 use TurboModule\Blog\Actions\PostShowAction;
 use Psr\Container\ContainerInterface;

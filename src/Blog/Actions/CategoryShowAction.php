@@ -10,7 +10,7 @@ use TurboModule\Blog\Database\Tables\CategoriesTable;
 use TurboModule\Blog\Database\Tables\PostsTable;
 use TurboPancake\Router\RouterAware;
 use TurboPancake\Renderer\RendererInterface;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 
 final class CategoryShowAction implements MiddlewareInterface {
 

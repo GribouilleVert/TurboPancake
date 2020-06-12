@@ -8,7 +8,7 @@ use TurboModule\Authentication\DatabaseIdentityChecker;
 use TurboModule\Authentication\Middlewares\ForbiddenHandlerMiddleware;
 use TurboPancake\Auth\Identity\IdentityCheckerInterface;
 use TurboPancake\Auth\UserInterface;
-use TurboPancake\AuthenticationInterface;
+use TurboPancake\Auth\AuthenticationInterface;
 
 return [
     'auth.login' => '/login',

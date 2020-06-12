@@ -4,7 +4,7 @@ namespace Tests\TurboPancake\Actions;
 use DI\Container;
 use TurboPancake\Renderer\PHPRendererFactory;
 use TurboPancake\Renderer\RendererInterface;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use GuzzleHttp\Psr7\ServerRequest;
 use TurboPancake\App;
 use PHPUnit\Framework\TestCase;

@@ -7,7 +7,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Router\RouterAware;
 use TurboPancake\Renderer\RendererInterface;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use TurboModule\Blog\Database\Tables\PostsTable;
 use Psr\Http\Message\ServerRequestInterface;
 

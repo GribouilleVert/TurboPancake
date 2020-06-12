@@ -1,7 +1,7 @@
 <?php
 namespace TurboPancake\Twig;
 
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use Pagerfanta\Pagerfanta;
 use Twig\Extension\AbstractExtension;
 

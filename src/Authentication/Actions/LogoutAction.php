@@ -6,8 +6,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TurboPancake\Router\RouterAware;
-use TurboPancake\AuthenticationInterface;
-use TurboPancake\Router;
+use TurboPancake\Auth\AuthenticationInterface;
+use TurboPancake\Router\Router;
 use TurboPancake\Services\Neon;
 
 class LogoutAction implements MiddlewareInterface {

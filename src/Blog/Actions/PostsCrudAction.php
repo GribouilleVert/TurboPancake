@@ -11,9 +11,9 @@ use TurboModule\Blog\Database\Tables\CategoriesTable;
 use TurboModule\Blog\Database\Tables\PostsTable;
 use TurboPancake\Actions\CrudAction;
 use TurboPancake\Renderer\RendererInterface;
-use TurboPancake\Router;
+use TurboPancake\Router\Router;
 use TurboPancake\Services\Neon;
-use TurboPancake\Validator;
+use TurboPancake\Validator\Validator;
 
 final class PostsCrudAction extends CrudAction {
 

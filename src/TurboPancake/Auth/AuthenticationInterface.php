@@ -1,5 +1,5 @@
 <?php
-namespace TurboPancake;
+namespace TurboPancake\Auth;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

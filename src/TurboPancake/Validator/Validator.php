@@ -1,12 +1,12 @@
 <?php
-namespace TurboPancake;
+namespace TurboPancake\Validator;
 
 use DateTime;
 use Psr\Http\Message\UploadedFileInterface;
 use TurboPancake\Database\Exceptions\NoRecordException;
 use TurboPancake\Database\Table;
 use TurboPancake\Validator\ValidationError;
-use TurboPancake\Validator\ValidationException;
+use TurboPancake\Validator\Exceptions\ValidationException;
 
 class Validator {
 
