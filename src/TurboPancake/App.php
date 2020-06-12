@@ -66,7 +66,7 @@ final class App implements RequestHandlerInterface {
      * @param string $module
      * @return App
      */
-    public function addModule(string $module): self
+    public function with(string $module): self
     {
         $this->modules[] = $module;
         return $this;
