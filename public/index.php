@@ -1,7 +1,4 @@
 <?php
-
-use TurboPancake\App;
-
 chdir(dirname(__DIR__));
 
 require 'vendor/autoload.php';
@@ -28,6 +25,6 @@ $app
 ;
 
 if (php_sapi_name() !== 'cli') {
-    $response = $app->run(App::fromGlobals());
+    $response = $app->run(TurboPancake\App::fromGlobals());
     \Http\Response\send($response);
 }
