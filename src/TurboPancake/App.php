@@ -13,6 +13,7 @@ use TurboPancake\Database\Sprinkler;
 use TurboPancake\Exceptions\SystemException;
 use TurboPancake\Renderer\PHPRenderer;
 use TurboPancake\Renderer\RendererInterface;
+use TurboPancake\Utils\StaticInstancier;
 
 /**
  * Class App
@@ -41,6 +42,11 @@ final class App implements RequestHandlerInterface {
     private $container;
 
     /**
+     * @var StaticInstancier
+     */
+    private $staticInstancier;
+
+    /**
      * @var string|array
      */
     private $containerDefinitions;
@@ -61,6 +67,9 @@ final class App implements RequestHandlerInterface {
         $this->containerDefinitions = $containerDefinitions;
         $this->modules = $modules;
         $this->middlewares = $middlewares;
+        $this->staticInstancier = new StaticInstancier($this->getContainer());
+
+        $this->staticInstancier->initClass(Sprinkler::class);
     }
 
     /**
@@ -233,6 +242,14 @@ final class App implements RequestHandlerInterface {
         }
 
         return $this->container;
+    }
+
+    /**
+     * @return StaticInstancier
+     */
+    public function getStaticInstancier(): StaticInstancier
+    {
+        return $this->staticInstancier;
     }
 
     /**

@@ -2,8 +2,9 @@
 namespace TurboPancake\Database;
 
 use Psr\Container\ContainerInterface;
+use TurboPancake\Utils\StaticInstanciedInterface;
 
-class Sprinkler {
+class Sprinkler implements StaticInstanciedInterface {
 
     /**
      * @var ContainerInterface
@@ -53,7 +54,7 @@ class Sprinkler {
     /**
      * @param ContainerInterface $container
      */
-    public static function setContainer(ContainerInterface $container): void
+    public static function init(ContainerInterface $container): void
     {
         self::$container = $container;
     }
