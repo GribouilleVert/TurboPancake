@@ -20,6 +20,8 @@ use TurboPancake\Renderer\RendererInterface;
  */
 final class App implements RequestHandlerInterface {
 
+    public const VERSION = '2.1';
+
     /**
      * Modules
      * @var string[]
@@ -73,24 +75,23 @@ final class App implements RequestHandlerInterface {
     }
 
     /**
-     * Renvoie la liste des modules
-     * @return string[]
-     */
-    public function getModules(): array
-    {
-        return $this->modules;
-    }
-
-    /**
      * Ajoute un middleware
      * @param string|MiddlewareInterface $middlware
-     * @param string|null $path
      * @return App
      */
     public function trough($middlware): self
     {
         $this->middlewares[] = $middlware;
         return $this;
+    }
+
+    /**
+     * Renvoie la liste des modules
+     * @return string[]
+     */
+    public function getModules(): array
+    {
+        return $this->modules;
     }
 
     /**
@@ -115,10 +116,11 @@ final class App implements RequestHandlerInterface {
     }
 
     /**
-     * Lance de traitement global - ENTRY POINT
+     * Lance le traitement global - ENTRY POINT
      * @param ServerRequestInterface $request
      * @return ResponseInterface
-     * @throws Exception Si un middleware est mal configuré
+     * @throws NotFoundException
+     * @throws \DI\DependencyException
      */
     public function run(ServerRequestInterface $request): ResponseInterface
     {
@@ -146,13 +148,6 @@ final class App implements RequestHandlerInterface {
 
             foreach ($middlewareDependencies as $middlewareDependency) {
                 if (!in_array($middlewareDependency, $this->middlewares)) {
-                    foreach ($this->middlewares as $middleware) {
-                        if ($middleware instanceof RoutedMiddleware) {
-                            if ($middlewareDependency === $middleware->getMiddleware()) {
-                                continue 2;
-                            }
-                        }
-                    }
                     $errors[] = new SystemException(
                         'Unable to load module ' . $moduleName .
                         ' beacause the required middleware ' . $middlewareDependency . ' is not present',
@@ -171,7 +166,7 @@ final class App implements RequestHandlerInterface {
         }
 
         $applicationDetails = [
-            'version' => 'TurboPancake 2.0',
+            'version' => 'TurboPancake ' . self::VERSION,
             'container' => get_class($this->container),
             'renderer' => get_class($this->container->get(RendererInterface::class)),
         ];
@@ -226,9 +221,9 @@ final class App implements RequestHandlerInterface {
                     $builder->addDefinitions($module::DEFINITIONS);
                 }
             }
+
             try {
                 $this->container = $builder->build();
-                Sprinkler::setContainer($this->container);
             } catch (\Exception $e) {
                 $this->error(new SystemException(
                     'Unable to build container: ' . $e->getMessage(),
@@ -240,6 +235,11 @@ final class App implements RequestHandlerInterface {
         return $this->container;
     }
 
+    /**
+     * Crée un objet ServerRequestInterface à partir des variables globales.
+     *
+     * @return ServerRequestInterface
+     */
     public static function fromGlobals(): ServerRequestInterface
     {
         $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
@@ -276,10 +276,15 @@ final class App implements RequestHandlerInterface {
         return null;
     }
 
+    /**
+     * Affiche une erreur système et assassine le script.
+     *
+     * @param mixed ...$exceptions
+     */
     private function error(...$exceptions)
     {
         $renderer = new PHPRenderer(__DIR__ . '/views');
-        if (!is_null($this->container)) {
+        try {
             echo $renderer->render('error', [
                 'exceptions' => $exceptions,
                 'details' => $this->container->get('turbopancake.details'),
@@ -287,9 +292,12 @@ final class App implements RequestHandlerInterface {
                 'loaded_modules' => $this->container->get('turbopancake.loadedModules'),
                 'middlewares' => $this->container->get('turbopancake.middlewares'),
             ]);
-        } else {
+        } catch (Exception $e) {
             echo $renderer->render('error-no-container', [
-                'exceptions' => $exceptions
+                'exceptions' => $exceptions,
+                'details' => [
+                    'version' => 'Turbopancake ' . self::VERSION
+                ]
             ]);
         }
         die;
