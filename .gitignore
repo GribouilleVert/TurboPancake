@@ -4,9 +4,14 @@ vendor
 public/_coverrage
 public/uploads/*
 tmp
+dist
 
 #Remove these line if you plan to use git
 src/*
 !src/TurboPancake
 tests/*
 !tests/TurboPancake
+public/assets/css/*
+public/assets/js/*
+public/assets/images/*
+public/assets/sccs/*
