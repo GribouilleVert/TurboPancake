@@ -4,7 +4,7 @@ namespace TurboPancake\Renderer;
 use Twig\Loader\FilesystemLoader as TwigFilesystemLoader;
 use Twig\Environment as TwigEnvironment;
 
-class TwigRenderer implements RendererInterface {
+final class TwigRenderer implements RendererInterface {
 
     /**
      * @var TwigEnvironment

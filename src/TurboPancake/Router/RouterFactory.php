@@ -4,7 +4,7 @@ namespace TurboPancake\Router;
 use Psr\Container\ContainerInterface;
 use TurboPancake\Router;
 
-class RouterFactory {
+final class RouterFactory {
 
     public function __invoke(ContainerInterface $container)
     {

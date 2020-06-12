@@ -3,7 +3,7 @@ namespace TurboPancake\Renderer;
 
 use Psr\Container\ContainerInterface;
 
-class PHPRendererFactory {
+final class PHPRendererFactory {
 
     public function __invoke(ContainerInterface $container): PHPRenderer
     {

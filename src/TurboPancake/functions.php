@@ -82,7 +82,6 @@ if (!function_exists('TurboPancake\generateCode')) {
     function generateCode(int $length = 8, string $possibilities = "0123456789abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"): string
     {
         $res = '';
-        $possibilities = "0123456789abcdefghijklmopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for ($i = 0; $i < $length; $i++) {
             $res .= $possibilities[random_int(0, strlen($possibilities) - 1)];
         }

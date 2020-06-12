@@ -8,7 +8,7 @@ use Psr\Http\Server\MiddlewareInterface;
  * @package TurboPancake\Router
  * Représente une route
  */
-class Route {
+final class Route {
     /**
      * @var string Nom de la route
      */
