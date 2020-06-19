@@ -57,7 +57,7 @@ trait RouterAware {
      */
     private function redirect(string $route, array $parameters, array $queryParameters, int $code): ResponseInterface
     {
-        if (!isset($this->router) OR !$route instanceof Router) {
+        if (!isset($this->router) OR !$this->router instanceof Router) {
             throw new SystemException('Unable to use router redirect without a proper router.');
         }
 
