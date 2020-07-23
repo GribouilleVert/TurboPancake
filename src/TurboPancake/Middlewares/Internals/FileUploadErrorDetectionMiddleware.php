@@ -40,6 +40,6 @@ class FileUploadErrorDetectionMiddleware implements MiddlewareInterface {
             }
         }
 
-        $handler->handle($request);
+        return $handler->handle($request);
     }
 }
