@@ -22,6 +22,8 @@ use TurboPancake\Twig\TimeExtension;
 return [
     'env'    => \DI\env('ENV', 'development'), //TODO: set back to `production`
 
+    'turbopancake.getCustoms.allowedArrayKeys' => [],
+
     //Base de donnée
     'database.host' => 'localhost',
     'database.name' => 'TurboPancake',

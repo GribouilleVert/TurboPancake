@@ -12,6 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use TurboPancake\Database\Sprinkler;
 use TurboPancake\Exceptions\SystemException;
 use TurboPancake\Middlewares\Internals\FileUploadErrorDetectionMiddleware;
+use TurboPancake\Middlewares\Internals\GetParametersCustomsMiddleware;
 use TurboPancake\Renderer\PHPRenderer;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Utils\StaticInstancier;
@@ -25,7 +26,8 @@ final class App implements RequestHandlerInterface {
     public const VERSION = '2.1';
 
     private const INTERNAL_MIDDLEWARES = [
-        FileUploadErrorDetectionMiddleware::class
+        FileUploadErrorDetectionMiddleware::class,
+        GetParametersCustomsMiddleware::class,
     ];
 
     /**
