@@ -1,5 +1,5 @@
 <?php
-namespace TurboPancake\Middlewares;
+namespace TurboPancake\Middlewares\Internals;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
