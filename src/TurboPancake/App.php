@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TurboPancake\Database\Sprinkler;
 use TurboPancake\Exceptions\SystemException;
+use TurboPancake\Middlewares\FileUploadErrorDetectionMiddleware;
 use TurboPancake\Renderer\PHPRenderer;
 use TurboPancake\Renderer\RendererInterface;
 use TurboPancake\Utils\StaticInstancier;
@@ -22,6 +23,10 @@ use TurboPancake\Utils\StaticInstancier;
 final class App implements RequestHandlerInterface {
 
     public const VERSION = '2.1';
+
+    private const INTERNAL_MIDDLEWARES = [
+        FileUploadErrorDetectionMiddleware::class
+    ];
 
     /**
      * Modules
@@ -66,7 +71,7 @@ final class App implements RequestHandlerInterface {
     {
         $this->containerDefinitions = $containerDefinitions;
         $this->modules = $modules;
-        $this->middlewares = $middlewares;
+        $this->middlewares = self::INTERNAL_MIDDLEWARES + $middlewares;
         $this->staticInstancier = new StaticInstancier($this->getContainer());
 
         $this->staticInstancier->initClass(Sprinkler::class);

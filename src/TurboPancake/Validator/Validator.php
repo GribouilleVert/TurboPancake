@@ -5,8 +5,14 @@ use DateTime;
 use Psr\Http\Message\UploadedFileInterface;
 use TurboPancake\Database\Exceptions\NoRecordException;
 use TurboPancake\Database\Table;
+use TurboPancake\Exceptions\SystemException;
 use TurboPancake\Validator\ValidationError;
 use TurboPancake\Validator\Exceptions\ValidationException;
+use function DI\add;
+use const UPLOAD_ERR_FORM_SIZE;
+use const UPLOAD_ERR_INI_SIZE;
+use const UPLOAD_ERR_NO_FILE;
+use const UPLOAD_ERR_PARTIAL;
 
 class Validator {
 
@@ -1258,8 +1264,26 @@ class Validator {
          * @var $file UploadedFileInterface
          */
         $file = $this->getValue($field);
-        if ($file === null OR $file->getError() !== UPLOAD_ERR_OK) {
+        if (!$file instanceof UploadedFileInterface) {
             $this->addError($field, 'notUploaded', [], $customError);
+            return $this;
+        }
+
+        if ($file === null OR $file->getError() !== UPLOAD_ERR_OK) {
+            switch ($file->getError()) {
+                case UPLOAD_ERR_INI_SIZE:
+                case UPLOAD_ERR_FORM_SIZE:
+                    $this->addError($field, 'oversizeFilePhp', [], $customError);
+                    break;
+
+                case UPLOAD_ERR_PARTIAL:
+                    $this->addError($field, 'uploadError', [], $customError);
+                    break;
+
+                case UPLOAD_ERR_NO_FILE:
+                    $this->addError($field, 'notUploaded', [], $customError);
+                    break;
+            }
         }
 
         return $this;
@@ -1282,7 +1306,7 @@ class Validator {
          * @var $uploadedFile UploadedFileInterface
          */
         $uploadedFile = $this->getValue($field);
-        if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
+        if (!$uploadedFile instanceof UploadedFileInterface OR $uploadedFile->getError() !== UPLOAD_ERR_OK) {
             return $this;
         }
 
@@ -1334,7 +1358,7 @@ class Validator {
          * @var $uploadedFile UploadedFileInterface
          */
         $uploadedFile = $this->getValue($field);
-        if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
+        if (!$uploadedFile instanceof UploadedFileInterface OR $uploadedFile->getError() !== UPLOAD_ERR_OK) {
             return $this;
         }
 
@@ -1367,7 +1391,7 @@ class Validator {
          * @var $uploadedFile UploadedFileInterface
          */
         $uploadedFile = $this->getValue($field);
-        if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
+        if (!$uploadedFile instanceof UploadedFileInterface OR $uploadedFile->getError() !== UPLOAD_ERR_OK) {
             return $this;
         }
 
@@ -1376,7 +1400,11 @@ class Validator {
             throw new ValidationException('The uploaded file doesn\'t exist');
         }
 
-        [$imageWidth, $imageHeight] = getimagesize($filePath);
+        $_ = getimagesize($filePath);
+        if ($_ === false) {
+            return $this;
+        }
+        [$imageWidth, $imageHeight] = $_;
 
         if ($imageHeight < $height OR $imageWidth < $width) {
             $this->addError('image', 'dimensions', [$width, $height], $customError);

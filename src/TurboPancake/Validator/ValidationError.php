@@ -25,7 +25,9 @@ class ValidationError {
         'dotfile'           => 'Désolé mais vous ne pouvez pas envoyer de dotfile (fichiers sans extenstion commençant par un point).',
         'extensionMismatch' => 'L\'extension de votre fichier ne correspond pas à son contenu, pour des raisons de sécurité il à été refusé.',
         'notUploaded'       => 'Le fichier est requis.',
-        'oversizeFile'      => 'Le fichier envoyé dépasse la limit maximum de %i%s. (Taille du fichier: %s)',
+        'uploadError'       => 'L\'envoi du fichier à échoué.',
+        'oversizeFile'      => 'Le fichier envoyé dépasse la limite maximum de %i%s. (Taille du fichier: %s)',
+        'oversizeFilePhp'   => 'Le fichier envoyé dépasse la limite maximum de %i%s.',
         'validate'          => 'Le champ %s est invalide.',
         'same'              => 'Les mots de passe ne correspondent pas.',
     ];
