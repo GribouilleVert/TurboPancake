@@ -35,8 +35,11 @@ class Helium {
             $this->delete($oldFile);
         }
 
-        $filename = $this->path . DS . $file->getClientFilename();
-        $targetPath = $this->getPath($filename);
+        $pathInfos = pathinfo($file->getClientFilename());
+        $filename = preg_replace('/[^a-zA-Z0-9\-\_]/', '_', $pathInfos['filename']) . '.' . $pathInfos['extension'];
+
+        $filePath = $this->getPath() . DS . $filename;
+        $targetPath = $this->getFilePath($filePath);
 
         $directoryName = dirname($targetPath);
         if (!file_exists($directoryName)) {
@@ -89,7 +92,12 @@ class Helium {
         }
     }
 
-    private function getPath(string $targetPath): string
+    protected function getPath(): string
+    {
+        return $this->path;
+    }
+
+    private function getFilePath(string $targetPath): string
     {
         if (file_exists($targetPath)) {
             $pathInfos = pathinfo($targetPath);
@@ -98,7 +106,7 @@ class Helium {
             } else {
                 $targetPath = $this->suffixPath($targetPath, md5(time() . rand()));
             }
-            $targetPath = $this->getPath($targetPath);
+            $targetPath = $this->getFilePath($targetPath);
         }
         return $targetPath;
     }
