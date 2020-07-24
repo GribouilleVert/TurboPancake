@@ -23,6 +23,7 @@ return [
     'env'    => \DI\env('ENV', 'development'), //TODO: set back to `production`
 
     'turbopancake.getCustoms.allowedArrayKeys' => [],
+    'turbopancake.postCustoms.allowedArrayKeys' => [],
 
     //Base de donnée
     'database.host' => 'localhost',

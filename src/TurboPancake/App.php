@@ -23,7 +23,7 @@ use TurboPancake\Utils\StaticInstancier;
  */
 final class App implements RequestHandlerInterface {
 
-    public const VERSION = '2.2';
+    public const VERSION = '2.2.1';
 
     private const INTERNAL_MIDDLEWARES = [
         FileUploadErrorDetectionMiddleware::class,
