@@ -99,13 +99,15 @@ abstract class Table {
     /**
      * Renvoie un tableau d'objet contenant toutes les entrée de la table
      *
-     * @return Query
+     * @return QueryResult
+     * @throws NoRecordException
+     * @throws QueryBuilderException
      */
-    public function findAll(): Query
+    public function findAll(): QueryResult
     {
         $query = $this->makeQuery();
         $query->setThrowOnNotFound(false);
-        return $query;
+        return $query->fetchAll();
     }
 
     /**
