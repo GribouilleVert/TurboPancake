@@ -74,7 +74,7 @@ class TableTest extends TestCase {
         $this->table->getPdo()->exec("INSERT INTO test (name) VALUES ('elem 1');");
         $this->table->getPdo()->exec("INSERT INTO test (name) VALUES ('elem 2');");
 
-        $items = $this->table->findAll()->fetchAll();
+        $items = $this->table->findAll();
 
         $this->assertInstanceOf(\Traversable::class, $items);
         $this->assertCount(2, $items);

@@ -2,6 +2,7 @@
 namespace TurboPancake\Actions;
 
 use Nyholm\Psr7\Response;
+use Pagerfanta\Pagerfanta;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -106,7 +107,7 @@ class CrudAction implements MiddlewareInterface {
     {
         $queryParams = $request->getQueryParams();
         $page = $queryParams['page'] ?? 1;
-        $items = $this->table->findAll()->paginate(8, $page);
+        $items = $this->getPaginatedDatas(8, $page);
 
         if (is_null($items)) {
             return $this->temporaryRedirect($this->routePrefix . '.index');
@@ -237,5 +238,10 @@ class CrudAction implements MiddlewareInterface {
     protected function viewDatas(array $datas): array
     {
         return $datas;
+    }
+
+    protected function getPaginatedDatas(int $itemsPerPages, int $startingPage = 1): Pagerfanta
+    {
+        return $this->table->findPaginated($itemsPerPages, $startingPage);
     }
 }

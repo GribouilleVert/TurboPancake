@@ -1,6 +1,7 @@
 <?php
 namespace TurboPancake\Database;
 
+use Pagerfanta\Pagerfanta;
 use TurboPancake\Database\Exceptions\NoRecordException;
 use TurboPancake\Database\Exceptions\QueryBuilderException;
 
@@ -108,6 +109,21 @@ abstract class Table {
         $query = $this->makeQuery();
         $query->setThrowOnNotFound(false);
         return $query->fetchAll();
+    }
+
+
+    /**
+     * Renvoie un tableau d'objet contenant toutes les entrée de la table paginées
+     *
+     * @param int $itemsPerPages
+     * @param int $currentPage
+     * @return Pagerfanta
+     */
+    public function findPaginated(int $itemsPerPages, int $currentPage = 1): Pagerfanta
+    {
+        $query = $this->makeQuery();
+        $query->setThrowOnNotFound(false);
+        return $query->paginate($itemsPerPages, $currentPage);
     }
 
     /**
