@@ -305,8 +305,7 @@ class Query implements \IteratorAggregate {
                 self::class . "::fetch() Can't be called when pdo hasn't been defined in the constructor"
             );
         }
-        $mode = is_null($this->entity) ? \PDO::FETCH_OBJ : \PDO::FETCH_ASSOC;
-        $records = $this->execute($this->parameters)->fetchAll($mode);
+        $records = $this->execute($this->parameters)->fetchAll(\PDO::FETCH_ASSOC);
 
         if (count($records) <= 0) {
             if ($this->throwOnNotFound) {

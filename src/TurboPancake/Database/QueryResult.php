@@ -1,6 +1,7 @@
 <?php
 namespace TurboPancake\Database;
 
+use stdClass;
 use TurboPancake\Database\Exceptions\QueryBuilderException;
 use TurboPancake\Database\Exceptions\ReadOnlyException;
 
@@ -40,7 +41,7 @@ class QueryResult implements \ArrayAccess, \Iterator, \Countable {
     public function get(int $index): object
     {
         if (is_null($this->entity)) {
-            return $this->records[$index];
+            return Sprinkler::hydrate($this->records[$index], new stdClass);
         }
 
         if (!isset($this->generatedEntities[$index])) {
